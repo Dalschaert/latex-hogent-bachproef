@@ -1,0 +1,69 @@
+%==============================================================================
+% Sjabloon onderzoeksvoorstel bachproef
+%==============================================================================
+% Gebaseerd op document class `hogent-article'
+% zie <https://github.com/HoGentTIN/latex-hogent-article>
+
+% Voor een voorstel in het Engels: voeg de documentclass-optie [english] toe.
+% Let op: kan enkel na toestemming van de bachelorproefcoördinator!
+\documentclass{hogent-article}
+
+% Invoegen bibliografiebestand
+\addbibresource{voorstel.bib}
+
+% Informatie over de opleiding, het vak en soort opdracht
+\studyprogramme{Professionele bachelor toegepaste informatica}
+\course{Bachelorproef}
+\assignmenttype{Onderzoeksvoorstel}
+% Voor een voorstel in het Engels, haal de volgende 3 regels uit commentaar
+% \studyprogramme{Bachelor of applied information technology}
+% \course{Bachelor thesis}
+% \assignmenttype{Research proposal}
+
+\academicyear{2025-2026} % TODO: pas het academiejaar aan
+
+% TODO: Werktitel
+\title{Hoe kan een webapplicatie ontworpen worden die real-time voertuigdata performant kan simuleren, streamen en visualiseren, op basis van OBD-II-parameters, en die later naadloos kan worden uitgebreid naar echte live datastromen?}
+
+% TODO: Studentnaam en emailadres invullen
+\author{Dalschaert Milan}
+\email{dalschaert.milan@student.hogent.be}
+
+% TODO: Medestudent
+% Gaat het om een bachelorproef in samenwerking met een student in een andere
+% opleiding? Geef dan de naam en emailadres hier
+% \author{Yasmine Alaoui (naam opleiding)}
+% \email{yasmine.alaoui@student.hogent.be}
+
+% TODO: Geef de co-promotor op
+\supervisor[Co-promotor]{S. Beekman (Synalco, \href{mailto:sigrid.beekman@synalco.be}{sigrid.beekman@synalco.be})}
+
+% Binnen welke specialisatierichting uit 3TI situeert dit onderzoek zich?
+% Kies uit deze lijst:
+%
+% - Mobile \& Enterprise development
+% - AI \& Data Engineering
+% - Functional \& Business Analysis
+% - System \& Network Administrator
+% - Mainframe Expert
+% - Als het onderzoek niet past binnen een van deze domeinen specifieer je deze
+%   zelf
+%
+\specialisation{Mobile \& Enterprise development}
+\keywords{Real-time vehicle data, OBD-II, data simulation, performance, web applications, visualization}
+
+\begin{document}
+
+\begin{abstract}
+  Dit voorstel onderzoekt hoe real-time voertuigdata op een performante en overzichtelijke manier kan worden verwerkt en gevisualiseerd binnen een webapplicatie, gericht op autoliefhebbers en technisch geïnteresseerde bestuurders die meer inzicht willen krijgen in de prestaties van hun voertuig dan wat standaard dashboards bieden. De probleemstelling vertrekt vanuit de beperkte toegang tot detailrijke telemetriedata en de nood aan gebruiksvriendelijke toepassingen die continu veranderende informatie kunnen tonen zonder prestatieverlies. De centrale onderzoeksvraag luidt: Hoe kan een webapplicatie ontworpen worden die real-time voertuigdata performant kan simuleren, streamen en visualiseren, op basis van OBD-II-parameters, en die later naadloos kan worden uitgebreid naar echte live datastromen? Het doel van de bachelorproef is een technisch onderbouwd prototype dat OBD-II-gegevens gebruikt als uitgangspunt voor de simulatie, deze data in real-time verwerkt en op een performant manier visualiseert, en aantoont hoe de ontwikkelde architectuur kan dienen als basis voor integratie met echte voertuigtelemetrie. Methodologisch bestaat het onderzoek uit literatuurstudie rond OBD-II, real-time datastreaming, webperformantie en visualisatietechnieken, gecombineerd met ontwerp, implementatie en evaluatie van een webgebaseerde datastreaming- en visualisatieoplossing. Verwacht wordt dat het prototype inzicht geeft in welke technologieën en architecturen het meest geschikt zijn voor performante real-time dataverwerking en hoe gesimuleerde data later probleemloos vervangen kan worden door echte voertuigdata. De meerwaarde van dit onderzoek ligt in het aanbieden van een schaalbare en toegankelijke oplossing voor gebruikers die hun voertuig beter willen begrijpen, evenals een technische blauwdruk voor verdere ontwikkeling in automotive-, IoT- of fleet-managementtoepassingen.
+\end{abstract}
+
+\tableofcontents
+
+% De hoofdtekst van het voorstel zit in een apart bestand, zodat het makkelijk
+% kan opgenomen worden in de bijlagen van de bachelorproef zelf.
+\input{voorstel-inhoud}
+
+\printbibliography[heading=bibintoc]
+
+\end{document}
