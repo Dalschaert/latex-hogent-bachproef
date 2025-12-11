@@ -29,15 +29,43 @@ De doelstelling van het onderzoek is tweeledig. Enerzijds wil ik een duidelijk e
 \section{Literatuurstudie}%
 \label{sec:literatuurstudie}
 
-Hier beschrijf je de \emph{state-of-the-art} rondom je gekozen onderzoeksdomein, d.w.z.\ een inleidende, doorlopende tekst over het onderzoeksdomein van je bachelorproef. Je steunt daarbij heel sterk op de professionele \emph{vakliteratuur}, en niet zozeer op populariserende teksten voor een breed publiek. Wat is de huidige stand van zaken in dit domein, en wat zijn nog eventuele open vragen (die misschien de aanleiding waren tot je onderzoeksvraag!)?
+Het domein van real-time voertuigdata, webgebaseerde visualisaties en OBD-II-diagnostiek bevindt zich op het kruispunt tussen automotive informatics, IoT-architecturen en webperformance. De huidige literatuur toont dat zowel de beschikbaarheid van voertuigdata als de manieren waarop deze data performant verwerkt en gevisualiseerd wordt sterk evolueren. Dit onderzoek sluit aan bij bestaande academische inzichten, maar richt zich op een specifieke open uitdaging: hoe kan real-time voertuigdata op een performante, schaalbare én gebruiksvriendelijke manier beschikbaar worden gesteld aan technisch geïnteresseerde autobezitters, zonder afhankelijk te zijn van complexe hardware of bedrijfsomgevingen.
 
-Je mag de titel van deze sectie ook aanpassen (literatuurstudie, stand van zaken, enz.). Zijn er al gelijkaardige onderzoeken gevoerd? Wat concluderen ze? Wat is het verschil met jouw onderzoek?
+\subsection{OBD-II als standaard voor voertuigdata}
 
-Verwijs bij elke introductie van een term of bewering over het domein naar de vakliteratuur, bijvoorbeeld~\autocite{Hykes2013}! Denk zeker goed na welke werken je refereert en waarom.
+On-Board Diagnostics (OBD-II) vormt sinds 1996 de universele standaard voor voertuigtelemetrie bij consumentenwagens. De review van \textcite{Michailidis2025} toont aan dat OBD-II een brede reeks parameters beschikbaar maakt, zoals motortoerental, voertuig­ snelheid, koelvloeistoftemperatuur, lucht-brandstofverhouding en foutcodes (DTC’s). Deze auteurs benadrukken dat OBD-II toegankelijk is, maar tegelijk beperkt in updatefrequentie en afhankelijk van de gebruikte adapter (bijv. ELM327). Deze technische beperkingen zijn relevant voor dit onderzoek, omdat ze bepalen hoe real-time de data werkelijk kan zijn en welke simulatieparameters realistisch zijn.
 
-Draag zorg voor correcte literatuurverwijzingen! Een bronvermelding hoort thuis \emph{binnen} de zin waar je je op die bron baseert, dus niet er buiten! Maak meteen een verwijzing als je gebruik maakt van een bron. Doe dit dus \emph{niet} aan het einde van een lange paragraaf. Baseer nooit teveel aansluitende tekst op eenzelfde bron.
+Daarnaast beschrijven \textcite{Oluwaseyi2020} hoe OBD-II functioneert als digitaal diagnosetool, met een focus op de structuur van PIDs (Parameter IDs) en de uitdagingen rond datakwaliteit en betrouwbaarheid van goedkope adapters. Dit biedt een goede basis voor het deel van dit onderzoek waarin de overgang van gesimuleerde naar echte OBD-II-data wordt onderzocht.
 
-Als je informatie over bronnen verzamelt in JabRef, zorg er dan voor dat alle nodige info aanwezig is om de bron terug te vinden (zoals uitvoerig besproken in de lessen Research Methods).
+Verder tonen werken zoals \textcite{Dabarera2022} en \textcite{Madushan2023} hoe OBD-II vandaag wordt gecombineerd met IoT-platformen, waarbij data via protocollen zoals MQTT wordt doorgestuurd naar cloudplatformen. Deze studies onderbouwen de haalbaarheid van continue real-time dataflow vanuit voertuigen naar webapplicaties.
+
+\subsection{Real-time data-architecturen en performantie}
+
+Informatie over performante verwerking van real-time data komt vooral uit IoT- en big-dataonderzoek. \textcite{Ferhat2024} beschrijven hoe een voertuigvolgsysteem migratie naar een big-data-omgeving vereist om grote datavolumes efficiënt te verwerken. Hun conclusie is dat traditionele relationele systemen minder geschikt zijn voor real-time data streams, terwijl gedistribueerde systemen met event-driven architecturen betere schaalbaarheid en performantie leveren. Dit is relevant voor de backendarchitectuur van de webapplicatie in deze bachelorproef.
+
+Ook \textcite{Perez-Gonzalez2025} beschrijven een volledig real-time telemetriesysteem voor elektrische racewagens. Hun implementatie toont dat performantie vooral afhankelijk is van:
+
+\begin{itemize}
+    \item Sampling rate van sensoren
+    \item Datacompressie en transmissiemethode
+    \item Efficiënt updaten van dashboards (event-driven i.p.v. polling)
+    \item Client-side rendering performance
+\end{itemize}
+
+Deze inzichten zijn direct toepasbaar op de performantieanalyse van jouw webapplicatie.
+
+\subsection{Visualisatie van real-time data}
+
+Visualisatie vormt een cruciale component in het interpreteren van telemetrie. \textcite{VandenHautte2020} presenteren een dynamisch dashboarding-framework dat sensordata automatisch detecteert en verwerkt tot real-time visualisaties. Ze benadrukken dat dashboards niet alleen correct moeten zijn, maar vooral responsief, lichtgewicht en geoptimaliseerd voor continue updates.
+
+\subsection{Simulatie van voertuigdata}
+
+Omdat OBD-II-data beperkt is door updatefrequentie en hardwarevariatie, kiezen veel studies voor simulatie als testbasis. In de literatuur rond IoT-telemetrie tonen \textcite{Perez-Gonzalez2025} en \textcite{Madushan2023} dat simulatie cruciaal is om datastromen te valideren nog vóór fysieke sensoren worden aangesloten.
+
+Simulatie wordt vooral ingezet om:
+hoge updatefrequenties te testen (bijv. 30–60 updates per seconde),
+stress-testing van dashboards te doen,
+verschillende voertuigscenario’s (acceleratie, temperatuurverhoging, foutcodes) te reproduceren.
 
 % Voor literatuurverwijzingen zijn er twee belangrijke commando's:
 % \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
@@ -46,31 +74,61 @@ Als je informatie over bronnen verzamelt in JabRef, zorg er dan voor dat alle no
 %   functie heeft in de zin (bv. ``Uit onderzoek door Doll & Hill (1954) bleek
 %   ...'')
 
-Je mag deze sectie nog verder onderverdelen in subsecties als dit de structuur van de tekst kan verduidelijken.
-
 %---------- Methodologie ------------------------------------------------------
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor literatuurstudie, interviews met belanghebbenden (bv.~voor requirements-analyse), experimenten, simulaties, vergelijkende studie, risico-analyse, PoC, \ldots?
+Het doel van deze bachelorproef is het ontwikkelen van een performante webapplicatie waarin real-time voertuigdata inzichtelijk wordt gemaakt voor autoliefhebbers en technisch geïnteresseerde autobezitters. Om dit te bereiken wordt een gestructureerde aanpak gehanteerd die literatuuronderzoek, simulatie, proof-of-concept (PoC), integratie van echte data en performance-optimalisatie combineert.\\
 
-Valt je onderwerp onder één van de typische soorten bachelorproeven die besproken zijn in de lessen Research Methods (bv.\ vergelijkende studie of risico-analyse)? Zorg er dan ook voor dat we duidelijk de verschillende stappen terug vinden die we verwachten in dit soort onderzoek!
+In de eerste fase wordt een grondige studie uitgevoerd naar de beschikbare OBD-II data en de methodes om deze uit voertuigen uit te lezen. Daarbij wordt onderzocht welke voertuigparameters essentieel zijn, welke technische beperkingen er bestaan bij real-time uitlezing, en hoe toegankelijk deze data is voor autobezitters. Dit vormt de basis voor de simulatie en de verdere ontwikkeling van de webapplicatie. Het resultaat van deze fase is een overzicht van beschikbare data en aanbevelingen voor data-acquisitie.\\
 
-Vermijd onderzoekstechnieken die geen objectieve, meetbare resultaten kunnen opleveren. Enquêtes, bijvoorbeeld, zijn voor een bachelorproef informatica meestal \textbf{niet geschikt}. De antwoorden zijn eerder meningen dan feiten en in de praktijk blijkt het ook bijzonder moeilijk om voldoende respondenten te vinden. Studenten die een enquête willen voeren, hebben meestal ook geen goede definitie van de populatie, waardoor ook niet kan aangetoond worden dat eventuele resultaten representatief zijn.
+Vervolgens wordt een PoC ontwikkeld waarin voertuigdata gesimuleerd wordt. Het doel van deze simulatie is om een realistisch datamodel te creëren dat gebruikt kan worden in de webapplicatie. Hierdoor kunnen functionaliteit, visualisaties en performance getest worden zonder afhankelijk te zijn van een echt voertuig. De simulatie omvat typische OBD-II parameters zoals snelheid, toerental, motortemperatuur en brandstofverbruik, en wordt gekoppeld aan een webdashboard waarin data real-time wordt weergegeven.\\
 
-Uit dit onderdeel moet duidelijk naar voor komen dat je bachelorproef ook technisch voldoen\-de diepgang zal bevatten. Het zou niet kloppen als een bachelorproef informatica ook door bv.\ een student marketing zou kunnen uitgevoerd worden.
+In de derde fase wordt onderzocht hoe deze gesimuleerde data kan worden vervangen door echte OBD-II data. Hierbij worden verschillende manieren van data-acquisitie geëvalueerd, zoals kabelverbindingen, Bluetooth of Wi-Fi. De webapplicatie wordt aangepast om deze data in real-time te ontvangen en weer te geven, zodat de overgang van simulatie naar echte voertuigen soepel verloopt.\\
 
-Je beschrijft ook al welke tools (hardware, software, diensten, \ldots) je denkt hiervoor te gebruiken of te ontwikkelen.
+Daarna volgt de fase van performance-optimalisatie. In deze stap worden technieken toegepast om de webapplicatie sneller en stabieler te maken bij real-time data‑streams. Hierbij kan gedacht worden aan caching, throttling van data, gebruik van WebSockets of andere streamingtechnologieën, en optimalisatie van de frontend rendering. Het doel is dat de webapplicatie soepel werkt, ook bij frequente updates van voertuigdata.\\
 
-Probeer ook een tijdschatting te maken. Hoe lang zal je met elke fase van je onderzoek bezig zijn en wat zijn de concrete \emph{deliverables} in elke fase?
+Tot slot wordt de applicatie geëvalueerd op technische correctheid, prestaties en gebruiksvriendelijkheid. De resultaten worden gedocumenteerd in de bachelorproef, inclusief aanbevelingen voor verdere verbeteringen en uitbreidingen. Het concrete eindresultaat is een werkende webapplicatie die zowel gesimuleerde als echte OBD-II data realtime kan verwerken en visualiseren.
+
+\subsection{Tijdsplanning}
+
+\begin{itemize}
+    \item Literatuurstudie en data-analyse (4 weken): overzicht van OBD-II parameters en technische beperkingen.
+    \item PoC simulatie (3 weken): simulatie-backend en webdashboard.
+    \item Integratie echte OBD-II data (4 weken): werkende data-acquisitie module en integratie in de applicatie.
+    \item Performance-optimalisatie (3 weken): geoptimaliseerde realtime webapplicatie en performance rapport.
+    \item Evaluatie en documentatie (2 weken): volledige bachelorproef en technische documentatie.
+\end{itemize}
+
+Door deze methodologie wordt zowel een concreet technisch resultaat behaald als diepgaande kennis over OBD-II data, real-time dataverwerking en webvisualisatie ontwikkeld, waardoor de bachelorproef voldoende IT-diepte en praktische relevantie krijgt.
 
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
 \label{sec:verwachte_resultaten}
 
-Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de onderdelen van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet welk soort data je moet verzamelen en hoe je die moet meten.
+\subsection{Verwachte Resultaten en Meerwaarde}
+Het voornaamste resultaat van deze bachelorproef is een werkende webapplicatie die real-time voertuigdata kan verwerken en visualiseren, zowel vanuit een simulatie als vanaf echte OBD-II apparaten. De applicatie zal dynamische dashboards bevatten met meerdere grafieken die inzicht geven in verschillende voertuigparameters, zoals snelheid, toerental, brandstofverbruik, motortemperatuur en acceleratie.
 
-Wat heeft de doelgroep van je onderzoek aan het resultaat? Op welke manier zorgt jouw bachelorproef voor een meerwaarde?
+\subsection{Verwachte technische resultaten}
 
-Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
+\begin{itemize}
+    \item Een performante backend die data van meerdere voertuigen tegelijk kan verwerken zonder merkbare vertraging
+    \item Realtime updates in de frontend via streamingtechnologieën zoals WebSockets of MQTT
+    \item Flexibele dashboards die eenvoudig kunnen worden uitgebreid met nieuwe parameters
+    \item Een gestandaardiseerde simulatieomgeving waarmee toekomstige uitbreidingen of andere voertuigen makkelijk kunnen worden getest
+\end{itemize}
+
+
+\subsection{Meerwaarde voor de doelgroep}
+Voor autoliefhebbers en technisch geïnteresseerde autobezitters biedt deze bachelorproef verschillende concrete voordelen:
+
+\begin{itemize}
+    \item \textbf{Inzicht in voertuigprestaties:} Door real-time data visualisatie krijgen gebruikers een dieper begrip van hoe hun voertuig functioneert en waar verbeteringen mogelijk zijn.
+    \item \textbf{Diagnose en preventie:} Onregelmatigheden in motor- of rijgedrag kunnen sneller worden opgespoord, wat preventief onderhoud vergemakkelijkt.
+    \item \textbf{Gebruiksvriendelijkheid en toegankelijkheid:} In tegenstelling tot standaard dashboards of fabrikant specifieke tools is de applicatie open, flexibel en gericht op de eindgebruiker die technisch geïnteresseerd is.
+    \item \textbf{Basis voor verdere ontwikkeling:} De simulatieomgeving en PoC vormen een fundament voor toekomstige uitbreidingen, zoals koppeling met machine learning-algoritmes voor predictive maintenance of rijgedragsanalyse.
+\end{itemize}
+.
+
+Kortom, de bachelorproef levert zowel een technisch product op als waardevolle inzichten voor de doelgroep, waardoor zij hun voertuigen beter kunnen begrijpen, bewaken en optimaliseren.
 
