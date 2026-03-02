@@ -20,31 +20,68 @@ De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), dan is dat een indicatie dat de doelgroep goed gedefinieerd is. Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+Moderne voertuigen genereren via elektronische regeleenheden een grote hoeveelheid technische data, waaronder motorparameters, sensorgegevens en diagnostische informatie. Via de OBD-II-interface is een deel van deze data toegankelijk voor externe toepassingen. Hoewel deze gegevens technisch beschikbaar zijn, blijven ze voor veel gebruikers moeilijk interpreteerbaar en beperkt bruikbaar in hun ruwe vorm.
+
+Bestaande toepassingen focussen voornamelijk op foutdiagnose of eenvoudige parameterweergave, maar bieden zelden een performante, schaalbare en analytische real-time visualisatie van voertuigdata. Bovendien houden veel oplossingen onvoldoende rekening met beperkingen zoals updatefrequentie, adapterafhankelijkheid en schaalbaarheid bij meerdere gelijktijdige datastromen.
+
+De doelgroep van deze bachelorproef bestaat uit technisch geïnteresseerde autobezitters en autoliefhebbers die hun voertuig actief willen monitoren en analyseren op basis van real-time data. Concreet gaat het om:
+\begin{itemize}
+    \item particuliere autobezitters met interesse in voertuigperformantie en -diagnose;
+    \item autoliefhebbers die voertuigdata willen gebruiken voor analyse of optimalisatie;
+    \item studenten en ontwikkelaars die werken rond voertuigdata, telematica of real-time dataverwerking;
+    \item de opdrachtgever of co-promotor die inzicht wil verkrijgen in performante real-time dataverwerking binnen webapplicaties.
+\end{itemize}
+
+De meerwaarde van dit onderzoek ligt in het ontwikkelen en onderbouwen van een technisch performante oplossing die voertuigdata niet alleen uitleest, maar ook efficiënt streamt, verwerkt en visualiseert binnen een schaalbare webarchitectuur.
+
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
 
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+De centrale onderzoeksvraag van deze bachelorproef luidt als volgt:
+
+\textit{Welke technologieën en architecturale ontwerpkeuzes maken het mogelijk om real-time voertuigdata performant, schaalbaar en gebruiksvriendelijk te simuleren, streamen en visualiseren binnen een webapplicatie?}
+
+Om deze hoofdvraag te beantwoorden, worden volgende deelvragen onderzocht:
+
+\begin{itemize}
+    \item Hoe kan OBD-II-data efficiënt worden uitgelezen via vaste, adaptieve en PID-gebaseerde strategieën?
+    \item Welke real-time streamingtechnologie (bijvoorbeeld WebSockets, MQTT of Server-Sent Events) biedt de beste performantie en stabiliteit voor continue voertuigdata?
+    \item Wat is het verschil in realisme en performantie tussen vaste gesimuleerde data en reële OBD-II-logs?
+    \item Hoe beïnvloedt het aantal gelijktijdige voertuigen de schaalbaarheid en responstijd van de applicatie?
+    \item Welke visualisatietechnieken zijn het meest geschikt voor continue real-time datastromen?
+\end{itemize}
+
+Deze vragen richten zich niet louter op het inventariseren van bestaande technologieën, maar op het evalueren en vergelijken ervan binnen de specifieke context van real-time voertuigdata.
+
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
 
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+De doelstelling van deze bachelorproef is tweeledig.
+
+Enerzijds wordt een onderbouwde technische analyse uitgevoerd van verschillende technologieën en ontwerpkeuzes voor het verwerken en streamen van real-time voertuigdata. Hierbij worden performantie, schaalbaarheid, stabiliteit en gebruiksvriendelijkheid als evaluatiecriteria gehanteerd.
+
+Anderzijds wordt een proof-of-concept ontwikkeld in de vorm van een webapplicatie die voertuigdata via OBD-II uitleest, verwerkt, logt en in real time visualiseert. Het project is geslaagd indien:
+
+\begin{itemize}
+    \item real-time voertuigdata stabiel kan worden uitgelezen en verwerkt;
+    \item de applicatie meerdere datastromen performant kan verwerken;
+    \item de visualisatie begrijpelijk en responsief blijft bij continue updates;
+    \item de gekozen architectuur schaalbaar en reproduceerbaar is.
+\end{itemize}
+
+Het eindresultaat moet aantonen dat de geselecteerde technologieën effectief bijdragen tot een performante en schaalbare oplossing voor real-time voertuigmonitoring.
+
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}
 
-% Het is gebruikelijk aan het einde van de inleiding een overzicht te
-% geven van de opbouw van de rest van de tekst. Deze sectie bevat al een aanzet
-% die je kan aanvullen/aanpassen in functie van je eigen tekst.
+De rest van deze bachelorproef is als volgt opgebouwd.
 
-De rest van deze bachelorproef is als volgt opgebouwd:
+In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein. Hierbij wordt ingegaan op OBD-II, beschikbare voertuigdata via PIDs, verschillen tussen voertuigtypes en de technische beperkingen van data-acquisitie. Daarnaast worden relevante technologieën voor real-time dataverwerking en simulatie besproken op basis van literatuur.
 
-In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein, op basis van een literatuurstudie.
+In Hoofdstuk~\ref{ch:methodologie} wordt de praktische uitwerking van het onderzoek toegelicht. Hierin worden de gebruikte technologieën beschreven, waaronder de OBD-II-adapter en de Pythonbibliotheek voor het uitlezen van voertuigdata. Verder wordt de opzet van de datalogging, simulatie en real-time visualisatie besproken, evenals de manier waarop performantie en schaalbaarheid worden geëvalueerd.
 
-In Hoofdstuk~\ref{ch:methodologie} wordt de methodologie toegelicht en worden de gebruikte onderzoekstechnieken besproken om een antwoord te kunnen formuleren op de onderzoeksvragen.
+In Hoofdstuk~\ref{ch:conclusie} wordt een antwoord geformuleerd op de onderzoeksvragen. De bekomen resultaten worden samengevat en kritisch geëvalueerd, waarna aanbevelingen worden geformuleerd voor toekomstig onderzoek en verdere optimalisatie van het systeem.
 
-% TODO: Vul hier aan voor je eigen hoofstukken, één of twee zinnen per hoofdstuk
-
-In Hoofdstuk~\ref{ch:conclusie}, tenslotte, wordt de conclusie gegeven en een antwoord geformuleerd op de onderzoeksvragen. Daarbij wordt ook een aanzet gegeven voor toekomstig onderzoek binnen dit domein.

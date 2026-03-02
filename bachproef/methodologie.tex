@@ -26,5 +26,22 @@
 %% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
 %% en geef het een gepaste titel.
 
-\lipsum[21-25]
+In het kader van deze bachelorproef werd in eerste instantie onderzocht hoe voertuigdata via de OBD-II-interface praktisch kan worden uitgelezen. Hiervoor werd gebruikgemaakt van een ELM327-gebaseerde OBD-II-adapter in combinatie met de Pythonbibliotheek python-OBD. Deze bibliotheek biedt een programmeerinterface waarmee gestandaardiseerde PIDs kunnen worden opgevraagd en automatisch worden omgezet naar leesbare fysische grootheden.
+
+In een eerste experimentele fase werd een verbinding opgezet tussen de computer en het voertuig via de OBD-II-adapter. Vervolgens werd getest welke PIDs effectief beschikbaar zijn op het gebruikte voertuig. Hierbij werden onder meer parameters zoals motortoerental, voertuigsnelheid, koelvloeistoftemperatuur en motorbelasting succesvol uitgelezen. De bibliotheek verzorgt hierbij zowel het verzenden van de request-commando’s als het decoderen van de responseberichten volgens de OBD-II-standaard.
+
+Daarnaast werd de updatefrequentie geëvalueerd door meerdere PIDs gelijktijdig op te vragen. Hierbij werd vastgesteld dat de effectieve samplefrequentie afneemt naarmate meer parameters worden uitgelezen, wat overeenkomt met het request-responsekarakter van OBD-II. De verkregen data werd gelogd en gebruikt om de stabiliteit van de verbinding en de consistentie van de meetwaarden te analyseren.
+
+Deze experimentele fase vormde de basis voor het verdere ontwerp van het real-time datalogging- en visualisatiesysteem. De praktische testen leverden inzicht op in de beschikbare parameters, de haalbare updatefrequentie en de beperkingen van de gebruikte adapter, wat richting geeft aan de verdere ontwikkeling van de softwarearchitectuur.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{data.png}
+    \caption[Eerste data ophaling.]{\label{fig:data}Eerste succesvolle real-time data-acquisitie via de OBD-II-interface met behulp van de python-OBD bibliotheek.}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{pids.png}
+    \caption[Alle beschikbare PIDs.]{\label{fig:pids} Overzicht van de door het voertuig ondersteunde OBD-II Parameter IDs (PIDs), uitgelezen via de diagnose-interface.}
+\end{figure}
 

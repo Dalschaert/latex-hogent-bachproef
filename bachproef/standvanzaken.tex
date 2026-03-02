@@ -7,45 +7,81 @@
 
 % Pas na deze inleidende paragraaf komt de eerste sectiehoofding.
 
-Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
+\section{On-board diagnostics (OBD-II)}
+\label{sec:On-board diagnostics}
 
-Je verwijst bij elke bewering die je doet, vakterm die je introduceert, enz.\ naar je bronnen. In \LaTeX{} kan dat met het commando \texttt{$\backslash${textcite\{\}}} of \texttt{$\backslash${autocite\{\}}}. Als argument van het commando geef je de ``sleutel'' van een ``record'' in een bibliografische databank in het Bib\LaTeX{}-formaat (een tekstbestand). Als je expliciet naar de auteur verwijst in de zin (narratieve referentie), gebruik je \texttt{$\backslash${}textcite\{\}}. Soms is de auteursnaam niet expliciet een onderdeel van de zin, dan gebruik je \texttt{$\backslash${}autocite\{\}} (referentie tussen haakjes). Dit gebruik je bv.~bij een citaat, of om in het bijschrift van een overgenomen afbeelding, broncode, tabel, enz. te verwijzen naar de bron. In de volgende paragraaf een voorbeeld van elk.
+On-board diagnostics (OBD) is het zelfdiagnosesysteem van een voertuig dat toelaat om de werking van emissiegerelateerde en andere elektronische systemen te monitoren. Moderne voertuigen maken gebruik van de tweede generatie van dit systeem, OBD-II, dat een gestandaardiseerde diagnose-interface definieert voor de communicatie met de elektronische regeleenheden (ECU’s). Via deze interface kan externe apparatuur voertuigdata opvragen en diagnostische informatie uitlezen. De standaardisatie omvat onder meer de fysieke diagnoseconnector, de communicatiemethoden en de structuur van de foutcodes, waardoor een diagnoseapparaat met verschillende voertuigmerken kan communiceren.
+OBD-II werd oorspronkelijk ontwikkeld met het oog op emissiecontrole, maar wordt vandaag breed toegepast voor algemene voertuigdiagnose en data-acquisitie. De interface maakt het mogelijk om zowel actuele sensorgegevens als opgeslagen foutinformatie op te vragen. Hierdoor vormt OBD-II een toegankelijke en gestandaardiseerde bron van voertuigdata voor monitoring- en analysetoepassingen.
+In het kader van deze bachelorproef is OBD-II relevant omdat het een uniforme methode biedt om realtimedata uit een voertuig te verzamelen. Deze data kan vervolgens worden gelogd en gevisualiseerd, wat de basis vormt voor verdere analyse of een simulatieomgeving.
 
-\textcite{Knuth1998} schreef een van de standaardwerken over sorteer- en zoekalgoritmen. Experten zijn het erover eens dat cloud computing een interessante opportuniteit vormen, zowel voor gebruikers als voor dienstverleners op vlak van informatietechnologie~\autocite{Creeger2009}.
+\section{Beschikbare data via OBD-II Parameter IDs}
 
-Let er ook op: het \texttt{cite}-commando voor de punt, dus binnen de zin. Je verwijst meteen naar een bron in de eerste zin die erop gebaseerd is, dus niet pas op het einde van een paragraaf.
+Binnen OBD-II gebeurt de opvraging van voertuiggegevens aan de hand van Parameter IDs (PIDs). Dit zijn gestandaardiseerde codes die door een externe applicatie kunnen worden opgevraagd bij de ECU. De ECU stuurt hierbij gecodeerde ruwe data terug, die met vooraf gedefinieerde formules wordt omgerekend naar fysische grootheden. Niet elk voertuig ondersteunt alle PIDs; daarom kan eerst worden bepaald welke parameters beschikbaar zijn.
+De beschikbare data kan worden onderverdeeld in verschillende categorieën.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\textwidth]{grail.jpg}
-  \caption[Voorbeeld figuur.]{\label{fig:grail}Voorbeeld van invoegen van een figuur. Zorg altijd voor een uitgebreid bijschrift dat de figuur volledig beschrijft zonder in de tekst te moeten gaan zoeken. Vergeet ook je bronvermelding niet!}
-\end{figure}
+\subsection{Real-time sensorgegevens}
 
-\begin{listing}
-  \begin{minted}{python}
-    import pandas as pd
-    import seaborn as sns
+Een eerste categorie omvat actuele meetwaarden die de werking van de motor en het aandrijfsysteem beschrijven. Voorbeelden hiervan zijn het motortoerental, de voertuigsnelheid, de berekende motorbelasting, de koelvloeistoftemperatuur, de inlaatluchttemperatuur, de positie van de gasklep en de luchtmassastroom. Deze parameters maken het mogelijk om de dynamische toestand van het voertuig in real time te volgen en vormen de belangrijkste databron voor logging- en visualisatietoepassingen.
 
-    penguins = sns.load_dataset('penguins')
-    sns.relplot(data=penguins, x="flipper_length_mm", y="bill_length_mm", hue="species")
-  \end{minted}
-  \caption[Voorbeeld codefragment]{Voorbeeld van het invoegen van een codefragment.}
-\end{listing}
+\subsection{Brandstofregeling en emissiegerelateerde data}
 
-\lipsum[7-20]
+Daarnaast zijn er PIDs die informatie geven over de regeling van het brandstof- en emissiesysteem, zoals de short- en long-term fuel trim, de status van het brandstofsysteem en de metingen van de lambdasensoren. Deze gegevens laten toe om de efficiëntie van de verbranding en de emissiecontrole te evalueren.
 
-\begin{table}
-  \centering
-  \begin{tabular}{lcr}
-    \toprule
-    \textbf{Kolom 1} & \textbf{Kolom 2} & \textbf{Kolom 3} \\
-    $\alpha$         & $\beta$          & $\gamma$         \\
-    \midrule
-    A                & 10.230           & a                \\
-    B                & 45.678           & b                \\
-    C                & 99.987           & c                \\
-    \bottomrule
-  \end{tabular}
-  \caption[Voorbeeld tabel]{\label{tab:example}Voorbeeld van een tabel.}
-\end{table}
+\subsection{Diagnostische informatie}
+
+OBD-II voorziet ook in diagnostische data, waaronder de status van het storingslampje, het aantal opgeslagen foutcodes en de resultaten van emissie gerelateerde zelftesten. Wanneer een fout wordt gedetecteerd, wordt een Diagnostic Trouble Code opgeslagen samen met freeze-frame data, die een momentopname bevat van relevante sensorwaarden op het tijdstip van de fout. Deze informatie ondersteunt het analyse- en diagnoseproces.
+
+\subsection{Voertuigidentificatie}
+
+Tot slot kunnen via specifieke diensten identificatiegegevens zoals het Vehicle Identification Number (VIN) en kalibratie-informatie van de ECU worden opgevraagd. Deze gegevens zijn onder meer van belang voor de correcte identificatie van het voertuig en de configuratie van diagnose toepassingen.
+
+\section{Verschillen tussen voertuigtypes}
+
+De implementatie en het gebruik van OBD-II verschillen naargelang het type aandrijving van het voertuig. Bij voertuigen met een verbrandingsmotor ligt de focus voornamelijk op motor- en emissiegerelateerde parameters. Typische beschikbare data omvat onder meer het motortoerental, brandstofregeling, luchtmassastroom, lambdasensorwaarden en katalysatorefficiëntie. Deze parameters zijn rechtstreeks gekoppeld aan het verbrandingsproces en vormen de kern van de oorspronkelijke OBD-functionaliteit.
+Bij hybride voertuigen is het OBD-systeem complexer omdat zowel een verbrandingsmotor als een elektrische aandrijving aanwezig zijn. Naast de klassieke motorgegevens kunnen er ook gegevens beschikbaar zijn met betrekking tot de hoogspanningsbatterij, de laadstatus en de werking van de elektrische motor. De beschikbaarheid van deze gegevens is echter sterk fabrikantafhankelijk en vaak slechts gedeeltelijk toegankelijk via de gestandaardiseerde PIDs.
+Bij volledig elektrische voertuigen verschuift de focus van emissiegerelateerde diagnose naar het monitoren van het energiebeheersysteem. Belangrijke parameters zijn onder andere de batterijstatus (State of Charge), batterijspanning, stroom, temperatuur en het energieverbruik. Aangezien OBD-II oorspronkelijk ontworpen werd voor voertuigen met een verbrandingsmotor, zijn veel van deze parameters niet opgenomen in de standaardset van PIDs en worden ze vaak enkel via fabrikant-specifieke commando’s beschikbaar gesteld. Hierdoor is de hoeveelheid gestandaardiseerde data bij elektrische voertuigen doorgaans beperkter.
+
+\section{Huidige beperkingen van OBD-II voor data-acquisitie}
+
+Hoewel OBD-II een gestandaardiseerde interface biedt voor voertuigdiagnose en dataverzameling, zijn er verschillende beperkingen die een impact hebben op realtimetoepassingen.
+
+\subsection{Afhankelijkheid van de gebruikte adapter}
+
+De prestaties van een OBD-II-opstelling zijn in sterke mate afhankelijk van de gebruikte diagnoseadapter. Goedkopere ELM327-gebaseerde adapters ondersteunen niet altijd alle protocollen of implementeren deze slechts gedeeltelijk. Dit kan leiden tot tragere communicatie, het niet correct interpreteren van berichten of het ontbreken van bepaalde parameters. Bovendien varieert de kwaliteit van de firmware tussen verschillende klonen, wat de betrouwbaarheid van de metingen beïnvloedt.
+
+\subsection{Beperkte updatefrequentie}
+
+De maximale updatefrequentie van de data wordt bepaald door het gebruikte communicatieprotocol, de snelheid van de voertuigbus en het aantal gelijktijdig opgevraagde PIDs. Omdat OBD-II werkt volgens een request-responseprincipe, moet elke parameter afzonderlijk worden opgevraagd. Hierdoor daalt de samplefrequentie naarmate meer parameters tegelijk worden uitgelezen. In typische toepassingen ligt de updatefrequentie voor meerdere PIDs in de orde van enkele metingen per seconde, wat een beperking vormt voor toepassingen die hoge resolutie realtime data vereisen.
+
+\subsection{Datakwaliteit en resolutie}
+
+De via OBD-II verkregen data is in de eerste plaats bedoeld voor diagnose en niet voor hoogfrequente meettoepassingen. Hierdoor is:
+\begin{itemize}
+\item De resolutie van bepaalde parameters beperkt
+\item De meetfrequentie relatief laag
+\item De nauwkeurigheid afhankelijk van interne ECU-bewerkingen
+\end{itemize}
+
+Bovendien zijn sommige waarden berekend in plaats van rechtstreeks gemeten, zoals de berekende motorbelasting. Dit kan leiden tot afwijkingen wanneer de data gebruikt wordt voor gedetailleerde analyse of modellering.
+
+\section{Simulatie}
+\label{sec:Simulatie}
+
+Bij de ontwikkeling en evaluatie van real-time data-acquisitiesystemen wordt in de literatuur vaak gebruikgemaakt van een simulatieomgeving als aanvulling op metingen met een fysiek systeem. Simulatie laat toe om de dataverwerkingsketen te testen onder gecontroleerde en reproduceerbare omstandigheden, wat met een reële opstelling niet altijd mogelijk is door variabele omgevingsfactoren en hardwarebeperkingen. Binnen het domein van embedded en automotive systemen wordt dit principe onder meer toegepast in software-in-the-loop- en hardware-in-the-loop testopstellingen.
+
+Een belangrijke motivatie voor simulatie is het evalueren van de performantie bij hoge updatefrequenties. In een fysieke OBD-II-opstelling wordt de samplefrequentie beperkt door het communicatieprotocol en de responstijd van de ECU. In een gesimuleerde omgeving kunnen datastromen met een hogere en constante frequentie worden aangeboden, waardoor de maximale verwerkingscapaciteit van de software, de buffering en de opslagmechanismen kan worden geanalyseerd. Dit sluit aan bij methodes uit de literatuur rond real-time systemen, waar synthetische datastromen worden gebruikt om timing gedrag en latentie te meten.
+
+Daarnaast wordt simulatie gebruikt voor stress-testing. Hierbij wordt het systeem belast met grote hoeveelheden data of met piekbelastingen om de robuustheid te evalueren. Dergelijke testen zijn moeilijk reproduceerbaar met een fysiek voertuig, omdat de gegenereerde data afhankelijk is van rij omstandigheden en voertuiggedrag. In performantie analyse van data-acquisitieplatformen wordt daarom vaak gewerkt met gesimuleerde input om worst-casescenario’s te kunnen onderzoeken.
+
+Een bijkomend voordeel is de reproduceerbaarheid van tests. Wanneer dezelfde dataset of hetzelfde model opnieuw wordt aangeboden, kan het effect van softwarewijzigingen objectief worden vergeleken. Dit principe wordt in de literatuur beschreven als trace-based testing, waarbij eerder opgenomen meetdata opnieuw wordt afgespeeld om systemen te valideren.
+
+Voor de simulatie kunnen twee databronnen worden gebruikt.
+
+Bij het gebruik van synthetisch gegenereerde data worden vooraf gedefinieerde signalen of mathematische modellen gebruikt om sensorgegevens na te bootsen. Deze aanpak biedt volledige controle over de datavorm, de frequentie en de belasting van het systeem en wordt daarom vaak toegepast voor performantie- en stresstesten van real-time toepassingen. Het nadeel is dat deze data niet alle karakteristieken van reële metingen bevat, zoals ruis, jitter en niet-lineaire correlaties tussen parameters.
+
+Een alternatief is het gebruik van reële OBD-II-logs als input voor de simulatie. Dit komt overeen met trace-based simulatie, waarbij eerder opgenomen data opnieuw wordt afgespeeld. Hierdoor blijft het realistische karakter van de signalen behouden en kan de volledige verwerkingsketen getest worden met representatieve voertuigdata. Deze methode wordt in de literatuur gebruikt voor de validatie van dataverwerkingssystemen, omdat ze reproduceerbaarheid combineert met realistische input. De maximale updatefrequentie blijft in dit geval echter beperkt tot de frequentie waarmee de data oorspronkelijk werd gelogd.
+
+In het kader van deze bachelorproef kan simulatie worden ingezet als testomgeving voor de ontwikkeling van het real-time datalogging- en visualisatiesysteem. Door zowel synthetische data als reële OBD-II-logs te gebruiken, kan enerzijds de performantie en schaalbaarheid van het systeem worden geëvalueerd en anderzijds het gedrag met realistische voertuigdata worden geanalyseerd.
+
+
 

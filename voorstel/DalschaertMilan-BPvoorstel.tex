@@ -8,6 +8,8 @@
 % Let op: kan enkel na toestemming van de bachelorproefcoördinator!
 \documentclass{hogent-article}
 
+\setlength{\emergencystretch}{3em}
+
 % Invoegen bibliografiebestand
 \addbibresource{references.bib}
 
@@ -23,7 +25,8 @@
 \academicyear{2025-2026} % TODO: pas het academiejaar aan
 
 % TODO: Werktitel
-\title{Hoe kan een webapplicatie ontworpen worden die real-time voertuigdata performant kan simuleren, streamen en visualiseren, op basis van OBD-II-parameters, en die later naadloos kan worden uitgebreid naar echte live datastromen?}
+\title{Ontwerp en evaluatie van een performante webapplicatie voor real-time voertuigdatavisualisatie via OBD-II}
+
 
 % TODO: Studentnaam en emailadres invullen
 \author{Dalschaert Milan}
@@ -55,8 +58,12 @@
 \begin{document}
 
 \begin{abstract}
-  Dit voorstel onderzoekt hoe real-time voertuigdata op een performante en overzichtelijke manier kan worden verwerkt en gevisualiseerd binnen een webapplicatie, gericht op autoliefhebbers en technisch geïnteresseerde bestuurders die meer inzicht willen krijgen in de prestaties van hun voertuig dan wat standaard dashboards bieden. De probleemstelling vertrekt vanuit de beperkte toegang tot detailrijke telemetriedata en de nood aan gebruiksvriendelijke toepassingen die continu veranderende informatie kunnen tonen zonder prestatieverlies. De centrale onderzoeksvraag luidt: Hoe kan een webapplicatie ontworpen worden die real-time voertuigdata performant kan simuleren, streamen en visualiseren, op basis van OBD-II-parameters, en die later naadloos kan worden uitgebreid naar echte live datastromen? Het doel van de bachelorproef is een technisch onderbouwd prototype dat OBD-II-gegevens gebruikt als uitgangspunt voor de simulatie, deze data in real-time verwerkt en op een performant manier visualiseert, en aantoont hoe de ontwikkelde architectuur kan dienen als basis voor integratie met echte voertuigtelemetrie. Methodologisch bestaat het onderzoek uit literatuurstudie rond OBD-II, real-time datastreaming, webperformantie en visualisatietechnieken, gecombineerd met ontwerp, implementatie en evaluatie van een webgebaseerde datastreaming- en visualisatieoplossing. Verwacht wordt dat het prototype inzicht geeft in welke technologieën en architecturen het meest geschikt zijn voor performante real-time dataverwerking en hoe gesimuleerde data later probleemloos vervangen kan worden door echte voertuigdata. De meerwaarde van dit onderzoek ligt in het aanbieden van een schaalbare en toegankelijke oplossing voor gebruikers die hun voertuig beter willen begrijpen, evenals een technische blauwdruk voor verdere ontwikkeling in automotive-, IoT- of fleet-managementtoepassingen.
+    Dit voorstel onderzoekt hoe real-time voertuigdata op een performante, schaalbare en overzichtelijke manier kan worden verwerkt en gevisualiseerd binnen een webapplicatie, gericht op autoliefhebbers en technisch geïnteresseerde bestuurders die meer inzicht willen krijgen in voertuigprestaties dan wat standaard dashboards bieden. De probleemstelling vertrekt vanuit de beperkte toegankelijkheid tot detailrijke voertuigtelemetrie en de technische uitdaging om continu veranderende data stabiel en efficiënt te streamen en te visualiseren in een webcontext.
+    De centrale onderzoeksvraag luidt: Hoe kan een webgebaseerde architectuur ontworpen worden die real-time voertuigdata performant kan simuleren, streamen en visualiseren op basis van OBD-II-parameters, en hoe schaalbaar en uitbreidbaar is deze architectuur richting echte live voertuigdata?
+    Het onderzoek focust expliciet op het vergelijken van verschillende technische keuzes, waaronder real-time streamingtechnologieën (WebSockets, MQTT en Server-Sent Events), simulatieaanpakken (gesynthetiseerde datasets versus gelogde OBD-II-data), data-acquisitiestrategieën (vaste polling, adaptieve polling en PID-prioritering), schaalbaarheid bij een toenemend aantal voertuigen en de geschiktheid van verschillende visualisatietechnieken voor real-time voertuigdata.
+    Methodologisch combineert dit onderzoek een literatuurstudie rond OBD-II, real-time datastreaming, webperformantie en datavisualisatie met de implementatie en evaluatie van een proof-of-concept webapplicatie. De performantie, stabiliteit en gebruikservaring van verschillende architecturale en visualisatiekeuzes worden systematisch geëvalueerd. Verwacht wordt dat dit resulteert in een technisch onderbouwde blauwdruk voor real-time voertuigdatavisualisatie, waarbij gesimuleerde data naadloos kan worden vervangen door echte voertuigtelemetrie. De meerwaarde ligt zowel in praktische toepasbaarheid voor autoliefhebbers als in een schaalbaar referentiemodel voor automotive-, IoT- en fleet-managementtoepassingen.
 \end{abstract}
+
 
 \tableofcontents
 

@@ -19,8 +19,18 @@ Moderne voertuigen genereren enorme hoeveelheden data die het potentieel hebben 
 
 Het thema wordt gekaderd binnen de bredere evolutie naar data-gedreven voertuigen, waarbij real-time gegevens zoals motortoerental, vermogen, brandstofverbruik of sensordiagnoses steeds vaker beschikbaar zijn via OBD-interfaces, API’s of telematica-systemen. De uitdaging bestaat er echter in om deze data zo te verwerken en te presenteren dat gebruikers er daadwerkelijk inzichten uit kunnen halen, zonder nood aan diepgaande technische of programmeerkennis.
 
-De concrete probleemstelling luidt als volgt: hoe kan voertuigdata in real-time performant en begrijpbaar worden gevisualiseerd voor autoliefhebbers die hun voertuig nauwkeuriger willen monitoren en analyseren? Vanuit deze probleemstelling vertrekt de centrale onderzoeksvraag:
-“Welke technologieën en visualisatiestrategieën maken het mogelijk om real-time voertuigdata performant, stabiel en gebruiksvriendelijk weer te geven voor technisch geïnteresseerde autobezitters?”
+De concrete probleemstelling luidt als volgt: hoe kan voertuigdata in real-time performant, schaalbaar en begrijpelijk worden gevisualiseerd voor autoliefhebbers die hun voertuig nauwkeuriger willen monitoren en analyseren? Vanuit deze probleemstelling vertrekt de centrale onderzoeksvraag:
+
+“Welke technologieën en ontwerpkeuzes maken het mogelijk om real-time voertuigdata performant, schaalbaar en gebruiksvriendelijk te simuleren, streamen en visualiseren binnen een webapplicatie?”
+
+Om deze hoofdvraag te beantwoorden, worden verschillende deelvragen onderzocht:
+\begin{itemize}
+    \item Welke real-time streamingtechnologie (WebSockets, MQTT of Server-Sent Events) biedt de beste performantie en stabiliteit voor voertuigdata?
+    \item Wat is het verschil in realisme en performantie tussen vaste gesimuleerde data en echte OBD-II data logs?
+    \item Hoe schaalt de applicatie wanneer het aantal gelijktijdige voertuigen toeneemt?
+    \item Welke visualisatietechnieken zijn het meest geschikt voor continue real-time voertuigdata?
+    \item Hoe kan OBD-II-data efficiënt worden uitgelezen via vaste, adaptieve en PID-gebaseerde strategieën?
+\end{itemize}
 
 De doelstelling van het onderzoek is tweeledig. Enerzijds wil ik een duidelijk en onderbouwd inzicht bieden in welke technologieën (zoals data-streaming, caching, frameworks voor visualisatie) het meest geschikt zijn voor dit type toepassing. Anderzijds werk ik toe naar een concreet proof-of-concept: een webapplicatie die real-time voertuigdata verwerkt en visualiseert op een manier die aansluit bij de noden van autoliefhebbers. Het eindresultaat moet aantonen dat de gekozen technieken effectief leiden tot een vlotte, begrijpbare en betrouwbare gebruikerservaring.
 
@@ -33,7 +43,7 @@ Het domein van real-time voertuigdata, webgebaseerde visualisaties en OBD-II-dia
 
 \subsection{OBD-II als standaard voor voertuigdata}
 
-On-Board Diagnostics (OBD-II) vormt sinds 1996 de universele standaard voor voertuigtelemetrie bij consumentenwagens. De review van \textcite{Michailidis2025} toont aan dat OBD-II een brede reeks parameters beschikbaar maakt, zoals motortoerental, voertuig­ snelheid, koelvloeistoftemperatuur, lucht-brandstofverhouding en foutcodes (DTC’s). Deze auteurs benadrukken dat OBD-II toegankelijk is, maar tegelijk beperkt in updatefrequentie en afhankelijk van de gebruikte adapter (bijv. ELM327). Deze technische beperkingen zijn relevant voor dit onderzoek, omdat ze bepalen hoe real-time de data werkelijk kan zijn en welke simulatieparameters realistisch zijn.
+On-Board Diagnostics (OBD-II) vormt sinds 1996 de universele standaard voor voertuigtelemetrie bij consumentenwagens. De review van \textcite{Michailidis2025} toont aan dat OBD-II een brede reeks parameters beschikbaar maakt, zoals motortoerental, voertuigsnelheid, koelvloeistoftemperatuur, lucht-brandstofverhouding en foutcodes (DTC’s). Deze auteurs benadrukken dat OBD-II toegankelijk is, maar tegelijk beperkt in updatefrequentie en afhankelijk van de gebruikte adapter (bijv. ELM327). Deze technische beperkingen zijn relevant voor dit onderzoek, omdat ze bepalen hoe real-time de data werkelijk kan zijn en welke simulatieparameters realistisch zijn.
 
 Daarnaast beschrijven \textcite{Oluwaseyi2020} hoe OBD-II functioneert als digitaal diagnosetool, met een focus op de structuur van PIDs (Parameter IDs) en de uitdagingen rond datakwaliteit en betrouwbaarheid van goedkope adapters. Dit biedt een goede basis voor het deel van dit onderzoek waarin de overgang van gesimuleerde naar echte OBD-II-data wordt onderzocht.
 
@@ -52,8 +62,6 @@ Ook \textcite{Perez-Gonzalez2025} beschrijven een volledig real-time telemetries
     \item Client-side rendering performance
 \end{itemize}
 
-Deze inzichten zijn direct toepasbaar op de performantieanalyse van jouw webapplicatie.
-
 \subsection{Visualisatie van real-time data}
 
 Visualisatie vormt een cruciale component in het interpreteren van telemetrie. \textcite{VandenHautte2020} presenteren een dynamisch dashboarding-framework dat sensordata automatisch detecteert en verwerkt tot real-time visualisaties. Ze benadrukken dat dashboards niet alleen correct moeten zijn, maar vooral responsief, lichtgewicht en geoptimaliseerd voor continue updates.
@@ -67,6 +75,13 @@ hoge updatefrequenties te testen (bijv. 30–60 updates per seconde),
 stress-testing van dashboards te doen,
 verschillende voertuigscenario’s (acceleratie, temperatuurverhoging, foutcodes) te reproduceren.
 
+\subsection{Vergelijkende evaluatie als onderzoeksmethode}
+
+Hoewel bestaande studies aantonen dat real-time voertuigdata technisch haalbaar is, blijft er een duidelijk tekort aan vergelijkend onderzoek tussen verschillende streaming-, simulatie- en visualisatie-aanpakken binnen eenzelfde architectuur. Veel implementaties focussen op één technologie of use-case, zonder systematische evaluatie van alternatieven.
+
+Deze bachelorproef richt zich daarom expliciet op een vergelijkend onderzoek, waarbij meerdere technische keuzes binnen dezelfde webapplicatie worden geïmplementeerd en geëvalueerd op basis van performantie, schaalbaarheid en gebruikservaring. Hierdoor wordt niet enkel een werkend systeem opgeleverd, maar ook inzicht verworven in de impact van ontwerpbeslissingen op real-time voertuigdataverwerking.
+
+
 % Voor literatuurverwijzingen zijn er twee belangrijke commando's:
 % \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
 %   geen onderdeel is van de zin.
@@ -78,29 +93,44 @@ verschillende voertuigscenario’s (acceleratie, temperatuurverhoging, foutcodes
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Het doel van deze bachelorproef is het ontwikkelen van een performante webapplicatie waarin real-time voertuigdata inzichtelijk wordt gemaakt voor autoliefhebbers en technisch geïnteresseerde autobezitters. Om dit te bereiken wordt een gestructureerde aanpak gehanteerd die literatuuronderzoek, simulatie, proof-of-concept (PoC), integratie van echte data en performance-optimalisatie combineert.\\
+Het doel van deze bachelorproef is het ontwerpen, implementeren en evalueren van een performante webapplicatie voor real-time voertuigdata. De methodologie is expliciet vergelijkend van aard en combineert literatuuronderzoek, simulatie, experimentele implementatie en performantie-evaluatie.
 
-In de eerste fase wordt een grondige studie uitgevoerd naar de beschikbare OBD-II data en de methodes om deze uit voertuigen uit te lezen. Daarbij wordt onderzocht welke voertuigparameters essentieel zijn, welke technische beperkingen er bestaan bij real-time uitlezing, en hoe toegankelijk deze data is voor autobezitters. Dit vormt de basis voor de simulatie en de verdere ontwikkeling van de webapplicatie. Het resultaat van deze fase is een overzicht van beschikbare data en aanbevelingen voor data-acquisitie.\\
+In de eerste fase wordt een literatuurstudie uitgevoerd naar OBD-II-standaarden, beschikbare voertuigparameters en technische beperkingen van real-time data-acquisitie. Hierbij wordt onderzocht welke parameters relevant zijn voor real-time visualisatie en welke beperkingen bestaan op vlak van updatefrequentie, betrouwbaarheid en hardware-afhankelijkheid. Deze analyse vormt de basis voor zowel de simulatie als de latere integratie van echte data.
 
-Vervolgens wordt een PoC ontwikkeld waarin voertuigdata gesimuleerd wordt. Het doel van deze simulatie is om een realistisch datamodel te creëren dat gebruikt kan worden in de webapplicatie. Hierdoor kunnen functionaliteit, visualisaties en performance getest worden zonder afhankelijk te zijn van een echt voertuig. De simulatie omvat typische OBD-II parameters zoals snelheid, toerental, motortemperatuur en brandstofverbruik, en wordt gekoppeld aan een webdashboard waarin data real-time wordt weergegeven.\\
+In de tweede fase wordt een simulatieomgeving ontwikkeld waarin voertuigdata op verschillende manieren wordt gegenereerd. Hierbij worden twee simulatie-aanpakken met elkaar vergeleken:
+\begin{itemize}
+    \item vaste, handmatig gegenereerde datasets met vooraf gedefinieerde rijscenario’s
+    \item echte OBD-II-data logs afkomstig van voertuigmetingen
+\end{itemize}
+Beide aanpakken worden geëvalueerd op realisme, flexibiliteit en performantie binnen de webapplicatie.
 
-In de derde fase wordt onderzocht hoe deze gesimuleerde data kan worden vervangen door echte OBD-II data. Hierbij worden verschillende manieren van data-acquisitie geëvalueerd, zoals kabelverbindingen, Bluetooth of Wi-Fi. De webapplicatie wordt aangepast om deze data in real-time te ontvangen en weer te geven, zodat de overgang van simulatie naar echte voertuigen soepel verloopt.\\
+Vervolgens wordt de streaminglaag van de applicatie onderzocht. Hiervoor worden meerdere real-time streamingtechnologieën geïmplementeerd en vergeleken, waaronder WebSockets, MQTT en Server-Sent Events. De vergelijking gebeurt op basis van latency, stabiliteit, schaalbaarheid en implementatiecomplexiteit.
 
-Daarna volgt de fase van performance-optimalisatie. In deze stap worden technieken toegepast om de webapplicatie sneller en stabieler te maken bij real-time data‑streams. Hierbij kan gedacht worden aan caching, throttling van data, gebruik van WebSockets of andere streamingtechnologieën, en optimalisatie van de frontend rendering. Het doel is dat de webapplicatie soepel werkt, ook bij frequente updates van voertuigdata.\\
+In de vierde fase wordt de schaalbaarheid en flexibiliteit van de applicatie geëvalueerd door verschillende voertuigtypes te simuleren, zoals elektrische auto’s en benzinewagens. Hierbij wordt onderzocht welke aanpassingen nodig zijn om de datastromen en parameters van elk type correct te verwerken en visualiseren, en hoe de applicatie stabiel blijft bij hogere updatefrequenties of complexere datastructuren.
 
-Tot slot wordt de applicatie geëvalueerd op technische correctheid, prestaties en gebruiksvriendelijkheid. De resultaten worden gedocumenteerd in de bachelorproef, inclusief aanbevelingen voor verdere verbeteringen en uitbreidingen. Het concrete eindresultaat is een werkende webapplicatie die zowel gesimuleerde als echte OBD-II data realtime kan verwerken en visualiseren.
+Daarnaast wordt een experimentele vergelijking uitgevoerd tussen verschillende visualisatietechnieken voor real-time voertuigdata, zoals line charts, gauges en heatmaps. Deze visualisaties worden geëvalueerd op leesbaarheid, reactietijd en geschiktheid voor continue updates.
+
+Tot slot wordt onderzocht hoe voertuigdata efficiënt kan worden uitgelezen. Hierbij worden drie data-acquisitiestrategieën geïmplementeerd en vergeleken:
+\begin{itemize}
+    \item vaste polling met een constante updatefrequentie
+    \item adaptieve polling gebaseerd op rijgedrag en voertuigstatus
+    \item PID-geprioriteerde polling waarbij kritische parameters vaker worden uitgelezen
+\end{itemize}
+
+De resultaten van deze experimenten worden geanalyseerd en gebruikt om aanbevelingen te formuleren voor performante en schaalbare real-time voertuigdata-applicaties.
+
 
 \subsection{Tijdsplanning}
 
 \begin{itemize}
     \item Literatuurstudie en data-analyse (4 weken): overzicht van OBD-II parameters en technische beperkingen.
     \item PoC simulatie (3 weken): simulatie-backend en webdashboard.
-    \item Integratie echte OBD-II data (4 weken): werkende data-acquisitie module en integratie in de applicatie.
-    \item Performance-optimalisatie (3 weken): geoptimaliseerde realtime webapplicatie en performance rapport.
+    \item Integratie echte OBD-II-data (4 weken): werkende data-acquisitie module en integratie in de applicatie.
+    \item Performance-optimalisatie (3 weken): geoptimaliseerde real-time webapplicatie en performance rapport.
     \item Evaluatie en documentatie (2 weken): volledige bachelorproef en technische documentatie.
 \end{itemize}
 
-Door deze methodologie wordt zowel een concreet technisch resultaat behaald als diepgaande kennis over OBD-II data, real-time dataverwerking en webvisualisatie ontwikkeld, waardoor de bachelorproef voldoende IT-diepte en praktische relevantie krijgt.
+Door deze methodologie wordt zowel een concreet technisch resultaat behaald als diepgaande kennis over OBD-II-data, real-time dataverwerking en webvisualisatie ontwikkeld, waardoor de bachelorproef voldoende IT-diepte en praktische relevantie krijgt.
 
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
@@ -113,7 +143,7 @@ Het voornaamste resultaat van deze bachelorproef is een werkende webapplicatie d
 
 \begin{itemize}
     \item Een performante backend die data van meerdere voertuigen tegelijk kan verwerken zonder merkbare vertraging
-    \item Realtime updates in de frontend via streamingtechnologieën zoals WebSockets of MQTT
+    \item Real-time updates in de frontend via streamingtechnologieën zoals WebSockets of MQTT
     \item Flexibele dashboards die eenvoudig kunnen worden uitgebreid met nieuwe parameters
     \item Een gestandaardiseerde simulatieomgeving waarmee toekomstige uitbreidingen of andere voertuigen makkelijk kunnen worden getest
 \end{itemize}
@@ -128,7 +158,6 @@ Voor autoliefhebbers en technisch geïnteresseerde autobezitters biedt deze bach
     \item \textbf{Gebruiksvriendelijkheid en toegankelijkheid:} In tegenstelling tot standaard dashboards of fabrikant specifieke tools is de applicatie open, flexibel en gericht op de eindgebruiker die technisch geïnteresseerd is.
     \item \textbf{Basis voor verdere ontwikkeling:} De simulatieomgeving en PoC vormen een fundament voor toekomstige uitbreidingen, zoals koppeling met machine learning-algoritmes voor predictive maintenance of rijgedragsanalyse.
 \end{itemize}
-.
 
 Kortom, de bachelorproef levert zowel een technisch product op als waardevolle inzichten voor de doelgroep, waardoor zij hun voertuigen beter kunnen begrijpen, bewaken en optimaliseren.
 
