@@ -24,6 +24,69 @@ Volgens \textcite{mccord2011automotive} biedt OBD-II niet alleen de mogelijkheid
 OBD-II is dus zowel een diagnostisch hulpmiddel voor monteurs als een bron van waardevolle data voor ontwikkelaars van voertuigsoftware, fleet management en telematica. Het biedt een gestructureerde manier om complexe voertuiginformatie toegankelijk en interpreteerbaar te maken, terwijl het ook de basis legt voor verdere toepassingen zoals real-time monitoring en data-analyse.
 
 \section{On-board diagnostics (OBD-II)}
+\label{sec:On-board diagnostics}
+Wat is obd-II \\
+Wat zijn PidS \\
+Welke data kan je uitlezen \\
+Hoe communicatie werkt \\
+Verschil met CAn-bus \\
+
+\section{Beperkingen van OBD-II}
+\label{sec:Beperkingen van OBD-II}
+Adapter afhankelijkheid \\
+Updatefrequentie \\
+Request response \\
+Datakwaliteit \\
+Verschil tussen voertuigtypes \\
+
+\section{Real-time data-architecturen}
+\label{sec:Real-time data-architecturen}
+Wat is real time data processing \\
+Verschil tussen polling en event-driven \\
+Flow van data (voertuig -> backend -> frontend) \\
+
+Extra? \\
+event driven architecturen \\
+data streams \\
+latentie en throughput \\
+
+\section{Streamingtechnologieën}
+\label{sec:Streamingtechnologieën}
+Websockets \\
+MQTT \\
+Server-sent events \\
+(Hoe het werkt, voordelen, nadelen, use cases) \\
+
+\section{Simulatie van voertuigdata}
+\label{sec:Simulatie van voertuigdata}
+Waarom simuleren \\
+Soorten (simuleerte data vs reële logs) \\
+Waarvoor gebruiken (performantie, stress testing, reproduceerbaarheid) \\
+
+\section{Visualisatie van real-time data}
+\label{sec:Visualisatie van real-time data}
+Waarom visualiseren \\
+Verschillende soorten visualisaties (grafieken, dashboards, alerts, gauges) \\
+Problematiek van real-time visualisatie (latentie, updatefrequentie, datavolume) \\
+
+Extra? \\
+data aggregatie en filtering \\
+client-side vs server-side rendering \\
+libraries en tools \\
+
+\section{Performantie en schaalbaarheid}
+\label{sec:Performantie en schaalbaarheid}
+Wat is performantie en schaalbaarheid \\
+Bottlenecks \\
+
+\section{Vergelijkende evaluatie}
+\label{sec:Vergelijkende evaluatie}
+Wat andere studies doen \\
+Wat ontbreekt  \\
+Mijn aanpak en bijdrage \\
+
+
+\section{On-board diagnostics (OBD-II)}
 \label{sec:On-board diagnosticss}
 
 On-board diagnostics (OBD) is het zelfdiagnosesysteem van een voertuig dat toelaat om de werking van emissiegerelateerde en andere elektronische systemen te monitoren. Moderne voertuigen maken gebruik van de tweede generatie van dit systeem, OBD-II, dat een gestandaardiseerde diagnose-interface definieert voor de communicatie met de elektronische regeleenheden (ECU’s). Via deze interface kan externe apparatuur voertuigdata opvragen en diagnostische informatie uitlezen. De standaardisatie omvat onder meer de fysieke diagnoseconnector, de communicatiemethoden en de structuur van de foutcodes, waardoor een diagnoseapparaat met verschillende voertuigmerken kan communiceren.
