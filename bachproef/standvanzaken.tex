@@ -15,19 +15,27 @@ Na het lezen van dit hoofdstuk moet je een goed begrip hebben van wat OBD-II inh
 \section{On-board diagnostics (OBD-II)}
 \label{sec:On-board diagnostics}
 
+\subsection{Wat is OBD-II?}
 OBD-II, oftewel On-Board Diagnostics, tweede generatie, is een gestandaardiseerd systeem dat moderne voertuigen gebruiken om informatie over de werking van het voertuig en de staat van diverse systemen te verzamelen en te rapporteren. Het is een doorontwikkeling van OBD-I, dat beperkt en vaak merk-specifiek was. OBD-II werd verplicht voor alle voertuigen in de VS vanaf 1996 en biedt een universele standaard die voertuigfabrikanten moeten volgen.
 Het systeem bestaat uit sensoren, actuatoren en een centrale computer (ECU – Electronic Control Unit) die voortdurend data verzamelt over belangrijke componenten zoals de motor, emissiesystemen, brandstofinjectie en het brandstof-luchtmengsel. Wanneer er een afwijking wordt gedetecteerd, slaat het systeem foutcodes op die via een gestandaardiseerde connector (meestal een 16-pins OBD-II-poort) uitgelezen kunnen worden. Deze foutcodes – ook wel DTC’s (Diagnostic Trouble Codes) genoemd – zijn uniform gedefinieerd, waardoor tools zoals scanners en software deze kunnen interpreteren, onafhankelijk van het automerk.
 Volgens \textcite{mccord2011automotive} biedt OBD-II niet alleen de mogelijkheid om foutcodes uit te lezen, maar ook om real-time voertuigdata te monitoren. Voorbeelden hiervan zijn motortoerental (RPM), voertuig- en motortemperatuur, luchtstroom, brandstofverbruik en snelheid. Deze data maakt het mogelijk om voertuigen efficiënter te diagnosticeren, onderhoud te plannen en prestaties te optimaliseren.
 OBD-II is dus zowel een diagnostisch hulpmiddel voor monteurs als een bron van waardevolle data voor ontwikkelaars van voertuigsoftware, fleet management en telematica. Het biedt een gestructureerde manier om complexe voertuiginformatie toegankelijk en interpreteerbaar te maken, terwijl het ook de basis legt voor verdere toepassingen zoals real-time monitoring en data-analyse.
 
-\section{On-board diagnostics (OBD-II)}
-\label{sec:On-board diagnostics}
-
-\subsection{Wat is OBD-II?}
 \subsection{Wat zijn PidS}
+Binnen het OBD-II systeem wordt gebruikgemaakt van zogenaamde Parameter IDs (PIDs), die fungeren als gestandaardiseerde identificatiecodes voor specifieke voertuigparameters. Deze codes maken het mogelijk om gericht informatie op te vragen uit de elektronische regeleenheid (ECU) van een voertuig. Elke PID komt overeen met één bepaalde meetwaarde of sensorinformatie, zoals het motortoerental, de voertuigsnelheid of de temperatuur van de motor. Door het gebruik van deze unieke codes kan een externe toepassing of diagnosetool exact aangeven welke data gewenst is.
+PIDs vormen daarmee een essentieel onderdeel van de communicatie tussen een voertuig en externe systemen. Ze zorgen ervoor dat interne voertuigdata op een gestructureerde en uniforme manier toegankelijk wordt gemaakt. De gegevens die via PIDs worden opgevraagd, worden door de ECU aangeleverd in een gecodeerde vorm, waarna deze verder verwerkt kan worden tot bruikbare informatie. Dit gestandaardiseerde mechanisme maakt het mogelijk om op een consistente manier voertuigdata uit te lezen, ongeacht het specifieke voertuigmodel, zolang het de OBD-II standaard ondersteunt. \autocite{mccord2011automotive}
+
 \subsection{Welke data kan je uitlezen}
+Binnen het OBD-II systeem wordt de beschikbare voertuigdata vastgelegd in gestandaardiseerde specificaties, waarvan SAE J1979 een van de belangrijkste is. Deze standaard beschrijft welke diagnostische informatie voertuigen minimaal moeten kunnen aanbieden via de OBD-interface. De beschikbare data omvat onder meer real-time sensorgegevens zoals motortoerental, voertuigsnelheid en temperatuurwaarden, evenals informatie over het brandstofsysteem en de luchtinlaat. 
+Daarnaast voorziet de standaard in toegang tot emissiegerelateerde gegevens, waaronder informatie van zuurstofsensoren en de status van emissiecontrolesystemen. Ook diagnostische gegevens, zoals foutcodes en zogenaamde freeze frame data, maken deel uit van de beschikbare informatie. Door deze standaardisatie wordt het mogelijk om op een uniforme manier uiteenlopende voertuigdata uit te lezen, ongeacht het specifieke voertuig of merk, zolang het voldoet aan de OBD-II norm. \autocite{wikipedia2026obd}
+
 \subsection{Hoe communicatie werkt}
-\subsection{Verschil met CAn-bus}
+Binnen het OBD-II systeem verloopt de communicatie tussen een diagnostisch hulpmiddel en de elektronische regeleenheid (ECU) van een voertuig volgens een request-response-mechanisme. Dit mechanisme zorgt ervoor dat data op een gestructureerde en efficiënte manier uitgelezen kan worden zonder dat de ECU continu alle gegevens hoeft te verzenden.
+Bij een request stuurt het diagnostische apparaat een specifiek verzoek naar de ECU. Dit verzoek bestaat uit een mode, die aangeeft welke soort informatie gevraagd wordt (bijvoorbeeld actuele sensordata, foutcodes of pending fault codes), en een Parameter ID (PID), die specificeert welke exacte meetwaarde of sensorinformatie moet worden teruggestuurd. Een voorbeeld van zo’n verzoek is 01 0C, waarbij Mode 01 actuele data opvraagt en PID 0C het motortoerental vertegenwoordigt.
+Na ontvangst van het request verwerkt de ECU de aanvraag en stuurt een response terug. Deze response bevat de bevestiging van de mode (bij Mode 01 is dit bijvoorbeeld 41), de PID-code en de bijbehorende databytes in gecodeerde vorm. De ruwe databytes kunnen vervolgens worden omgezet naar de werkelijke meetwaarden met behulp van gestandaardiseerde formules.
+Het request-response mechanisme maakt het mogelijk om uiteenlopende voertuigparameters uit te lezen, waaronder motorprestaties (zoals RPM en motorbelasting), brandstofsysteemdata (zoals brandstofdruk en fuel trims), lucht- en inlaatgegevens (zoals luchtdruk en mass airflow), voertuigsnelheid, gaspedaalstand en diagnostische informatie zoals foutcodes en freeze frame data. Deze gestructureerde aanpak vormt de basis voor zowel real-time monitoring als geavanceerde voertuigdiagnose. \autocite{RFWirelessWorld2026}
+
+\subsection{Verschil met Can-bus}
 
 \section{Beperkingen van OBD-II}
 \label{sec:Beperkingen van OBD-II}
