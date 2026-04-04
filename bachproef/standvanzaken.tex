@@ -16,74 +16,72 @@ Na het lezen van dit hoofdstuk moet je een goed begrip hebben van wat OBD-II inh
 \label{sec:On-board diagnostics}
 
 OBD-II, oftewel On-Board Diagnostics, tweede generatie, is een gestandaardiseerd systeem dat moderne voertuigen gebruiken om informatie over de werking van het voertuig en de staat van diverse systemen te verzamelen en te rapporteren. Het is een doorontwikkeling van OBD-I, dat beperkt en vaak merk-specifiek was. OBD-II werd verplicht voor alle voertuigen in de VS vanaf 1996 en biedt een universele standaard die voertuigfabrikanten moeten volgen.
-
 Het systeem bestaat uit sensoren, actuatoren en een centrale computer (ECU – Electronic Control Unit) die voortdurend data verzamelt over belangrijke componenten zoals de motor, emissiesystemen, brandstofinjectie en het brandstof-luchtmengsel. Wanneer er een afwijking wordt gedetecteerd, slaat het systeem foutcodes op die via een gestandaardiseerde connector (meestal een 16-pins OBD-II-poort) uitgelezen kunnen worden. Deze foutcodes – ook wel DTC’s (Diagnostic Trouble Codes) genoemd – zijn uniform gedefinieerd, waardoor tools zoals scanners en software deze kunnen interpreteren, onafhankelijk van het automerk.
-
 Volgens \textcite{mccord2011automotive} biedt OBD-II niet alleen de mogelijkheid om foutcodes uit te lezen, maar ook om real-time voertuigdata te monitoren. Voorbeelden hiervan zijn motortoerental (RPM), voertuig- en motortemperatuur, luchtstroom, brandstofverbruik en snelheid. Deze data maakt het mogelijk om voertuigen efficiënter te diagnosticeren, onderhoud te plannen en prestaties te optimaliseren.
-
 OBD-II is dus zowel een diagnostisch hulpmiddel voor monteurs als een bron van waardevolle data voor ontwikkelaars van voertuigsoftware, fleet management en telematica. Het biedt een gestructureerde manier om complexe voertuiginformatie toegankelijk en interpreteerbaar te maken, terwijl het ook de basis legt voor verdere toepassingen zoals real-time monitoring en data-analyse.
 
 \section{On-board diagnostics (OBD-II)}
 \label{sec:On-board diagnostics}
-Wat is obd-II \\
-Wat zijn PidS \\
-Welke data kan je uitlezen \\
-Hoe communicatie werkt \\
-Verschil met CAn-bus \\
+
+\subsection{Wat is OBD-II?}
+\subsection{Wat zijn PidS}
+\subsection{Welke data kan je uitlezen}
+\subsection{Hoe communicatie werkt}
+\subsection{Verschil met CAn-bus}
 
 \section{Beperkingen van OBD-II}
 \label{sec:Beperkingen van OBD-II}
-Adapter afhankelijkheid \\
-Updatefrequentie \\
-Request response \\
-Datakwaliteit \\
-Verschil tussen voertuigtypes \\
+\subsection{Adapter afhankelijkheid}
+\subsection{Updatefrequentie}
+\subsection{Request response}
+\subsection{Datakwaliteit}
+\subsection{Verschil tussen voertuigtypes}
 
 \section{Real-time data-architecturen}
 \label{sec:Real-time data-architecturen}
-Wat is real time data processing \\
-Verschil tussen polling en event-driven \\
-Flow van data (voertuig -> backend -> frontend) \\
+\subsection{Wat is real time data processing}
+\subsection{Verschil tussen polling en event-driven}
+\subsection{Flow van data (voertuig -> backend -> frontend)}
 
-Extra? \\
+\subsubsection{Extra?}
 event driven architecturen \\
 data streams \\
 latentie en throughput \\
 
 \section{Streamingtechnologieën}
 \label{sec:Streamingtechnologieën}
-Websockets \\
-MQTT \\
-Server-sent events \\
-(Hoe het werkt, voordelen, nadelen, use cases) \\
+(Hoe het werkt, voordelen, nadelen, use cases)
+\subsection{Websockets}
+\subsection{MQTT}
+\subsection{Server-sent events}
 
 \section{Simulatie van voertuigdata}
 \label{sec:Simulatie van voertuigdata}
-Waarom simuleren \\
-Soorten (simuleerte data vs reële logs) \\
-Waarvoor gebruiken (performantie, stress testing, reproduceerbaarheid) \\
+\subsection{Waarom simuleren}
+\subsection{Soorten (simuleerte data vs reële logs)}
+\subsection{Waarvoor gebruiken (performantie, stress testing, reproduceerbaarheid)}
 
 \section{Visualisatie van real-time data}
 \label{sec:Visualisatie van real-time data}
-Waarom visualiseren \\
-Verschillende soorten visualisaties (grafieken, dashboards, alerts, gauges) \\
-Problematiek van real-time visualisatie (latentie, updatefrequentie, datavolume) \\
+\subsection{Waarom visualiseren}
+\subsection{Verschillende soorten visualisaties (grafieken, dashboards, alerts, gauges)}
+\subsection{Problematiek van real-time visualisatie (latentie, updatefrequentie, datavolume)}
 
-Extra? \\
+\subsubsection{Extra?}
 data aggregatie en filtering \\
 client-side vs server-side rendering \\
 libraries en tools \\
 
 \section{Performantie en schaalbaarheid}
 \label{sec:Performantie en schaalbaarheid}
-Wat is performantie en schaalbaarheid \\
-Bottlenecks \\
+\subsection{Wat is performantie en schaalbaarheid}
+\subsection{Bottlenecks}
 
 \section{Vergelijkende evaluatie}
 \label{sec:Vergelijkende evaluatie}
-Wat andere studies doen \\
-Wat ontbreekt  \\
-Mijn aanpak en bijdrage \\
+\subsection{Wat andere studies doen}
+\subsection{Wat ontbreekt  }
+\subsection{Mijn aanpak en bijdrage }
 
 
 \section{On-board diagnostics (OBD-II)}
