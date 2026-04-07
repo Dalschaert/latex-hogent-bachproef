@@ -6,7 +6,6 @@
 % bijzonder aan wat de link is met het vorige en volgende hoofdstuk.
 
 % Pas na deze inleidende paragraaf komt de eerste sectiehoofding.
-Test
 
 Om een helder beeld te geven van wat OBD-II inhoudt en welke mogelijkheden het biedt, wordt in dit hoofdstuk een uitgebreide toelichting gegeven over dit onderwerp. Vervolgens wordt besproken welke technieken en methodes gebruikt kunnen worden om deze data op een performante en gebruiksvriendelijke manier weer te geven.
 
@@ -23,27 +22,53 @@ OBD-II is dus zowel een diagnostisch hulpmiddel voor monteurs als een bron van w
 
 \subsection{Wat zijn PidS}
 Binnen het OBD-II systeem wordt gebruikgemaakt van zogenaamde Parameter IDs (PIDs), die fungeren als gestandaardiseerde identificatiecodes voor specifieke voertuigparameters. Deze codes maken het mogelijk om gericht informatie op te vragen uit de elektronische regeleenheid (ECU) van een voertuig. Elke PID komt overeen met één bepaalde meetwaarde of sensorinformatie, zoals het motortoerental, de voertuigsnelheid of de temperatuur van de motor. Door het gebruik van deze unieke codes kan een externe toepassing of diagnosetool exact aangeven welke data gewenst is.
-PIDs vormen daarmee een essentieel onderdeel van de communicatie tussen een voertuig en externe systemen. Ze zorgen ervoor dat interne voertuigdata op een gestructureerde en uniforme manier toegankelijk wordt gemaakt. De gegevens die via PIDs worden opgevraagd, worden door de ECU aangeleverd in een gecodeerde vorm, waarna deze verder verwerkt kan worden tot bruikbare informatie. Dit gestandaardiseerde mechanisme maakt het mogelijk om op een consistente manier voertuigdata uit te lezen, ongeacht het specifieke voertuigmodel, zolang het de OBD-II standaard ondersteunt. \autocite{mccord2011automotive}
+PIDs vormen daarmee een essentieel onderdeel van de communicatie tussen een voertuig en externe systemen. Ze zorgen ervoor dat interne voertuigdata op een gestructureerde en uniforme manier toegankelijk wordt gemaakt. De gegevens die via PIDs worden opgevraagd, worden door de ECU aangeleverd in een gecodeerde vorm, waarna deze verder verwerkt kan worden tot bruikbare informatie. Dit gestandaardiseerde mechanisme maakt het mogelijk om op een consistente manier voertuigdata uit te lezen, ongeacht het specifieke voertuigmodel, zolang het de OBD-II standaard ondersteunt \autocite{mccord2011automotive}.
 
 \subsection{Welke data kan je uitlezen}
 Binnen het OBD-II systeem wordt de beschikbare voertuigdata vastgelegd in gestandaardiseerde specificaties, waarvan SAE J1979 een van de belangrijkste is. Deze standaard beschrijft welke diagnostische informatie voertuigen minimaal moeten kunnen aanbieden via de OBD-interface. De beschikbare data omvat onder meer real-time sensorgegevens zoals motortoerental, voertuigsnelheid en temperatuurwaarden, evenals informatie over het brandstofsysteem en de luchtinlaat. 
-Daarnaast voorziet de standaard in toegang tot emissiegerelateerde gegevens, waaronder informatie van zuurstofsensoren en de status van emissiecontrolesystemen. Ook diagnostische gegevens, zoals foutcodes en zogenaamde freeze frame data, maken deel uit van de beschikbare informatie. Door deze standaardisatie wordt het mogelijk om op een uniforme manier uiteenlopende voertuigdata uit te lezen, ongeacht het specifieke voertuig of merk, zolang het voldoet aan de OBD-II norm. \autocite{wikipedia2026obd}
+Daarnaast voorziet de standaard in toegang tot emissiegerelateerde gegevens, waaronder informatie van zuurstofsensoren en de status van emissiecontrolesystemen. Ook diagnostische gegevens, zoals foutcodes en zogenaamde freeze frame data, maken deel uit van de beschikbare informatie. Door deze standaardisatie wordt het mogelijk om op een uniforme manier uiteenlopende voertuigdata uit te lezen, ongeacht het specifieke voertuig of merk, zolang het voldoet aan de OBD-II norm \autocite{wikipedia2026obd}.
 
 \subsection{Hoe communicatie werkt}
 Binnen het OBD-II systeem verloopt de communicatie tussen een diagnostisch hulpmiddel en de elektronische regeleenheid (ECU) van een voertuig volgens een request-response-mechanisme. Dit mechanisme zorgt ervoor dat data op een gestructureerde en efficiënte manier uitgelezen kan worden zonder dat de ECU continu alle gegevens hoeft te verzenden.
 Bij een request stuurt het diagnostische apparaat een specifiek verzoek naar de ECU. Dit verzoek bestaat uit een mode, die aangeeft welke soort informatie gevraagd wordt (bijvoorbeeld actuele sensordata, foutcodes of pending fault codes), en een Parameter ID (PID), die specificeert welke exacte meetwaarde of sensorinformatie moet worden teruggestuurd. Een voorbeeld van zo’n verzoek is 01 0C, waarbij Mode 01 actuele data opvraagt en PID 0C het motortoerental vertegenwoordigt.
 Na ontvangst van het request verwerkt de ECU de aanvraag en stuurt een response terug. Deze response bevat de bevestiging van de mode (bij Mode 01 is dit bijvoorbeeld 41), de PID-code en de bijbehorende databytes in gecodeerde vorm. De ruwe databytes kunnen vervolgens worden omgezet naar de werkelijke meetwaarden met behulp van gestandaardiseerde formules.
-Het request-response mechanisme maakt het mogelijk om uiteenlopende voertuigparameters uit te lezen, waaronder motorprestaties (zoals RPM en motorbelasting), brandstofsysteemdata (zoals brandstofdruk en fuel trims), lucht- en inlaatgegevens (zoals luchtdruk en mass airflow), voertuigsnelheid, gaspedaalstand en diagnostische informatie zoals foutcodes en freeze frame data. Deze gestructureerde aanpak vormt de basis voor zowel real-time monitoring als geavanceerde voertuigdiagnose. \autocite{RFWirelessWorld2026}
+Het request-response mechanisme maakt het mogelijk om uiteenlopende voertuigparameters uit te lezen, waaronder motorprestaties (zoals RPM en motorbelasting), brandstofsysteemdata (zoals brandstofdruk en fuel trims), lucht- en inlaatgegevens (zoals luchtdruk en mass airflow), voertuigsnelheid, gaspedaalstand en diagnostische informatie zoals foutcodes en freeze frame data. Deze gestructureerde aanpak vormt de basis voor zowel real-time monitoring als geavanceerde voertuigdiagnose \autocite{RFWirelessWorld2026}.
 
 \subsection{Verschil met Can-bus}
+Hoewel OBD-II en CAN-bus vaak samen voorkomen binnen voertuignetwerken, vervullen ze een verschillende rol. OBD-II is een diagnostisch systeem dat gestandaardiseerde toegang biedt tot voertuigdata, voornamelijk voor het uitlezen van sensorgegevens en foutcodes. CAN-bus (Controller Area Network) daarentegen is een communicatieprotocol dat gebruikt wordt voor de interne communicatie tussen verschillende elektronische regeleenheden (ECU’s) in het voertuig. 
+CAN-bus vormt dus de onderliggende infrastructuur, terwijl OBD-II deze data op een uniforme manier beschikbaar maakt voor externe toepassingen \autocite{CSSElectronicsCANBus2025}.
+In dit onderzoek wordt gekozen voor OBD-II omdat het een gestandaardiseerde en breed ondersteunde interface biedt om voertuigdata uit te lezen, onafhankelijk van het specifieke merk of model. In tegenstelling tot directe toegang tot CAN-bus, waarvoor vaak voertuigspecifieke kennis vereist is, laat OBD-II toe om op een toegankelijke en consistente manier relevante diagnostische en real-time data te verzamelen. Hierdoor is het bijzonder geschikt voor toepassingen zoals data-analyse en webgebaseerde visualisatie.
+
 
 \section{Beperkingen van OBD-II}
 \label{sec:Beperkingen van OBD-II}
+Hoewel OBD-II een gestandaardiseerde methode biedt om voertuigdata uit te lezen, zijn er verschillende beperkingen die invloed hebben op de prestaties, nauwkeurigheid en toepasbaarheid van het systeem. Deze beperkingen komen duidelijk naar voren in wetenschappelijk onderzoek rond OBD-II-gebaseerde systemen.
+
 \subsection{Adapter afhankelijkheid}
+Het gebruik van OBD-II vereist een externe interface (bijvoorbeeld een ELM327-adapter) om communicatie met de ECU mogelijk te maken. In onderzoek wordt aangetoond dat dergelijke systemen afhankelijk zijn van externe hardware en software om data te verzamelen en te interpreteren, wat de betrouwbaarheid en prestaties van het systeem beïnvloedt.  
+Daarnaast benadrukken studies dat OBD-II toepassingen vaak gebruikmaken van goedkope en eenvoudig te implementeren oplossingen (zoals Bluetooth-adapters), wat weliswaar toegankelijk is, maar ook beperkingen introduceert op vlak van stabiliteit en nauwkeurigheid \autocite{Rybitskyi2023}.
+
 \subsection{Updatefrequentie}
+Een belangrijke beperking van OBD-II is de lage updatefrequentie van data. Onderzoek toont aan dat OBD-II systemen typisch werken met lage pollingfrequenties (ongeveer 1–10 Hz), wat aanzienlijk lager is dan systemen zoals ADAS die real-time data vereisen met veel hogere frequenties.  
+Dit komt doordat OBD-II gebaseerd is op een vraaggestuurde architectuur, waarbij elke parameter afzonderlijk moet worden opgevraagd. Hierdoor is het moeilijk om snel veranderende signalen accuraat te monitoren \autocite{Pmc2025}.
+
 \subsection{Request response}
+De communicatie binnen OBD-II is gebaseerd op een request-response mechanisme, waarbij data enkel beschikbaar is na een expliciet verzoek. Dit zorgt voor extra vertraging en beperkt de mogelijkheid tot continue datastromen.  
+Volgens onderzoek wordt deze architectuur gekenmerkt door “ECU polling frequencies” en “request intervals” die een directe impact hebben op de consistentie en snelheid van data-acquisitie.  
+Hierdoor is OBD-II minder geschikt voor toepassingen die real-time en continue monitoring vereisen.
+
 \subsection{Datakwaliteit}
+De kwaliteit van OBD-II data is niet altijd gegarandeerd. Wetenschappelijke studies tonen aan dat sensorgegevens kunnen worden beïnvloed door ruis, fouten en latentie. In sommige gevallen kunnen sensoren zelfs significante afwijkingen vertonen, wat de betrouwbaarheid van de data vermindert.  
+Daarnaast wordt OBD-II data vaak verwerkt of gefilterd door de ECU, waardoor deze niet noodzakelijk een directe representatie is van de ruwe sensormetingen \autocite{Pmc2025}.
+
 \subsection{Verschil tussen voertuigtypes}
+Hoewel OBD-II gestandaardiseerd is, bestaan er significante verschillen tussen voertuigen. Onderzoek wijst op problemen zoals “parameter heterogeneity” en fabrikant-specifieke implementaties, waardoor niet alle data uniform beschikbaar is.  
+Bovendien ondersteunen niet alle voertuigen dezelfde protocollen of parameters, wat de interoperabiliteit en generaliseerbaarheid van OBD-II toepassingen beperkt \autocite{Rybitskyi2023}.
+
+\subsection{Elektrische voertuigen}
+OBD-II is oorspronkelijk ontwikkeld voor voertuigen met verbrandingsmotoren, voornamelijk om emissies te controleren. Voor elektrische voertuigen geldt deze verplichting niet, waardoor de standaard OBD-II-functionaliteit meestal ontbreekt. Moderne EV's gebruiken in plaats daarvan vaak eigen, fabrikant-specifieke protocollen zoals UDS om diagnostische data uit te wisselen. 
+Dit maakt het uitlezen van voertuigen met OBD-II in de traditionele zin vaak onmogelijk, tenzij deze protocollen eerst via reverse engineering zijn achterhaald \autocite{CSSElectronicsOBD2025}.
+
 
 \section{Real-time data-architecturen}
 \label{sec:Real-time data-architecturen}
