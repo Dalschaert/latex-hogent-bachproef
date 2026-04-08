@@ -103,16 +103,42 @@ Een goed ontworpen real-time systeem streeft naar een lage latentie en een hoge 
 
 \section{Streamingtechnologieën}
 \label{sec:Streamingtechnologieën}
-(Hoe het werkt, voordelen, nadelen, use cases)
-\subsection{Websockets}
+Streamingtechnologieën maken het mogelijk om data continu en in real-time te verzenden tussen systemen. In tegenstelling tot traditionele request-response communicatie, waarbij data enkel wordt verzonden na een expliciet verzoek, zorgen streamingtechnologieën ervoor dat gegevens onmiddellijk worden doorgestuurd zodra ze beschikbaar zijn. Dit resulteert in lagere latentie en een efficiëntere datastroom, wat essentieel is voor toepassingen zoals real-time dashboards en voertuigmonitoring.
+Volgens \textcite{Kreps2011} vormen streamingplatformen de basis van moderne data-architecturen, waarbij continue datastromen verwerkt worden met minimale vertraging. De keuze van een specifieke streamingtechnologie hangt af van factoren zoals schaalbaarheid, latency-eisen en netwerkoverhead.
+
+\subsection{WebSockets}
+WebSockets zijn een communicatietechnologie die een persistente, bidirectionele verbinding mogelijk maakt tussen client en server. In tegenstelling tot HTTP, waarbij voor elke request een nieuwe verbinding wordt opgezet, blijft een WebSocket-verbinding open, waardoor data in beide richtingen kan worden verzonden zonder extra overhead.
+Dit maakt WebSockets bijzonder geschikt voor real-time toepassingen zoals live dashboards, chatapplicaties en voertuigmonitoring. Door de lage latency en continue verbinding kunnen updates vrijwel onmiddellijk worden doorgestuurd \autocite{RFC6455}.
+Een nadeel van WebSockets is dat ze meer serverresources kunnen vereisen, aangezien verbindingen open blijven. Daarnaast kunnen ze complexer zijn om te implementeren en te schalen in vergelijking met eenvoudige HTTP-gebaseerde oplossingen.
+
 \subsection{MQTT}
-\subsection{Server-sent events}
+MQTT (Message Queuing Telemetry Transport) is een lichtgewicht publish-subscribe protocol dat ontworpen is voor communicatie in omgevingen met beperkte bandbreedte en resources. In tegenstelling tot request-response systemen werkt MQTT met een broker die berichten ontvangt van publishers en doorstuurt naar subscribers.
+Dit maakt MQTT zeer geschikt voor Internet of Things (IoT) toepassingen, waaronder voertuigdata, waarbij sensoren continu data genereren. Het protocol is efficiënt in gebruik en ondersteunt asynchrone communicatie, wat resulteert in een lage netwerkbelasting en goede schaalbaarheid \autocite{MQTT2019}.
+Een nadeel van MQTT is dat het afhankelijk is van een broker, wat een extra component toevoegt aan de architectuur. Daarnaast kan de betrouwbaarheid afhangen van de configuratie van Quality of Service (QoS)-niveaus.
+
+\subsection{Server-Sent Events}
+Server-Sent Events (SSE) is een technologie waarbij een server continu updates naar een client kan sturen via een enkele HTTP-verbinding. In tegenstelling tot WebSockets is SSE unidirectioneel, wat betekent dat data enkel van server naar client wordt gestuurd.
+SSE is eenvoudiger te implementeren dan WebSockets en maakt gebruik van standaard HTTP, wat zorgt voor goede compatibiliteit met bestaande infrastructuur. Het is geschikt voor toepassingen waarbij enkel server-updates nodig zijn, zoals notificaties of live dashboards \autocite{W3CEventSource}.
+Een beperking van SSE is dat het geen bidirectionele communicatie ondersteunt, waardoor het minder flexibel is voor complexere toepassingen.
+
 
 \section{Simulatie van voertuigdata}
 \label{sec:Simulatie van voertuigdata}
+
 \subsection{Waarom simuleren}
-\subsection{Soorten (simuleerte data vs reële logs)}
+Simulatie van voertuigdata speelt een belangrijke rol binnen de ontwikkeling en evaluatie van real-time systemen. In veel gevallen is het niet praktisch of haalbaar om continu real-world data te verzamelen, bijvoorbeeld door beperkingen in tijd, kosten of beschikbaarheid van voertuigen. Simulatie biedt de mogelijkheid om gecontroleerde datasets te genereren die gebruikt kunnen worden voor testing, ontwikkeling en validatie van systemen.
+Daarnaast maakt simulatie het mogelijk om specifieke scenario’s te creëren, zoals extreme rijomstandigheden of foutgevallen, die moeilijk reproduceerbaar zijn in de praktijk. Volgens \textcite{Pmc2025} wordt gesimuleerde data vaak gebruikt om systemen te trainen en te evalueren wanneer real-world data beperkt of moeilijk toegankelijk is.
+
+\subsection{Soorten (gesimuleerde data vs reële logs)}
+Binnen voertuigdata kan een onderscheid gemaakt worden tussen volledig gesimuleerde data en reële logs. Gesimuleerde data wordt kunstmatig gegenereerd, vaak op basis van modellen of aannames over voertuiggedrag. Dit type data is flexibel en kan eenvoudig aangepast worden aan specifieke testscenario’s.
+Reële logs daarentegen bestaan uit data die effectief verzameld werd uit voertuigen, bijvoorbeeld via OBD-II systemen. Deze data weerspiegelt het werkelijke gedrag van voertuigen en sensoren, inclusief ruis, fouten en variaties. Zoals aangetoond door \textcite{RIMPAS202055}, kunnen dergelijke datasets gebruikt worden om voertuigprestaties en parameters zoals brandstofverbruik te analyseren op basis van echte metingen.
+Een combinatie van beide types wordt vaak gebruikt: gesimuleerde data voor schaalbaarheid en scenario-testing, en reële logs voor validatie en realisme.
+
 \subsection{Waarvoor gebruiken (performantie, stress testing, reproduceerbaarheid)}
+Simulatie van voertuigdata wordt in verschillende contexten toegepast. Een belangrijk gebruik is performantie-evaluatie, waarbij systemen getest worden op hun vermogen om grote hoeveelheden data efficiënt te verwerken. Door gesimuleerde datastromen te genereren kan men nagaan hoe een systeem presteert onder verschillende belastingniveaus.
+Daarnaast wordt simulatie gebruikt voor stress testing, waarbij extreme omstandigheden worden nagebootst om de robuustheid van een systeem te evalueren. Dit kan bijvoorbeeld betrekking hebben op piekbelasting of netwerkvertragingen.
+Ten slotte speelt simulatie een belangrijke rol in reproduceerbaarheid. Door gebruik te maken van gecontroleerde datasets kunnen experimenten consistent herhaald worden, wat essentieel is binnen wetenschappelijk onderzoek. Dit maakt het mogelijk om resultaten te valideren en systemen objectief te vergelijken \autocite{Pmc2025}.
+
 
 \section{Visualisatie van real-time data}
 \label{sec:Visualisatie van real-time data}
