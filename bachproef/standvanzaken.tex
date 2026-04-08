@@ -44,42 +44,62 @@ In dit onderzoek wordt gekozen voor OBD-II omdat het een gestandaardiseerde en b
 \label{sec:Beperkingen van OBD-II}
 Hoewel OBD-II een gestandaardiseerde methode biedt om voertuigdata uit te lezen, zijn er verschillende beperkingen die invloed hebben op de prestaties, nauwkeurigheid en toepasbaarheid van het systeem. Deze beperkingen komen duidelijk naar voren in wetenschappelijk onderzoek rond OBD-II-gebaseerde systemen.
 
-\subsection{Adapter afhankelijkheid}
+\subsubsection{Adapter afhankelijkheid}
 Het gebruik van OBD-II vereist een externe interface (bijvoorbeeld een ELM327-adapter) om communicatie met de ECU mogelijk te maken. In onderzoek wordt aangetoond dat dergelijke systemen afhankelijk zijn van externe hardware en software om data te verzamelen en te interpreteren, wat de betrouwbaarheid en prestaties van het systeem beïnvloedt.  
 Daarnaast benadrukken studies dat OBD-II toepassingen vaak gebruikmaken van goedkope en eenvoudig te implementeren oplossingen (zoals Bluetooth-adapters), wat weliswaar toegankelijk is, maar ook beperkingen introduceert op vlak van stabiliteit en nauwkeurigheid \autocite{Rybitskyi2023}.
 
-\subsection{Updatefrequentie}
+\subsubsection{Updatefrequentie}
 Een belangrijke beperking van OBD-II is de lage updatefrequentie van data. Onderzoek toont aan dat OBD-II systemen typisch werken met lage pollingfrequenties (ongeveer 1–10 Hz), wat aanzienlijk lager is dan systemen zoals ADAS die real-time data vereisen met veel hogere frequenties.  
 Dit komt doordat OBD-II gebaseerd is op een vraaggestuurde architectuur, waarbij elke parameter afzonderlijk moet worden opgevraagd. Hierdoor is het moeilijk om snel veranderende signalen accuraat te monitoren \autocite{Pmc2025}.
 
-\subsection{Request response}
+\subsubsection{Request response}
 De communicatie binnen OBD-II is gebaseerd op een request-response mechanisme, waarbij data enkel beschikbaar is na een expliciet verzoek. Dit zorgt voor extra vertraging en beperkt de mogelijkheid tot continue datastromen.  
 Volgens onderzoek wordt deze architectuur gekenmerkt door “ECU polling frequencies” en “request intervals” die een directe impact hebben op de consistentie en snelheid van data-acquisitie.  
 Hierdoor is OBD-II minder geschikt voor toepassingen die real-time en continue monitoring vereisen.
 
-\subsection{Datakwaliteit}
+\subsubsection{Datakwaliteit}
 De kwaliteit van OBD-II data is niet altijd gegarandeerd. Wetenschappelijke studies tonen aan dat sensorgegevens kunnen worden beïnvloed door ruis, fouten en latentie. In sommige gevallen kunnen sensoren zelfs significante afwijkingen vertonen, wat de betrouwbaarheid van de data vermindert.  
 Daarnaast wordt OBD-II data vaak verwerkt of gefilterd door de ECU, waardoor deze niet noodzakelijk een directe representatie is van de ruwe sensormetingen \autocite{Pmc2025}.
 
-\subsection{Verschil tussen voertuigtypes}
+\subsubsection{Verschil tussen voertuigtypes}
 Hoewel OBD-II gestandaardiseerd is, bestaan er significante verschillen tussen voertuigen. Onderzoek wijst op problemen zoals “parameter heterogeneity” en fabrikant-specifieke implementaties, waardoor niet alle data uniform beschikbaar is.  
 Bovendien ondersteunen niet alle voertuigen dezelfde protocollen of parameters, wat de interoperabiliteit en generaliseerbaarheid van OBD-II toepassingen beperkt \autocite{Rybitskyi2023}.
 
-\subsection{Elektrische voertuigen}
+\subsubsection{Elektrische voertuigen}
 OBD-II is oorspronkelijk ontwikkeld voor voertuigen met verbrandingsmotoren, voornamelijk om emissies te controleren. Voor elektrische voertuigen geldt deze verplichting niet, waardoor de standaard OBD-II-functionaliteit meestal ontbreekt. Moderne EV's gebruiken in plaats daarvan vaak eigen, fabrikant-specifieke protocollen zoals UDS om diagnostische data uit te wisselen. 
 Dit maakt het uitlezen van voertuigen met OBD-II in de traditionele zin vaak onmogelijk, tenzij deze protocollen eerst via reverse engineering zijn achterhaald \autocite{CSSElectronicsOBD2025}.
 
 
 \section{Real-time data-architecturen}
 \label{sec:Real-time data-architecturen}
-\subsection{Wat is real time data processing}
-\subsection{Verschil tussen polling en event-driven}
-\subsection{Flow van data (voertuig -> backend -> frontend)}
 
-\subsubsection{Extra?}
-event driven architecturen \\
-data streams \\
-latentie en throughput \\
+\subsection{Wat is real-time data processing}
+Real-time data processing verwijst naar het verwerken en analyseren van data onmiddellijk nadat deze gegenereerd wordt, met minimale vertraging. In tegenstelling tot batchverwerking, waarbij data eerst wordt opgeslagen en later verwerkt, maakt real-time verwerking het mogelijk om direct inzichten te verkrijgen en acties te ondernemen. Binnen de context van voertuigen betekent dit dat sensordata, zoals snelheid of motortoerental, vrijwel onmiddellijk beschikbaar wordt gemaakt voor monitoring, analyse of visualisatie. Dit is essentieel voor toepassingen waarbij snelle feedback vereist is, zoals rijgedraganalyse of live dashboards. Zoals beschreven door \textcite{Pmc2025}, speelt real-time verwerking een cruciale rol in moderne datagedreven voertuigtoepassingen.
+
+\subsection{Verschil tussen polling en event-driven}
+Binnen real-time systemen bestaan er verschillende methoden om data te verkrijgen, waarvan polling en event-driven de belangrijkste zijn.  
+Bij polling wordt data actief opgevraagd door een systeem op vaste tijdsintervallen. Dit betekent dat een applicatie herhaaldelijk verzoeken stuurt om nieuwe gegevens te verkrijgen. Deze methode wordt vaak gebruikt bij OBD-II, waar parameters via een request-response mechanisme worden opgevraagd. Hoewel polling eenvoudig te implementeren is, kan het leiden tot inefficiënt gebruik van middelen en hogere latency, aangezien data enkel beschikbaar is wanneer er een request wordt uitgevoerd \autocite{Rybitskyi2023}.  
+Bij een event-driven architectuur wordt data automatisch verzonden wanneer er een verandering of gebeurtenis optreedt. In dit model hoeven systemen geen herhaalde verzoeken te sturen, wat resulteert in een efficiëntere en snellere gegevensoverdracht. Dit wordt bijvoorbeeld toegepast in CAN-bus systemen, waar berichten continu worden uitgezonden zonder expliciete verzoeken. Hierdoor is event-driven communicatie beter geschikt voor toepassingen die een hoge updatefrequentie en lage latency vereisen, zoals ook aangetoond wordt door \textcite{SageJournals2013}.
+
+\subsection{Flow van data}
+In een typische real-time data-architectuur verloopt de datastroom in verschillende stappen, van het voertuig naar de eindgebruiker.  
+Eerst wordt data gegenereerd door sensoren en elektronische regeleenheden (ECU’s) in het voertuig. Deze data wordt vervolgens via een interface, zoals een OBD-II adapter, uitgelezen en doorgestuurd naar een extern systeem.  
+Vervolgens wordt de data naar een backend gestuurd, waar deze verwerkt, gefilterd en eventueel opgeslagen wordt. De backend kan ook extra logica bevatten, zoals aggregatie, foutdetectie of analyse van de gegevens.  
+Ten slotte wordt de verwerkte data doorgestuurd naar een frontend applicatie, bijvoorbeeld een webinterface of mobiele app. Hier wordt de data visueel weergegeven in de vorm van grafieken, dashboards of real-time indicatoren, zodat de gebruiker inzicht krijgt in de toestand van het voertuig.  
+Dergelijke architecturen worden vaak geïmplementeerd met behulp van streamingplatformen en event-driven systemen, waarbij data continu wordt verwerkt en doorgestuurd met minimale vertraging \autocite{Kreps2011}.
+
+\subsubsection{Event-driven architecturen}
+Event-driven architecturen vormen een belangrijk paradigma binnen real-time systemen. In tegenstelling tot polling-gebaseerde systemen, waarbij data op vaste tijdsintervallen wordt opgevraagd, reageren event-driven systemen op gebeurtenissen die automatisch worden gegenereerd wanneer data verandert. Dit zorgt voor een efficiëntere verwerking en vermindert onnodige communicatie tussen componenten.
+Volgens \textcite{Kreps2011} maken event-driven systemen het mogelijk om schaalbare en gedistribueerde architecturen te ontwikkelen waarin data continu verwerkt wordt. Dit is vooral relevant in toepassingen met hoge datavolumes, zoals voertuigsystemen, waar snelle en efficiënte communicatie cruciaal is.
+
+\subsubsection{Data streams}
+Data streams verwijzen naar continue stromen van data die in real-time worden gegenereerd en verwerkt. In tegenstelling tot batchverwerking, waarbij data eerst wordt opgeslagen en later verwerkt, wordt data in een streamingcontext onmiddellijk doorgestuurd en geanalyseerd.
+Streamingplatformen maken het mogelijk om deze datastromen op een schaalbare en betrouwbare manier te verwerken. Dit is essentieel in toepassingen zoals voertuigmonitoring, waar sensordata continu wordt gegenereerd en direct beschikbaar moet zijn voor analyse of visualisatie \autocite{Kreps2011}.
+
+\subsubsection{Latentie en throughput}
+Latentie en throughput zijn twee belangrijke prestatie-indicatoren binnen real-time data-architecturen. Latentie verwijst naar de tijd die nodig is om data van bron naar bestemming te verwerken, terwijl throughput de hoeveelheid data beschrijft die per tijdseenheid verwerkt kan worden.
+Een goed ontworpen real-time systeem streeft naar een lage latentie en een hoge throughput om snelle en efficiënte dataverwerking te garanderen. In de context van voertuigdata, zoals bij OBD-II systemen, hebben deze factoren een directe impact op de bruikbaarheid van real-time toepassingen, bijvoorbeeld bij live monitoring of rijgedraganalyse \autocite{Pmc2025}.
+
 
 \section{Streamingtechnologieën}
 \label{sec:Streamingtechnologieën}
