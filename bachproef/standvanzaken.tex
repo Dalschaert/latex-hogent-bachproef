@@ -16,13 +16,16 @@ Na het lezen van dit hoofdstuk moet je een goed begrip hebben van wat OBD-II inh
 
 \subsection{Wat is OBD-II?}
 OBD-II, oftewel On-Board Diagnostics, tweede generatie, is een gestandaardiseerd systeem dat moderne voertuigen gebruiken om informatie over de werking van het voertuig en de staat van diverse systemen te verzamelen en te rapporteren. Het is een doorontwikkeling van OBD-I, dat beperkt en vaak merk-specifiek was. OBD-II werd verplicht voor alle voertuigen in de VS vanaf 1996 en biedt een universele standaard die voertuigfabrikanten moeten volgen.
-Het systeem bestaat uit sensoren, actuatoren en een centrale computer (ECU – Electronic Control Unit) die voortdurend data verzamelt over belangrijke componenten zoals de motor, emissiesystemen, brandstofinjectie en het brandstof-luchtmengsel. Wanneer er een afwijking wordt gedetecteerd, slaat het systeem foutcodes op die via een gestandaardiseerde connector (meestal een 16-pins OBD-II-poort) uitgelezen kunnen worden. Deze foutcodes – ook wel DTC’s (Diagnostic Trouble Codes) genoemd – zijn uniform gedefinieerd, waardoor tools zoals scanners en software deze kunnen interpreteren, onafhankelijk van het automerk.
+Het systeem bestaat uit sensoren, actuatoren en een centrale computer (ECU – Electronic Control Unit) die voortdurend data verzamelt over belangrijke componenten zoals de motor, emissiesystemen, brandstofinjectie en het brandstof-luchtmengsel. Wanneer er een afwijking wordt gedetecteerd, slaat het systeem foutcodes op die via een gestandaardiseerde connector (meestal een 16-pins OBD-II-poort) uitgelezen kunnen worden. 
+Deze foutcodes – ook wel DTC’s (Diagnostic Trouble Codes) genoemd – zijn uniform gedefinieerd, waardoor tools zoals scanners en software deze kunnen interpreteren, onafhankelijk van het automerk.
 Volgens \textcite{mccord2011automotive} biedt OBD-II niet alleen de mogelijkheid om foutcodes uit te lezen, maar ook om real-time voertuigdata te monitoren. Voorbeelden hiervan zijn motortoerental (RPM), voertuig- en motortemperatuur, luchtstroom, brandstofverbruik en snelheid. Deze data maakt het mogelijk om voertuigen efficiënter te diagnosticeren, onderhoud te plannen en prestaties te optimaliseren.
 OBD-II is dus zowel een diagnostisch hulpmiddel voor monteurs als een bron van waardevolle data voor ontwikkelaars van voertuigsoftware, fleet management en telematica. Het biedt een gestructureerde manier om complexe voertuiginformatie toegankelijk en interpreteerbaar te maken, terwijl het ook de basis legt voor verdere toepassingen zoals real-time monitoring en data-analyse.
 
 \subsection{Wat zijn PidS}
-Binnen het OBD-II systeem wordt gebruikgemaakt van zogenaamde Parameter IDs (PIDs), die fungeren als gestandaardiseerde identificatiecodes voor specifieke voertuigparameters. Deze codes maken het mogelijk om gericht informatie op te vragen uit de elektronische regeleenheid (ECU) van een voertuig. Elke PID komt overeen met één bepaalde meetwaarde of sensorinformatie, zoals het motortoerental, de voertuigsnelheid of de temperatuur van de motor. Door het gebruik van deze unieke codes kan een externe toepassing of diagnosetool exact aangeven welke data gewenst is.
-PIDs vormen daarmee een essentieel onderdeel van de communicatie tussen een voertuig en externe systemen. Ze zorgen ervoor dat interne voertuigdata op een gestructureerde en uniforme manier toegankelijk wordt gemaakt. De gegevens die via PIDs worden opgevraagd, worden door de ECU aangeleverd in een gecodeerde vorm, waarna deze verder verwerkt kan worden tot bruikbare informatie. Dit gestandaardiseerde mechanisme maakt het mogelijk om op een consistente manier voertuigdata uit te lezen, ongeacht het specifieke voertuigmodel, zolang het de OBD-II standaard ondersteunt \autocite{mccord2011automotive}.
+Binnen het OBD-II systeem wordt gebruikgemaakt van zogenaamde Parameter IDs (PIDs), die fungeren als gestandaardiseerde identificatiecodes voor specifieke voertuigparameters. Deze codes maken het mogelijk om gericht informatie op te vragen uit de elektronische regeleenheid (ECU) van een voertuig. 
+Elke PID komt overeen met één bepaalde meetwaarde of sensorinformatie, zoals het motortoerental, de voertuigsnelheid of de temperatuur van de motor. Door het gebruik van deze unieke codes kan een externe toepassing of diagnosetool exact aangeven welke data gewenst is.
+PIDs vormen daarmee een essentieel onderdeel van de communicatie tussen een voertuig en externe systemen. Ze zorgen ervoor dat interne voertuigdata op een gestructureerde en uniforme manier toegankelijk wordt gemaakt. De gegevens die via PIDs worden opgevraagd, worden door de ECU aangeleverd in een gecodeerde vorm, waarna deze verder verwerkt kan worden tot bruikbare informatie. 
+Dit gestandaardiseerde mechanisme maakt het mogelijk om op een consistente manier voertuigdata uit te lezen, ongeacht het specifieke voertuigmodel, zolang het de OBD-II standaard ondersteunt \autocite{mccord2011automotive}.
 
 \subsection{Welke data kan je uitlezen}
 Binnen het OBD-II systeem wordt de beschikbare voertuigdata vastgelegd in gestandaardiseerde specificaties, waarvan SAE J1979 een van de belangrijkste is. Deze standaard beschrijft welke diagnostische informatie voertuigen minimaal moeten kunnen aanbieden via de OBD-interface. De beschikbare data omvat onder meer real-time sensorgegevens zoals motortoerental, voertuigsnelheid en temperatuurwaarden, evenals informatie over het brandstofsysteem en de luchtinlaat. 
@@ -37,7 +40,8 @@ Het request-response mechanisme maakt het mogelijk om uiteenlopende voertuigpara
 \subsection{Verschil met Can-bus}
 Hoewel OBD-II en CAN-bus vaak samen voorkomen binnen voertuignetwerken, vervullen ze een verschillende rol. OBD-II is een diagnostisch systeem dat gestandaardiseerde toegang biedt tot voertuigdata, voornamelijk voor het uitlezen van sensorgegevens en foutcodes. CAN-bus (Controller Area Network) daarentegen is een communicatieprotocol dat gebruikt wordt voor de interne communicatie tussen verschillende elektronische regeleenheden (ECU’s) in het voertuig. 
 CAN-bus vormt dus de onderliggende infrastructuur, terwijl OBD-II deze data op een uniforme manier beschikbaar maakt voor externe toepassingen \autocite{CSSElectronicsCANBus2025}.
-In dit onderzoek wordt gekozen voor OBD-II omdat het een gestandaardiseerde en breed ondersteunde interface biedt om voertuigdata uit te lezen, onafhankelijk van het specifieke merk of model. In tegenstelling tot directe toegang tot CAN-bus, waarvoor vaak voertuigspecifieke kennis vereist is, laat OBD-II toe om op een toegankelijke en consistente manier relevante diagnostische en real-time data te verzamelen. Hierdoor is het bijzonder geschikt voor toepassingen zoals data-analyse en webgebaseerde visualisatie.
+In dit onderzoek wordt gekozen voor OBD-II omdat het een gestandaardiseerde en breed ondersteunde interface biedt om voertuigdata uit te lezen, onafhankelijk van het specifieke merk of model. In tegenstelling tot directe toegang tot CAN-bus, waarvoor vaak voertuigspecifieke kennis vereist is, laat OBD-II toe om op een toegankelijke en consistente manier relevante diagnostische en real-time data te verzamelen. 
+Hierdoor is het bijzonder geschikt voor toepassingen zoals data-analyse en webgebaseerde visualisatie.
 
 
 \section{Beperkingen van OBD-II}
@@ -74,12 +78,15 @@ Dit maakt het uitlezen van voertuigen met OBD-II in de traditionele zin vaak onm
 \label{sec:Real-time data-architecturen}
 
 \subsection{Wat is real-time data processing}
-Real-time data processing verwijst naar het verwerken en analyseren van data onmiddellijk nadat deze gegenereerd wordt, met minimale vertraging. In tegenstelling tot batchverwerking, waarbij data eerst wordt opgeslagen en later verwerkt, maakt real-time verwerking het mogelijk om direct inzichten te verkrijgen en acties te ondernemen. Binnen de context van voertuigen betekent dit dat sensordata, zoals snelheid of motortoerental, vrijwel onmiddellijk beschikbaar wordt gemaakt voor monitoring, analyse of visualisatie. Dit is essentieel voor toepassingen waarbij snelle feedback vereist is, zoals rijgedraganalyse of live dashboards. Zoals beschreven door \textcite{Pmc2025}, speelt real-time verwerking een cruciale rol in moderne datagedreven voertuigtoepassingen.
+Real-time data processing verwijst naar het verwerken en analyseren van data onmiddellijk nadat deze gegenereerd wordt, met minimale vertraging. In tegenstelling tot batchverwerking, waarbij data eerst wordt opgeslagen en later verwerkt, maakt real-time verwerking het mogelijk om direct inzichten te verkrijgen en acties te ondernemen. 
+Binnen de context van voertuigen betekent dit dat sensordata, zoals snelheid of motortoerental, vrijwel onmiddellijk beschikbaar wordt gemaakt voor monitoring, analyse of visualisatie. Dit is essentieel voor toepassingen waarbij snelle feedback vereist is, zoals rijgedraganalyse of live dashboards. Zoals beschreven door \textcite{Pmc2025}, speelt real-time verwerking een cruciale rol in moderne datagedreven voertuigtoepassingen.
 
 \subsection{Verschil tussen polling en event-driven}
 Binnen real-time systemen bestaan er verschillende methoden om data te verkrijgen, waarvan polling en event-driven de belangrijkste zijn.  
-Bij polling wordt data actief opgevraagd door een systeem op vaste tijdsintervallen. Dit betekent dat een applicatie herhaaldelijk verzoeken stuurt om nieuwe gegevens te verkrijgen. Deze methode wordt vaak gebruikt bij OBD-II, waar parameters via een request-response mechanisme worden opgevraagd. Hoewel polling eenvoudig te implementeren is, kan het leiden tot inefficiënt gebruik van middelen en hogere latency, aangezien data enkel beschikbaar is wanneer er een request wordt uitgevoerd \autocite{Rybitskyi2023}.  
-Bij een event-driven architectuur wordt data automatisch verzonden wanneer er een verandering of gebeurtenis optreedt. In dit model hoeven systemen geen herhaalde verzoeken te sturen, wat resulteert in een efficiëntere en snellere gegevensoverdracht. Dit wordt bijvoorbeeld toegepast in CAN-bus systemen, waar berichten continu worden uitgezonden zonder expliciete verzoeken. Hierdoor is event-driven communicatie beter geschikt voor toepassingen die een hoge updatefrequentie en lage latency vereisen, zoals ook aangetoond wordt door \textcite{SageJournals2013}.
+Bij polling wordt data actief opgevraagd door een systeem op vaste tijdsintervallen. Dit betekent dat een applicatie herhaaldelijk verzoeken stuurt om nieuwe gegevens te verkrijgen. Deze methode wordt vaak gebruikt bij OBD-II, waar parameters via een request-response mechanisme worden opgevraagd. 
+Hoewel polling eenvoudig te implementeren is, kan het leiden tot inefficiënt gebruik van middelen en hogere latency, aangezien data enkel beschikbaar is wanneer er een request wordt uitgevoerd \autocite{Rybitskyi2023}.  
+Bij een event-driven architectuur wordt data automatisch verzonden wanneer er een verandering of gebeurtenis optreedt. In dit model hoeven systemen geen herhaalde verzoeken te sturen, wat resulteert in een efficiëntere en snellere gegevensoverdracht. 
+Dit wordt bijvoorbeeld toegepast in CAN-bus systemen, waar berichten continu worden uitgezonden zonder expliciete verzoeken. Hierdoor is event-driven communicatie beter geschikt voor toepassingen die een hoge updatefrequentie en lage latency vereisen, zoals ook aangetoond wordt door \textcite{SageJournals2013}.
 
 \subsection{Flow van data}
 In een typische real-time data-architectuur verloopt de datastroom in verschillende stappen, van het voertuig naar de eindgebruiker.  
@@ -103,7 +110,8 @@ Een goed ontworpen real-time systeem streeft naar een lage latentie en een hoge 
 
 \section{Streamingtechnologieën}
 \label{sec:Streamingtechnologieën}
-Streamingtechnologieën maken het mogelijk om data continu en in real-time te verzenden tussen systemen. In tegenstelling tot traditionele request-response communicatie, waarbij data enkel wordt verzonden na een expliciet verzoek, zorgen streamingtechnologieën ervoor dat gegevens onmiddellijk worden doorgestuurd zodra ze beschikbaar zijn. Dit resulteert in lagere latentie en een efficiëntere datastroom, wat essentieel is voor toepassingen zoals real-time dashboards en voertuigmonitoring.
+Streamingtechnologieën maken het mogelijk om data continu en in real-time te verzenden tussen systemen. In tegenstelling tot traditionele request-response communicatie, waarbij data enkel wordt verzonden na een expliciet verzoek, zorgen streamingtechnologieën ervoor dat gegevens onmiddellijk worden doorgestuurd zodra ze beschikbaar zijn. 
+Dit resulteert in lagere latentie en een efficiëntere datastroom, wat essentieel is voor toepassingen zoals real-time dashboards en voertuigmonitoring.
 Volgens \textcite{Kreps2011} vormen streamingplatformen de basis van moderne data-architecturen, waarbij continue datastromen verwerkt worden met minimale vertraging. De keuze van een specifieke streamingtechnologie hangt af van factoren zoals schaalbaarheid, latency-eisen en netwerkoverhead.
 
 \subsection{WebSockets}
@@ -142,19 +150,51 @@ Ten slotte speelt simulatie een belangrijke rol in reproduceerbaarheid. Door geb
 
 \section{Visualisatie van real-time data}
 \label{sec:Visualisatie van real-time data}
-\subsection{Waarom visualiseren}
-\subsection{Verschillende soorten visualisaties (grafieken, dashboards, alerts, gauges)}
-\subsection{Problematiek van real-time visualisatie (latentie, updatefrequentie, datavolume)}
 
-\subsubsection{Extra?}
-data aggregatie en filtering \\
-client-side vs server-side rendering \\
-libraries en tools \\
+\subsection{Waarom visualiseren}
+Visualisatie van real-time data is essentieel om complexe en snel veranderende gegevens begrijpelijk en bruikbaar te maken voor eindgebruikers. Door data visueel weer te geven, kunnen patronen, trends en afwijkingen sneller geïdentificeerd worden dan bij ruwe data. Dit is vooral belangrijk in toepassingen zoals voertuigmonitoring, waar gebruikers in één oogopslag inzicht willen krijgen in de toestand van het voertuig.
+Volgens \textcite{Pmc2025} speelt visualisatie een cruciale rol in het interpreteren van OBD-II data en het ondersteunen van beslissingen op basis van real-time informatie. Zonder visuele representatie is het moeilijk om grote hoeveelheden sensordata efficiënt te analyseren.
+
+\subsection{Verschillende soorten visualisaties (grafieken, dashboards, alerts, gauges)}
+Er bestaan verschillende vormen van visualisatie die gebruikt worden afhankelijk van de toepassing en het type data. Grafieken, zoals lijn- en staafdiagrammen, worden vaak gebruikt om trends over tijd weer te geven, bijvoorbeeld voor snelheid of motortoerental. Dashboards combineren meerdere visualisaties in één overzicht en bieden een holistisch beeld van het systeem.
+Daarnaast worden gauges (meters) gebruikt om real-time waarden intuïtief weer te geven, zoals snelheid of brandstofniveau, vaak geïnspireerd op traditionele dashboards in voertuigen. Alerts of notificaties worden ingezet om gebruikers te waarschuwen bij afwijkingen of kritieke situaties.
+Zoals aangetoond in onderzoek naar voertuigmonitoringssystemen, maken dergelijke visualisaties het mogelijk om data efficiënter te interpreteren en sneller te reageren op veranderingen \autocite{SageJournals2013}.
+
+\subsection{Problematiek van real-time visualisatie (latentie, updatefrequentie, datavolume)}
+Hoewel real-time visualisatie veel voordelen biedt, zijn er ook belangrijke uitdagingen. Een eerste probleem is latentie: vertraging tussen het moment waarop data wordt gegenereerd en wanneer deze zichtbaar is voor de gebruiker. Hoge latentie kan leiden tot verouderde informatie en vermindert de bruikbaarheid van het systeem.
+Daarnaast speelt updatefrequentie een belangrijke rol. Te frequente updates kunnen leiden tot overbelasting van het systeem en een slechte gebruikerservaring, terwijl te trage updates belangrijke veranderingen kunnen missen. Het vinden van een balans is cruciaal.
+Ten slotte vormt datavolume een uitdaging. Real-time systemen genereren vaak grote hoeveelheden data, wat problemen kan veroorzaken op vlak van opslag, verwerking en visualisatie. Volgens \textcite{Kreps2011} vereisen dergelijke systemen efficiënte streaming- en verwerkingsmechanismen om schaalbaar en performant te blijven.
+
+\subsubsection{Data-aggregatie en filtering}
+In real-time visualisaties is het vaak noodzakelijk om data te aggregeren en te filteren voordat deze wordt weergegeven. Data-aggregatie houdt in dat meerdere datapunten worden samengevoegd tot een overzichtelijk geheel, bijvoorbeeld door gemiddelden, minima of maxima te berekenen over een bepaalde tijdsperiode. 
+Filtering wordt gebruikt om irrelevante of overbodige data te verwijderen, zodat enkel de meest relevante informatie zichtbaar blijft.
+Deze technieken zijn essentieel om de hoeveelheid data beheersbaar te houden en de leesbaarheid van visualisaties te verbeteren. Zonder aggregatie en filtering kan een overmaat aan data leiden tot onduidelijke of onbruikbare dashboards. Zoals beschreven door \textcite{Kreps2011}, spelen dergelijke mechanismen een cruciale rol in het efficiënt verwerken en presenteren van grote datastromen.
+
+\subsubsection{Client-side vs server-side rendering}
+Bij het visualiseren van real-time data kan een onderscheid gemaakt worden tussen client-side en server-side rendering. Bij client-side rendering wordt de data in de browser verwerkt en weergegeven, wat zorgt voor interactieve en dynamische visualisaties. Dit is vooral geschikt voor toepassingen waarbij gebruikers direct willen interageren met de data.
+Server-side rendering daarentegen verwerkt en genereert de visualisatie op de server, waarna deze naar de client wordt gestuurd. Dit kan voordelen bieden op vlak van performantie en schaalbaarheid, vooral bij complexe berekeningen of grote datasets.
+De keuze tussen beide benaderingen hangt af van factoren zoals datavolume, latency en de complexiteit van de visualisatie. In real-time systemen wordt vaak een hybride aanpak gebruikt om zowel performantie als flexibiliteit te garanderen \autocite{Pmc2025}.
+
+\subsubsection{Libraries en tools}
+Voor de implementatie van real-time visualisaties bestaan er verschillende libraries en tools die ontwikkelaars ondersteunen. Bekende JavaScript libraries zoals Chart.js en D3.js maken het mogelijk om dynamische en interactieve grafieken te bouwen. Daarnaast worden tools zoals Grafana vaak gebruikt voor het visualiseren van real-time datastromen in dashboards.
+Deze tools bieden ondersteuning voor het verwerken van grote hoeveelheden data en het weergeven van real-time updates. Ze maken het mogelijk om complexe visualisaties relatief eenvoudig te implementeren en aan te passen aan specifieke use cases. Het gebruik van dergelijke tools draagt bij aan een efficiëntere ontwikkeling en een betere gebruikerservaring bij het visualiseren van real-time data \autocite{Kreps2011}.
+
 
 \section{Performantie en schaalbaarheid}
 \label{sec:Performantie en schaalbaarheid}
+
 \subsection{Wat is performantie en schaalbaarheid}
+Performantie en schaalbaarheid zijn essentiële eigenschappen van real-time data-architecturen. Performantie verwijst naar de efficiëntie waarmee een systeem data verwerkt en beschikbaar maakt, vaak uitgedrukt in termen van latency (vertraging) en throughput (verwerkingscapaciteit). Een performant systeem kan grote hoeveelheden data verwerken met minimale vertraging, wat cruciaal is in toepassingen waarbij real-time feedback vereist is.
+Schaalbaarheid beschrijft het vermogen van een systeem om om te gaan met een toenemende hoeveelheid data of gebruikers zonder significante prestatievermindering. Dit kan zowel horizontaal gebeuren, door extra machines of services toe te voegen, als verticaal, door bestaande infrastructuur krachtiger te maken. In moderne data-intensieve toepassingen is schaalbaarheid noodzakelijk om groeiende datastromen efficiënt te blijven verwerken.
+Zoals beschreven door \textcite{Kreps2011}, vereisen systemen die continu datastromen verwerken een architectuur die ontworpen is voor zowel hoge throughput als lage latency. Dit maakt performantie en schaalbaarheid onlosmakelijk met elkaar verbonden binnen real-time systemen.
+
 \subsection{Bottlenecks}
+Binnen real-time systemen kunnen bottlenecks ontstaan die de performantie en schaalbaarheid beperken. Een bottleneck is een component dat de totale prestaties van het systeem vertraagt doordat het niet in staat is om dezelfde verwerkingssnelheid te behalen als de rest van het systeem.
+Deze bottlenecks kunnen zich op verschillende niveaus voordoen, zoals netwerkcommunicatie, dataverwerking of opslag. Een trage netwerkverbinding kan bijvoorbeeld leiden tot verhoogde latency, terwijl inefficiënte verwerking of beperkte rekenkracht de throughput kan beperken. In systemen die werken met continue datastromen kunnen dergelijke beperkingen snel een grote impact hebben op de algemene prestaties.
+Daarnaast tonen \textcite{Dean2013} aan dat zelfs kleine vertragingen in individuele componenten een disproportioneel grote invloed kunnen hebben op de totale systeemperformantie, vooral in gedistribueerde systemen. Dit fenomeen, ook wel bekend als “tail latency”, benadrukt het belang van het minimaliseren van vertragingen in alle onderdelen van de architectuur.
+In de context van real-time voertuigdata, zoals bij OBD-II systemen, kunnen bijkomende bottlenecks ontstaan door de manier waarop data wordt opgevraagd en verwerkt. De combinatie van beperkte updatefrequenties en externe interfaces kan de snelheid en consistentie van dataverzameling beïnvloeden \autocite{Pmc2025}.
+Het identificeren en aanpakken van bottlenecks is essentieel voor het bouwen van performante en schaalbare systemen. Dit kan onder meer door het optimaliseren van dataverwerking, het gebruik van efficiënte communicatieprotocollen en het implementeren van schaalbare architecturale patronen zoals event-driven systemen.
+
 
 \section{Vergelijkende evaluatie}
 \label{sec:Vergelijkende evaluatie}
@@ -166,7 +206,8 @@ libraries en tools \\
 \section{On-board diagnostics (OBD-II)}
 \label{sec:On-board diagnosticss}
 
-On-board diagnostics (OBD) is het zelfdiagnosesysteem van een voertuig dat toelaat om de werking van emissiegerelateerde en andere elektronische systemen te monitoren. Moderne voertuigen maken gebruik van de tweede generatie van dit systeem, OBD-II, dat een gestandaardiseerde diagnose-interface definieert voor de communicatie met de elektronische regeleenheden (ECU’s). Via deze interface kan externe apparatuur voertuigdata opvragen en diagnostische informatie uitlezen. De standaardisatie omvat onder meer de fysieke diagnoseconnector, de communicatiemethoden en de structuur van de foutcodes, waardoor een diagnoseapparaat met verschillende voertuigmerken kan communiceren.
+On-board diagnostics (OBD) is het zelfdiagnosesysteem van een voertuig dat toelaat om de werking van emissiegerelateerde en andere elektronische systemen te monitoren. Moderne voertuigen maken gebruik van de tweede generatie van dit systeem, OBD-II, dat een gestandaardiseerde diagnose-interface definieert voor de communicatie met de elektronische regeleenheden (ECU’s). 
+Via deze interface kan externe apparatuur voertuigdata opvragen en diagnostische informatie uitlezen. De standaardisatie omvat onder meer de fysieke diagnoseconnector, de communicatiemethoden en de structuur van de foutcodes, waardoor een diagnoseapparaat met verschillende voertuigmerken kan communiceren.
 OBD-II werd oorspronkelijk ontwikkeld met het oog op emissiecontrole, maar wordt vandaag breed toegepast voor algemene voertuigdiagnose en data-acquisitie. De interface maakt het mogelijk om zowel actuele sensorgegevens als opgeslagen foutinformatie op te vragen. Hierdoor vormt OBD-II een toegankelijke en gestandaardiseerde bron van voertuigdata voor monitoring- en analysetoepassingen.
 In het kader van deze bachelorproef is OBD-II relevant omdat het een uniforme methode biedt om realtimedata uit een voertuig te verzamelen. Deze data kan vervolgens worden gelogd en gevisualiseerd, wat de basis vormt voor verdere analyse of een simulatieomgeving.
 
