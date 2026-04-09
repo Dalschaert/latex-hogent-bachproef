@@ -11,17 +11,18 @@ Om een helder beeld te geven van wat OBD-II inhoudt en welke mogelijkheden het b
 
 Na het lezen van dit hoofdstuk moet je een goed begrip hebben van wat OBD-II inhoudt en welke mogelijkheden het biedt. Alsook moet je inzicht hebben in de verschillende technieken en methodes die gebruikt kunnen worden om de uitgelezen data efficiënt, betrouwbaar en op een gebruiksvriendelijke manier te verwerken en te visualiseren.
 
-\section{On-board diagnostics (OBD-II)}
-\label{sec:On-board diagnostics}
+\section{On-Board Diagnostics (OBD-II)}
+\label{sec:On-Board Diagnostics}
 
 \subsection{Wat is OBD-II?}
-OBD-II, oftewel On-Board Diagnostics, tweede generatie, is een gestandaardiseerd systeem dat moderne voertuigen gebruiken om informatie over de werking van het voertuig en de staat van diverse systemen te verzamelen en te rapporteren. Het is een doorontwikkeling van OBD-I, dat beperkt en vaak merk-specifiek was. OBD-II werd verplicht voor alle voertuigen in de VS vanaf 1996 en biedt een universele standaard die voertuigfabrikanten moeten volgen.
+OBD-II (On-Board Diagnostics, tweede generatie), is een gestandaardiseerd systeem dat moderne voertuigen gebruiken om informatie over de werking van het voertuig en de staat van diverse systemen te verzamelen en te rapporteren. Het is een doorontwikkeling van OBD-I, dat beperkt en vaak merk-specifiek was. OBD-II werd verplicht voor alle voertuigen in de VS vanaf 1996 en biedt een universele standaard die voertuigfabrikanten moeten volgen.
 Het systeem bestaat uit sensoren, actuatoren en een centrale computer (ECU – Electronic Control Unit) die voortdurend data verzamelt over belangrijke componenten zoals de motor, emissiesystemen, brandstofinjectie en het brandstof-luchtmengsel. Wanneer er een afwijking wordt gedetecteerd, slaat het systeem foutcodes op die via een gestandaardiseerde connector (meestal een 16-pins OBD-II-poort) uitgelezen kunnen worden. 
-Deze foutcodes – ook wel DTC’s (Diagnostic Trouble Codes) genoemd – zijn uniform gedefinieerd, waardoor tools zoals scanners en software deze kunnen interpreteren, onafhankelijk van het automerk.
-Volgens \textcite{mccord2011automotive} biedt OBD-II niet alleen de mogelijkheid om foutcodes uit te lezen, maar ook om real-time voertuigdata te monitoren. Voorbeelden hiervan zijn motortoerental (RPM), voertuig- en motortemperatuur, luchtstroom, brandstofverbruik en snelheid. Deze data maakt het mogelijk om voertuigen efficiënter te diagnosticeren, onderhoud te plannen en prestaties te optimaliseren.
+Deze foutcodes, ook wel Diagnostic Trouble Codes (DTC’s) genoemd, zijn uniform gedefinieerd, waardoor tools zoals scanners en software deze kunnen interpreteren, onafhankelijk van het automerk.
+Volgens \textcite{mccord2011automotive} biedt OBD-II niet alleen de mogelijkheid om foutcodes uit te lezen, maar ook om real-time voertuigdata te monitoren. Voorbeelden hiervan zijn motortoerental (RPM), voertuigsnelheid, motortemperatuur, luchtstroom, brandstofverbruik en snelheid. Deze data maakt het mogelijk om voertuigen efficiënter te diagnosticeren, onderhoud te plannen en prestaties te optimaliseren.
 OBD-II is dus zowel een diagnostisch hulpmiddel voor monteurs als een bron van waardevolle data voor ontwikkelaars van voertuigsoftware, fleet management en telematica. Het biedt een gestructureerde manier om complexe voertuiginformatie toegankelijk en interpreteerbaar te maken, terwijl het ook de basis legt voor verdere toepassingen zoals real-time monitoring en data-analyse.
+Dit maakt OBD-II bijzonder relevant in moderne toepassingen zoals telematica, fleet management en webgebaseerde systemen, waarbij continue toegang tot voertuigdata essentieel is.
 
-\subsection{Wat zijn PidS}
+\subsection{Wat zijn PIDs}
 Binnen het OBD-II systeem wordt gebruikgemaakt van zogenaamde Parameter IDs (PIDs), die fungeren als gestandaardiseerde identificatiecodes voor specifieke voertuigparameters. Deze codes maken het mogelijk om gericht informatie op te vragen uit de elektronische regeleenheid (ECU) van een voertuig. 
 Elke PID komt overeen met één bepaalde meetwaarde of sensorinformatie, zoals het motortoerental, de voertuigsnelheid of de temperatuur van de motor. Door het gebruik van deze unieke codes kan een externe toepassing of diagnosetool exact aangeven welke data gewenst is.
 PIDs vormen daarmee een essentieel onderdeel van de communicatie tussen een voertuig en externe systemen. Ze zorgen ervoor dat interne voertuigdata op een gestructureerde en uniforme manier toegankelijk wordt gemaakt. De gegevens die via PIDs worden opgevraagd, worden door de ECU aangeleverd in een gecodeerde vorm, waarna deze verder verwerkt kan worden tot bruikbare informatie. 
@@ -29,19 +30,21 @@ Dit gestandaardiseerde mechanisme maakt het mogelijk om op een consistente manie
 
 \subsection{Welke data kan je uitlezen}
 Binnen het OBD-II systeem wordt de beschikbare voertuigdata vastgelegd in gestandaardiseerde specificaties, waarvan SAE J1979 een van de belangrijkste is. Deze standaard beschrijft welke diagnostische informatie voertuigen minimaal moeten kunnen aanbieden via de OBD-interface. De beschikbare data omvat onder meer real-time sensorgegevens zoals motortoerental, voertuigsnelheid en temperatuurwaarden, evenals informatie over het brandstofsysteem en de luchtinlaat. 
-Daarnaast voorziet de standaard in toegang tot emissiegerelateerde gegevens, waaronder informatie van zuurstofsensoren en de status van emissiecontrolesystemen. Ook diagnostische gegevens, zoals foutcodes en zogenaamde freeze frame data, maken deel uit van de beschikbare informatie. Door deze standaardisatie wordt het mogelijk om op een uniforme manier uiteenlopende voertuigdata uit te lezen, ongeacht het specifieke voertuig of merk, zolang het voldoet aan de OBD-II norm \autocite{wikipedia2026obd}.
+Daarnaast voorziet de standaard in toegang tot emissiegerelateerde gegevens, waaronder informatie van zuurstofsensoren en de status van emissiecontrolesystemen. Ook diagnostische gegevens, zoals foutcodes en zogenaamde freeze frame-data, maken deel uit van de beschikbare informatie. Door deze standaardisatie wordt het mogelijk om op een uniforme manier uiteenlopende voertuigdata uit te lezen, ongeacht het specifieke voertuig of merk, zolang het voldoet aan de OBD-II norm \autocite{wikipedia2026obd}.
 
 \subsection{Hoe communicatie werkt}
 Binnen het OBD-II systeem verloopt de communicatie tussen een diagnostisch hulpmiddel en de elektronische regeleenheid (ECU) van een voertuig volgens een request-response-mechanisme. Dit mechanisme zorgt ervoor dat data op een gestructureerde en efficiënte manier uitgelezen kan worden zonder dat de ECU continu alle gegevens hoeft te verzenden.
 Bij een request stuurt het diagnostische apparaat een specifiek verzoek naar de ECU. Dit verzoek bestaat uit een mode, die aangeeft welke soort informatie gevraagd wordt (bijvoorbeeld actuele sensordata, foutcodes of pending fault codes), en een Parameter ID (PID), die specificeert welke exacte meetwaarde of sensorinformatie moet worden teruggestuurd. Een voorbeeld van zo’n verzoek is 01 0C, waarbij Mode 01 actuele data opvraagt en PID 0C het motortoerental vertegenwoordigt.
 Na ontvangst van het request verwerkt de ECU de aanvraag en stuurt een response terug. Deze response bevat de bevestiging van de mode (bij Mode 01 is dit bijvoorbeeld 41), de PID-code en de bijbehorende databytes in gecodeerde vorm. De ruwe databytes kunnen vervolgens worden omgezet naar de werkelijke meetwaarden met behulp van gestandaardiseerde formules.
-Het request-response mechanisme maakt het mogelijk om uiteenlopende voertuigparameters uit te lezen, waaronder motorprestaties (zoals RPM en motorbelasting), brandstofsysteemdata (zoals brandstofdruk en fuel trims), lucht- en inlaatgegevens (zoals luchtdruk en mass airflow), voertuigsnelheid, gaspedaalstand en diagnostische informatie zoals foutcodes en freeze frame data. Deze gestructureerde aanpak vormt de basis voor zowel real-time monitoring als geavanceerde voertuigdiagnose \autocite{RFWirelessWorld2026}.
+Het request-response mechanisme maakt het mogelijk om uiteenlopende voertuigparameters uit te lezen, waaronder motorprestaties (zoals RPM en motorbelasting), brandstofsysteemdata (zoals brandstofdruk en fuel trims), lucht- en inlaatgegevens (zoals luchtdruk en mass airflow), voertuigsnelheid, gaspedaalstand en diagnostische informatie zoals foutcodes en freeze frame-data. Deze gestructureerde aanpak vormt de basis voor zowel real-time monitoring als geavanceerde voertuigdiagnose \autocite{RFWirelessWorld2026}.
 
 \subsection{Verschil met Can-bus}
 Hoewel OBD-II en CAN-bus vaak samen voorkomen binnen voertuignetwerken, vervullen ze een verschillende rol. OBD-II is een diagnostisch systeem dat gestandaardiseerde toegang biedt tot voertuigdata, voornamelijk voor het uitlezen van sensorgegevens en foutcodes. CAN-bus (Controller Area Network) daarentegen is een communicatieprotocol dat gebruikt wordt voor de interne communicatie tussen verschillende elektronische regeleenheden (ECU’s) in het voertuig. 
 CAN-bus vormt dus de onderliggende infrastructuur, terwijl OBD-II deze data op een uniforme manier beschikbaar maakt voor externe toepassingen \autocite{CSSElectronicsCANBus2025}.
 In dit onderzoek wordt gekozen voor OBD-II omdat het een gestandaardiseerde en breed ondersteunde interface biedt om voertuigdata uit te lezen, onafhankelijk van het specifieke merk of model. In tegenstelling tot directe toegang tot CAN-bus, waarvoor vaak voertuigspecifieke kennis vereist is, laat OBD-II toe om op een toegankelijke en consistente manier relevante diagnostische en real-time data te verzamelen. 
 Hierdoor is het bijzonder geschikt voor toepassingen zoals data-analyse en webgebaseerde visualisatie.
+\par\medskip
+Hoewel OBD-II een gestandaardiseerde en toegankelijke manier biedt om voertuigdata uit te lezen, zijn er ook verschillende beperkingen die de prestaties en toepasbaarheid beïnvloeden. Deze beperkingen worden in de volgende sectie besproken.
 
 
 \section{Beperkingen van OBD-II}
@@ -72,6 +75,8 @@ Bovendien ondersteunen niet alle voertuigen dezelfde protocollen of parameters, 
 \subsubsection{Elektrische voertuigen}
 OBD-II is oorspronkelijk ontwikkeld voor voertuigen met verbrandingsmotoren, voornamelijk om emissies te controleren. Voor elektrische voertuigen geldt deze verplichting niet, waardoor de standaard OBD-II-functionaliteit meestal ontbreekt. Moderne EV's gebruiken in plaats daarvan vaak eigen, fabrikant-specifieke protocollen zoals UDS om diagnostische data uit te wisselen. 
 Dit maakt het uitlezen van voertuigen met OBD-II in de traditionele zin vaak onmogelijk, tenzij deze protocollen eerst via reverse engineering zijn achterhaald \autocite{CSSElectronicsOBD2025}.
+\par\medskip
+Ondanks deze beperkingen vormt OBD-II een belangrijke bron van voertuigdata. Om deze data efficiënt te verwerken en te benutten in moderne toepassingen, zijn real-time data-architecturen noodzakelijk. Deze worden in de volgende sectie toegelicht.
 
 
 \section{Real-time data-architecturen}
@@ -106,6 +111,8 @@ Streamingplatformen maken het mogelijk om deze datastromen op een schaalbare en 
 \subsubsection{Latentie en throughput}
 Latentie en throughput zijn twee belangrijke prestatie-indicatoren binnen real-time data-architecturen. Latentie verwijst naar de tijd die nodig is om data van bron naar bestemming te verwerken, terwijl throughput de hoeveelheid data beschrijft die per tijdseenheid verwerkt kan worden.
 Een goed ontworpen real-time systeem streeft naar een lage latentie en een hoge throughput om snelle en efficiënte dataverwerking te garanderen. In de context van voertuigdata, zoals bij OBD-II systemen, hebben deze factoren een directe impact op de bruikbaarheid van real-time toepassingen, bijvoorbeeld bij live monitoring of rijgedraganalyse \autocite{Pmc2025}.
+\par\medskip
+Om deze real-time datastromen effectief te transporteren tussen verschillende componenten, worden specifieke streamingtechnologieën gebruikt. In de volgende sectie worden deze technologieën verder besproken.
 
 
 \section{Streamingtechnologieën}
@@ -128,6 +135,8 @@ Een nadeel van MQTT is dat het afhankelijk is van een broker, wat een extra comp
 Server-Sent Events (SSE) is een technologie waarbij een server continu updates naar een client kan sturen via een enkele HTTP-verbinding. In tegenstelling tot WebSockets is SSE unidirectioneel, wat betekent dat data enkel van server naar client wordt gestuurd.
 SSE is eenvoudiger te implementeren dan WebSockets en maakt gebruik van standaard HTTP, wat zorgt voor goede compatibiliteit met bestaande infrastructuur. Het is geschikt voor toepassingen waarbij enkel server-updates nodig zijn, zoals notificaties of live dashboards \autocite{W3CEventSource}.
 Een beperking van SSE is dat het geen bidirectionele communicatie ondersteunt, waardoor het minder flexibel is voor complexere toepassingen.
+\par\medskip
+Naast het transport van data is het ook belangrijk om systemen te kunnen testen en evalueren onder gecontroleerde omstandigheden. Daarom wordt in de volgende sectie gekeken naar de simulatie van voertuigdata.
 
 
 \section{Simulatie van voertuigdata}
@@ -146,6 +155,8 @@ Een combinatie van beide types wordt vaak gebruikt: gesimuleerde data voor schaa
 Simulatie van voertuigdata wordt in verschillende contexten toegepast. Een belangrijk gebruik is performantie-evaluatie, waarbij systemen getest worden op hun vermogen om grote hoeveelheden data efficiënt te verwerken. Door gesimuleerde datastromen te genereren kan men nagaan hoe een systeem presteert onder verschillende belastingniveaus.
 Daarnaast wordt simulatie gebruikt voor stress testing, waarbij extreme omstandigheden worden nagebootst om de robuustheid van een systeem te evalueren. Dit kan bijvoorbeeld betrekking hebben op piekbelasting of netwerkvertragingen.
 Ten slotte speelt simulatie een belangrijke rol in reproduceerbaarheid. Door gebruik te maken van gecontroleerde datasets kunnen experimenten consistent herhaald worden, wat essentieel is binnen wetenschappelijk onderzoek. Dit maakt het mogelijk om resultaten te valideren en systemen objectief te vergelijken \autocite{Pmc2025}.
+\par\medskip
+Na het genereren en verwerken van data is het essentieel om deze op een duidelijke en bruikbare manier te presenteren aan de gebruiker. In de volgende sectie wordt daarom de visualisatie van real-time data besproken.
 
 
 \section{Visualisatie van real-time data}
@@ -178,6 +189,8 @@ De keuze tussen beide benaderingen hangt af van factoren zoals datavolume, laten
 \subsubsection{Libraries en tools}
 Voor de implementatie van real-time visualisaties bestaan er verschillende libraries en tools die ontwikkelaars ondersteunen. Bekende JavaScript libraries zoals Chart.js en D3.js maken het mogelijk om dynamische en interactieve grafieken te bouwen. Daarnaast worden tools zoals Grafana vaak gebruikt voor het visualiseren van real-time datastromen in dashboards.
 Deze tools bieden ondersteuning voor het verwerken van grote hoeveelheden data en het weergeven van real-time updates. Ze maken het mogelijk om complexe visualisaties relatief eenvoudig te implementeren en aan te passen aan specifieke use cases. Het gebruik van dergelijke tools draagt bij aan een efficiëntere ontwikkeling en een betere gebruikerservaring bij het visualiseren van real-time data \autocite{Kreps2011}.
+\par\medskip
+Bij het verwerken en visualiseren van real-time data spelen performantie en schaalbaarheid een cruciale rol. Deze aspecten worden verder toegelicht in de volgende sectie.
 
 
 \section{Performantie en schaalbaarheid}
@@ -201,84 +214,4 @@ Het identificeren en aanpakken van bottlenecks is essentieel voor het bouwen van
 \subsection{Wat andere studies doen}
 \subsection{Wat ontbreekt  }
 \subsection{Mijn aanpak en bijdrage }
-
-
-\section{On-board diagnostics (OBD-II)}
-\label{sec:On-board diagnosticss}
-
-On-board diagnostics (OBD) is het zelfdiagnosesysteem van een voertuig dat toelaat om de werking van emissiegerelateerde en andere elektronische systemen te monitoren. Moderne voertuigen maken gebruik van de tweede generatie van dit systeem, OBD-II, dat een gestandaardiseerde diagnose-interface definieert voor de communicatie met de elektronische regeleenheden (ECU’s). 
-Via deze interface kan externe apparatuur voertuigdata opvragen en diagnostische informatie uitlezen. De standaardisatie omvat onder meer de fysieke diagnoseconnector, de communicatiemethoden en de structuur van de foutcodes, waardoor een diagnoseapparaat met verschillende voertuigmerken kan communiceren.
-OBD-II werd oorspronkelijk ontwikkeld met het oog op emissiecontrole, maar wordt vandaag breed toegepast voor algemene voertuigdiagnose en data-acquisitie. De interface maakt het mogelijk om zowel actuele sensorgegevens als opgeslagen foutinformatie op te vragen. Hierdoor vormt OBD-II een toegankelijke en gestandaardiseerde bron van voertuigdata voor monitoring- en analysetoepassingen.
-In het kader van deze bachelorproef is OBD-II relevant omdat het een uniforme methode biedt om realtimedata uit een voertuig te verzamelen. Deze data kan vervolgens worden gelogd en gevisualiseerd, wat de basis vormt voor verdere analyse of een simulatieomgeving.
-
-\section{Beschikbare data via OBD-II Parameter IDs}
-
-Binnen OBD-II gebeurt de opvraging van voertuiggegevens aan de hand van Parameter IDs (PIDs). Dit zijn gestandaardiseerde codes die door een externe applicatie kunnen worden opgevraagd bij de ECU. De ECU stuurt hierbij gecodeerde ruwe data terug, die met vooraf gedefinieerde formules wordt omgerekend naar fysische grootheden. Niet elk voertuig ondersteunt alle PIDs; daarom kan eerst worden bepaald welke parameters beschikbaar zijn.
-De beschikbare data kan worden onderverdeeld in verschillende categorieën.
-
-\subsection{Real-time sensorgegevens}
-
-Een eerste categorie omvat actuele meetwaarden die de werking van de motor en het aandrijfsysteem beschrijven. Voorbeelden hiervan zijn het motortoerental, de voertuigsnelheid, de berekende motorbelasting, de koelvloeistoftemperatuur, de inlaatluchttemperatuur, de positie van de gasklep en de luchtmassastroom. Deze parameters maken het mogelijk om de dynamische toestand van het voertuig in real time te volgen en vormen de belangrijkste databron voor logging- en visualisatietoepassingen.
-
-\subsection{Brandstofregeling en emissiegerelateerde data}
-
-Daarnaast zijn er PIDs die informatie geven over de regeling van het brandstof- en emissiesysteem, zoals de short- en long-term fuel trim, de status van het brandstofsysteem en de metingen van de lambdasensoren. Deze gegevens laten toe om de efficiëntie van de verbranding en de emissiecontrole te evalueren.
-
-\subsection{Diagnostische informatie}
-
-OBD-II voorziet ook in diagnostische data, waaronder de status van het storingslampje, het aantal opgeslagen foutcodes en de resultaten van emissie gerelateerde zelftesten. Wanneer een fout wordt gedetecteerd, wordt een Diagnostic Trouble Code opgeslagen samen met freeze-frame data, die een momentopname bevat van relevante sensorwaarden op het tijdstip van de fout. Deze informatie ondersteunt het analyse- en diagnoseproces.
-
-\subsection{Voertuigidentificatie}
-
-Tot slot kunnen via specifieke diensten identificatiegegevens zoals het Vehicle Identification Number (VIN) en kalibratie-informatie van de ECU worden opgevraagd. Deze gegevens zijn onder meer van belang voor de correcte identificatie van het voertuig en de configuratie van diagnose toepassingen.
-
-\section{Verschillen tussen voertuigtypes}
-
-De implementatie en het gebruik van OBD-II verschillen naargelang het type aandrijving van het voertuig. Bij voertuigen met een verbrandingsmotor ligt de focus voornamelijk op motor- en emissiegerelateerde parameters. Typische beschikbare data omvat onder meer het motortoerental, brandstofregeling, luchtmassastroom, lambdasensorwaarden en katalysatorefficiëntie. Deze parameters zijn rechtstreeks gekoppeld aan het verbrandingsproces en vormen de kern van de oorspronkelijke OBD-functionaliteit.
-Bij hybride voertuigen is het OBD-systeem complexer omdat zowel een verbrandingsmotor als een elektrische aandrijving aanwezig zijn. Naast de klassieke motorgegevens kunnen er ook gegevens beschikbaar zijn met betrekking tot de hoogspanningsbatterij, de laadstatus en de werking van de elektrische motor. De beschikbaarheid van deze gegevens is echter sterk fabrikantafhankelijk en vaak slechts gedeeltelijk toegankelijk via de gestandaardiseerde PIDs.
-Bij volledig elektrische voertuigen verschuift de focus van emissiegerelateerde diagnose naar het monitoren van het energiebeheersysteem. Belangrijke parameters zijn onder andere de batterijstatus (State of Charge), batterijspanning, stroom, temperatuur en het energieverbruik. Aangezien OBD-II oorspronkelijk ontworpen werd voor voertuigen met een verbrandingsmotor, zijn veel van deze parameters niet opgenomen in de standaardset van PIDs en worden ze vaak enkel via fabrikant-specifieke commando’s beschikbaar gesteld. Hierdoor is de hoeveelheid gestandaardiseerde data bij elektrische voertuigen doorgaans beperkter.
-
-\section{Huidige beperkingen van OBD-II voor data-acquisitie}
-
-Hoewel OBD-II een gestandaardiseerde interface biedt voor voertuigdiagnose en dataverzameling, zijn er verschillende beperkingen die een impact hebben op realtimetoepassingen.
-
-\subsection{Afhankelijkheid van de gebruikte adapter}
-
-De prestaties van een OBD-II-opstelling zijn in sterke mate afhankelijk van de gebruikte diagnoseadapter. Goedkopere ELM327-gebaseerde adapters ondersteunen niet altijd alle protocollen of implementeren deze slechts gedeeltelijk. Dit kan leiden tot tragere communicatie, het niet correct interpreteren van berichten of het ontbreken van bepaalde parameters. Bovendien varieert de kwaliteit van de firmware tussen verschillende klonen, wat de betrouwbaarheid van de metingen beïnvloedt.
-
-\subsection{Beperkte updatefrequentie}
-
-De maximale updatefrequentie van de data wordt bepaald door het gebruikte communicatieprotocol, de snelheid van de voertuigbus en het aantal gelijktijdig opgevraagde PIDs. Omdat OBD-II werkt volgens een request-responseprincipe, moet elke parameter afzonderlijk worden opgevraagd. Hierdoor daalt de samplefrequentie naarmate meer parameters tegelijk worden uitgelezen. In typische toepassingen ligt de updatefrequentie voor meerdere PIDs in de orde van enkele metingen per seconde, wat een beperking vormt voor toepassingen die hoge resolutie realtime data vereisen.
-
-\subsection{Datakwaliteit en resolutie}
-
-De via OBD-II verkregen data is in de eerste plaats bedoeld voor diagnose en niet voor hoogfrequente meettoepassingen. Hierdoor is:
-\begin{itemize}
-\item De resolutie van bepaalde parameters beperkt
-\item De meetfrequentie relatief laag
-\item De nauwkeurigheid afhankelijk van interne ECU-bewerkingen
-\end{itemize}
-
-Bovendien zijn sommige waarden berekend in plaats van rechtstreeks gemeten, zoals de berekende motorbelasting. Dit kan leiden tot afwijkingen wanneer de data gebruikt wordt voor gedetailleerde analyse of modellering.
-
-\section{Simulatie}
-\label{sec:Simulatie}
-
-Bij de ontwikkeling en evaluatie van real-time data-acquisitiesystemen wordt in de literatuur vaak gebruikgemaakt van een simulatieomgeving als aanvulling op metingen met een fysiek systeem. Simulatie laat toe om de dataverwerkingsketen te testen onder gecontroleerde en reproduceerbare omstandigheden, wat met een reële opstelling niet altijd mogelijk is door variabele omgevingsfactoren en hardwarebeperkingen. Binnen het domein van embedded en automotive systemen wordt dit principe onder meer toegepast in software-in-the-loop- en hardware-in-the-loop testopstellingen.
-
-Een belangrijke motivatie voor simulatie is het evalueren van de performantie bij hoge updatefrequenties. In een fysieke OBD-II-opstelling wordt de samplefrequentie beperkt door het communicatieprotocol en de responstijd van de ECU. In een gesimuleerde omgeving kunnen datastromen met een hogere en constante frequentie worden aangeboden, waardoor de maximale verwerkingscapaciteit van de software, de buffering en de opslagmechanismen kan worden geanalyseerd. Dit sluit aan bij methodes uit de literatuur rond real-time systemen, waar synthetische datastromen worden gebruikt om timing gedrag en latentie te meten.
-
-Daarnaast wordt simulatie gebruikt voor stress-testing. Hierbij wordt het systeem belast met grote hoeveelheden data of met piekbelastingen om de robuustheid te evalueren. Dergelijke testen zijn moeilijk reproduceerbaar met een fysiek voertuig, omdat de gegenereerde data afhankelijk is van rij omstandigheden en voertuiggedrag. In performantie analyse van data-acquisitieplatformen wordt daarom vaak gewerkt met gesimuleerde input om worst-casescenario’s te kunnen onderzoeken.
-
-Een bijkomend voordeel is de reproduceerbaarheid van tests. Wanneer dezelfde dataset of hetzelfde model opnieuw wordt aangeboden, kan het effect van softwarewijzigingen objectief worden vergeleken. Dit principe wordt in de literatuur beschreven als trace-based testing, waarbij eerder opgenomen meetdata opnieuw wordt afgespeeld om systemen te valideren.
-
-Voor de simulatie kunnen twee databronnen worden gebruikt.
-
-Bij het gebruik van synthetisch gegenereerde data worden vooraf gedefinieerde signalen of mathematische modellen gebruikt om sensorgegevens na te bootsen. Deze aanpak biedt volledige controle over de datavorm, de frequentie en de belasting van het systeem en wordt daarom vaak toegepast voor performantie- en stresstesten van real-time toepassingen. Het nadeel is dat deze data niet alle karakteristieken van reële metingen bevat, zoals ruis, jitter en niet-lineaire correlaties tussen parameters.
-
-Een alternatief is het gebruik van reële OBD-II-logs als input voor de simulatie. Dit komt overeen met trace-based simulatie, waarbij eerder opgenomen data opnieuw wordt afgespeeld. Hierdoor blijft het realistische karakter van de signalen behouden en kan de volledige verwerkingsketen getest worden met representatieve voertuigdata. Deze methode wordt in de literatuur gebruikt voor de validatie van dataverwerkingssystemen, omdat ze reproduceerbaarheid combineert met realistische input. De maximale updatefrequentie blijft in dit geval echter beperkt tot de frequentie waarmee de data oorspronkelijk werd gelogd.
-
-In het kader van deze bachelorproef kan simulatie worden ingezet als testomgeving voor de ontwikkeling van het real-time datalogging- en visualisatiesysteem. Door zowel synthetische data als reële OBD-II-logs te gebruiken, kan enerzijds de performantie en schaalbaarheid van het systeem worden geëvalueerd en anderzijds het gedrag met realistische voertuigdata worden geanalyseerd.
-
-
 
