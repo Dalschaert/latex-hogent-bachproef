@@ -207,11 +207,23 @@ Deze bottlenecks kunnen zich op verschillende niveaus voordoen, zoals netwerkcom
 Daarnaast tonen \textcite{Dean2013} aan dat zelfs kleine vertragingen in individuele componenten een disproportioneel grote invloed kunnen hebben op de totale systeemperformantie, vooral in gedistribueerde systemen. Dit fenomeen, ook wel bekend als “tail latency”, benadrukt het belang van het minimaliseren van vertragingen in alle onderdelen van de architectuur.
 In de context van real-time voertuigdata, zoals bij OBD-II systemen, kunnen bijkomende bottlenecks ontstaan door de manier waarop data wordt opgevraagd en verwerkt. De combinatie van beperkte updatefrequenties en externe interfaces kan de snelheid en consistentie van dataverzameling beïnvloeden \autocite{Pmc2025}.
 Het identificeren en aanpakken van bottlenecks is essentieel voor het bouwen van performante en schaalbare systemen. Dit kan onder meer door het optimaliseren van dataverwerking, het gebruik van efficiënte communicatieprotocollen en het implementeren van schaalbare architecturale patronen zoals event-driven systemen.
+\par\medskip
+De besproken concepten rond performantie, schaalbaarheid en bottlenecks vormen de basis voor het analyseren van bestaande systemen. In de volgende sectie wordt daarom een vergelijkende evaluatie gemaakt van hoe deze principes in bestaande onderzoeken worden toegepast en waar er nog tekortkomingen bestaan.
 
 
 \section{Vergelijkende evaluatie}
 \label{sec:Vergelijkende evaluatie}
+
 \subsection{Wat andere studies doen}
-\subsection{Wat ontbreekt  }
-\subsection{Mijn aanpak en bijdrage }
+In de bestaande literatuur rond voertuigdata, real-time data-architecturen en streamingtechnologieën ligt de nadruk voornamelijk op het ontwerpen van schaalbare en performante systemen die grote hoeveelheden data kunnen verwerken. Onderzoeken zoals \textcite{Kreps2011} focussen op streamingarchitecturen waarbij data continu verwerkt wordt via gedistribueerde systemen. Hierbij staan vooral throughput en lage latency centraal.
+Daarnaast wordt in studies zoals \textcite{Dean2013} het belang van latency in grootschalige gedistribueerde systemen benadrukt. Deze onderzoeken tonen aan dat kleine vertragingen in individuele componenten een grote impact kunnen hebben op de totale systeemperformantie, wat vooral relevant is in real-time toepassingen zoals monitoring- en dataverwerkingssystemen.
+In breder onderzoek rond voertuigdata en diagnostische systemen, zoals OBD-II toepassingen, wordt voornamelijk gefocust op het efficiënt uitlezen en interpreteren van sensordata en foutcodes, vaak in combinatie met real-time monitoring en analyse \autocite{Pmc2025}.
+
+\subsection{Wat ontbreekt}
+Hoewel bestaande studies afzonderlijk sterke inzichten bieden in streamingarchitecturen, performantie en voertuigdiagnose, ligt de focus vaak op geïsoleerde componenten binnen het systeem. Er is relatief minder aandacht voor de integratie van de volledige keten, namelijk van voertuigdata-acquisitie via OBD-II, over real-time verwerking, tot webgebaseerde visualisatie.
+Daarnaast wordt de combinatie van verschillende domeinen — zoals CAN-bus communicatie, OBD-II data-extractie en moderne streamingtechnologieën — zelden als één geïntegreerd systeem behandeld. Veel studies beperken zich tot ofwel de voertuigzijde, ofwel de backendverwerking, maar niet tot de volledige end-to-end flow van data.
+
+\subsection{Mijn aanpak en bijdrage}
+In dit onderzoek wordt een end-to-end architectuur voorgesteld waarbij OBD-II voertuigdata wordt uitgelezen, verwerkt via real-time data-architecturen en vervolgens gevisualiseerd in een webgebaseerde interface. Hierbij worden inzichten uit bestaande literatuur rond streaming, latency en schaalbaarheid toegepast op een concreet voertuiggeoriënteerd systeem.
+De bijdrage van dit werk ligt in het integreren van bestaande principes rond schaalbaarheid, latency en streaming in een praktische implementatie voor voertuigdata, waarbij de volledige datastroom van bron tot visualisatie wordt meegenomen.
 
