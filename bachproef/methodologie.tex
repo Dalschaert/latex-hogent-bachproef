@@ -26,13 +26,41 @@
 %% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
 %% en geef het een gepaste titel.
 
-In het kader van deze bachelorproef werd in eerste instantie onderzocht hoe voertuigdata via de OBD-II-interface praktisch kan worden uitgelezen. Hiervoor werd gebruikgemaakt van een ELM327-gebaseerde OBD-II-adapter in combinatie met de Pythonbibliotheek python-OBD. Deze bibliotheek biedt een programmeerinterface waarmee gestandaardiseerde PIDs kunnen worden opgevraagd en automatisch worden omgezet naar leesbare fysische grootheden.
+In dit onderzoek werd een end-to-end systeem ontwikkeld voor voertuigtelemetrie, waarbij het volledige traject van data-acquisitie tot analyse en visualisatie werd onderzocht en geïmplementeerd. Het systeem bestaat uit vier kerncomponenten: (1) voertuigconnectie via OBD-II, (2) datalogging en simulatie (replay), (3) visualisatie van voertuigdata, en (4) performantieanalyse van de communicatie en dataverwerking.
+De implementatie werd iteratief opgebouwd op basis van praktijkexperimenten met een ELM327-gebaseerde OBD-II-adapter en Python als initiële ontwikkelomgeving. In een latere fase werd de architectuur verder uitgebreid naar een meer gestructureerd softwarelandschap met een backend API (FastAPI), een frontend applicatie (React of Svelte) en een relationele databank (SQLite tijdens ontwikkeling en PostgreSQL voor schaalbare opslag). Voor visualisatie van tijdsreeksen werd gebruikgemaakt van charting libraries zoals Chart.js of Recharts.
+De Python-component fungeerde hierbij als data collector, verantwoordelijk voor het ophalen van voertuigdata via de OBD-II-interface en het doorsturen naar de backend. Hierdoor werd een duidelijke scheiding gemaakt tussen dataverzameling, verwerking en presentatie.
+De focus van het onderzoek lag niet enkel op het uitlezen van voertuigdata, maar op het ontwerpen van een volledig pipeline-gebaseerd systeem waarin data herbruikbaar, analyseerbaar en reproduceerbaar wordt gemaakt.
 
-In een eerste experimentele fase werd een verbinding opgezet tussen de computer en het voertuig via de OBD-II-adapter. Vervolgens werd getest welke PIDs effectief beschikbaar zijn op het gebruikte voertuig. Hierbij werden onder meer parameters zoals motortoerental, voertuigsnelheid, koelvloeistoftemperatuur en motorbelasting succesvol uitgelezen. De bibliotheek verzorgt hierbij zowel het verzenden van de request-commando’s als het decoderen van de responseberichten volgens de OBD-II-standaard.
+\subsection{OBD-II connectie en data-acquisitie}
 
-Daarnaast werd de updatefrequentie geëvalueerd door meerdere PIDs gelijktijdig op te vragen. Hierbij werd vastgesteld dat de effectieve samplefrequentie afneemt naarmate meer parameters worden uitgelezen, wat overeenkomt met het request-responsekarakter van OBD-II. De verkregen data werd gelogd en gebruikt om de stabiliteit van de verbinding en de consistentie van de meetwaarden te analyseren.
+In de eerste fase werd een communicatielink opgezet tussen het voertuig en een computer via een OBD-II-interface. Hiervoor werd een ELM327-adapter gebruikt in combinatie met Python.
+De doelstelling van deze fase was het realiseren van een stabiele verbinding en het valideren van de beschikbaarheid van gestandaardiseerde voertuigparameters via OBD-II Parameter IDs (PIDs). Hierbij werden onder andere voertuigsnelheid, motortoerental, koelvloeistoftemperatuur en motorbelasting uitgelezen.
+De resultaten toonden aan dat de OBD-II-communicatie functioneert als een request-response protocol waarbij elke parameter afzonderlijk moet worden opgevraagd. Hierdoor is de haalbare samplefrequentie beperkt en afhankelijk van zowel de ECU-responstijd als de prestaties van de gebruikte ELM327-adapter. Daarnaast werd vastgesteld dat de beschikbaarheid van PIDs sterk verschilt per voertuigtype en ECU-implementatie.
 
-Deze experimentele fase vormde de basis voor het verdere ontwerp van het real-time datalogging- en visualisatiesysteem. De praktische testen leverden inzicht op in de beschikbare parameters, de haalbare updatefrequentie en de beperkingen van de gebruikte adapter, wat richting geeft aan de verdere ontwikkeling van de softwarearchitectuur.
+\subsection{Datalogging en simulatie (replay)}
+
+In de tweede fase werd een logging-systeem ontwikkeld dat real-time voertuigdata opslaat in een gestructureerd formaat (CSV tijdens prototyping en later relationeel in SQLite/PostgreSQL). Deze data werd gebruikt om een replay-mechanisme te implementeren dat de rit sequentieel herhaalt.
+De doelstelling van deze fase was het ontkoppelen van data-acquisitie en data-analyse, zodat voertuigdata onafhankelijk van de live verbinding kan worden herbekeken en hergebruikt. Dit maakt het mogelijk om dezelfde rit meerdere keren te analyseren met verschillende parameters of visualisaties.
+De replay-module simuleert hierbij de oorspronkelijke tijdsas van de rit, waardoor een realistische herinterpretatie van het rijgedrag mogelijk wordt.
+
+\subsection{Visualisatie van voertuigdata}
+
+Op basis van de opgeslagen datasets werd een visualisatielaag ontwikkeld in de frontend applicatie. Hiervoor werd gebruikgemaakt van React of Svelte in combinatie met charting libraries zoals Chart.js of Recharts.
+De doelstelling van deze fase was het vertalen van ruwe telemetriedata naar interpreteerbare grafieken en dashboards. Parameters zoals snelheid, motortoerental en throttle input werden gevisualiseerd over tijd, waardoor trends en dynamisch rijgedrag inzichtelijk werden.
+De visualisatielaag fungeert als interface tussen ruwe voertuigdata en menselijke interpretatie, en maakt het mogelijk om zowel real-time data als replay-data te analyseren.
+
+\subsection{Performantieanalyse van communicatie en datastroom}
+
+In de laatste fase werd de performantie van het volledige systeem geanalyseerd. Hierbij werd gekeken naar de responstijd van OBD-II requests, de maximale haalbare samplefrequentie, en de impact van gelijktijdige parameteropvragingen.
+Er werd vastgesteld dat het request-response karakter van OBD-II een fundamentele beperking vormt voor real-time toepassingen. De totale throughput wordt bepaald door de ECU-responstijd en de beperkingen van de ELM327-interface, waardoor parallelle dataverwerking beperkt is.
+Daarnaast werd geanalyseerd hoe de architectuur (collector → backend → database → frontend) invloed heeft op latency en data-consistentie.
+
+\subsection{Case study: elektrische voertuigen}
+
+Als bijkomende casus werd het systeem toegepast op een elektrisch voertuig. Hierbij werd vastgesteld dat slechts een beperkte subset van standaard OBD-II parameters beschikbaar is, voornamelijk generieke gegevens zoals voertuigsnelheid en boordspanning.
+Belangrijke EV-specifieke data, zoals batterijstatus, laadcurves en celspanningen, zijn niet toegankelijk via standaard OBD-II communicatie. Deze informatie wordt doorgaans beheerd via fabrikant-specifieke CAN-berichten of beveiligde diagnoseprotocollen (UDS).
+Deze bevindingen tonen aan dat een generieke OBD-II aanpak onvoldoende is voor diepgaande analyse van elektrische voertuigen, en dat een uitbreidbare architectuur noodzakelijk is om toekomstige integratie met CAN- of API-gebaseerde data mogelijk te maken.
+
 
 \begin{figure}
     \centering
@@ -44,4 +72,6 @@ Deze experimentele fase vormde de basis voor het verdere ontwerp van het real-ti
     \includegraphics[width=0.8\textwidth]{pids.png}
     \caption[Alle beschikbare PIDs.]{\label{fig:pids} Overzicht van de door het voertuig ondersteunde OBD-II Parameter IDs (PIDs), uitgelezen via de diagnose-interface.}
 \end{figure}
+
+
 
