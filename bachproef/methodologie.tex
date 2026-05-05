@@ -61,17 +61,55 @@ Als bijkomende casus werd het systeem toegepast op een elektrisch voertuig. Hier
 Belangrijke EV-specifieke data, zoals batterijstatus, laadcurves en celspanningen, zijn niet toegankelijk via standaard OBD-II communicatie. Deze informatie wordt doorgaans beheerd via fabrikant-specifieke CAN-berichten of beveiligde diagnoseprotocollen (UDS).
 Deze bevindingen tonen aan dat een generieke OBD-II aanpak onvoldoende is voor diepgaande analyse van elektrische voertuigen, en dat een uitbreidbare architectuur noodzakelijk is om toekomstige integratie met CAN- of API-gebaseerde data mogelijk te maken.
 
+\subsection{Setup en connectie}
+Voor dit onderzoek werd een OBD-II communicatiesysteem opgezet met behulp van een ELM327-gebaseerde adapter. Deze adapter maakt het mogelijk om via een seriële verbinding rechtstreeks data uit de ECU (Engine Control Unit) van het voertuig te lezen.
+De implementatie werd uitgevoerd in Python met behulp van de \texttt{python-OBD} bibliotheek, die een gestandaardiseerde interface biedt voor OBD-II communicatie. Bij het starten van het systeem wordt automatisch gezocht naar beschikbare seriële poorten, waarna een verbinding wordt opgezet met de eerste gedetecteerde interface.
+Afhankelijk van het besturingssysteem wordt hierbij een andere poortnaam gebruikt (bijvoorbeeld \texttt{/dev/tty...} op macOS of \texttt{COMx} op Windows). Indien de verbinding succesvol tot stand komt, kan de ECU real-time voertuigdata terugsturen. Indien dit niet het geval is, wordt de uitvoering gestopt om foutieve dataverwerking te vermijden.
+
+\subsection{PID-verkenning}
+Na het opzetten van de verbinding werd een verkennende analyse uitgevoerd van de beschikbare PID’s (Parameter IDs). Deze PID’s bepalen welke voertuigparameters via het OBD-II protocol beschikbaar zijn.
+De \texttt{python-OBD} bibliotheek biedt een ingebouwde lijst van ondersteunde commands, die onderverdeeld zijn in verschillende modes. In dit onderzoek werd voornamelijk mode 1 gebruikt, welke instaat voor live voertuigdata.
+Tijdens de verkenning werd een volledige lijst van ondersteunde PID’s geëxtraheerd, waaronder onder andere:
+
+\begin{itemize}
+    \item Engine RPM (010C)
+    \item Vehicle Speed (010D)
+    \item Engine Load (0104)
+    \item Throttle Position (0111)
+    \item Coolant Temperature (0105)
+    \item Control Module Voltage (0142)
+\end{itemize}
+
+Daarnaast werden ook diagnostische en fabrikant-specifieke PID’s gedetecteerd, zoals DTC-codes en statusinformatie. Deze verkenningsfase diende om te bepalen welke parameters effectief bruikbaar zijn voor verdere analyse en dataverwerking.
+
+\subsection{Beschikbare data analyse}
+Als eerste test werd ervoor gekozen om enkel een beperkte set van live voertuigdata te analyseren. Deze vereenvoudigde aanpak werd toegepast om de stabiliteit van de verbinding en de betrouwbaarheid van de metingen te evalueren voordat een uitgebreidere dataset werd gebruikt.
+De geselecteerde parameters voor deze initiële test waren:
+
+\begin{itemize}
+    \item Snelheid (km/h)
+    \item Toerental (RPM)
+    \item Throttle positie (\%)
+    \item Voedingsspanning (V)
+\end{itemize}
+
+De metingen werden uitgevoerd terwijl het voertuig stationair draaide. De snelheid bleef consistent op 0 km/h, wat overeenkomt met een stilstaand voertuig. Het toerental varieerde licht tussen ongeveer 770 en 1450 RPM, wat typisch is voor een draaiende motor in stationaire toestand.
+De gemeten boordspanning bleef relatief stabiel rond 14.7 tot 14.9 V, wat wijst op een actieve laadstatus van de alternator.
+Bij de throttle-waarde werden echter onrealistische waarden waargenomen, wat vermoedelijk te wijten is aan een fout in de interpretatie of schaalfactor van de geretourneerde PID-data. Daarnaast werden enkele anomalieën in de voltagewaarden vastgesteld, vermoedelijk veroorzaakt door floating-point afrondingsfouten of parsingproblemen binnen de gebruikte bibliotheek.
+Deze eerste test toont aan dat de basiscommunicatie met de ECU stabiel is, maar dat verdere filtering en validatie noodzakelijk is om betrouwbare datasets te bekomen voor diepgaandere analyse.
+
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{data.png}
+    \includegraphics[width=1\textwidth]{fotos/live_data.pdf}
     \caption[Eerste data ophaling.]{\label{fig:data}Eerste succesvolle real-time data-acquisitie via de OBD-II-interface met behulp van de python-OBD bibliotheek.}
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{pids.png}
+    \includegraphics[width=1\textwidth]{fotos/supported_pids.pdf}
     \caption[Alle beschikbare PIDs.]{\label{fig:pids} Overzicht van de door het voertuig ondersteunde OBD-II Parameter IDs (PIDs), uitgelezen via de diagnose-interface.}
 \end{figure}
+
 
 
 
