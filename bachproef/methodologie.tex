@@ -98,6 +98,109 @@ De gemeten boordspanning bleef relatief stabiel rond 14.7 tot 14.9 V, wat wijst 
 Bij de throttle-waarde werden echter onrealistische waarden waargenomen, wat vermoedelijk te wijten is aan een fout in de interpretatie of schaalfactor van de geretourneerde PID-data. Daarnaast werden enkele anomalieën in de voltagewaarden vastgesteld, vermoedelijk veroorzaakt door floating-point afrondingsfouten of parsingproblemen binnen de gebruikte bibliotheek.
 Deze eerste test toont aan dat de basiscommunicatie met de ECU stabiel is, maar dat verdere filtering en validatie noodzakelijk is om betrouwbare datasets te bekomen voor diepgaandere analyse.
 
+\subsection{Python-OBD bibliotheek}
+Voor de softwarematige communicatie met het voertuig werd gebruikgemaakt van de \texttt{python-OBD} bibliotheek. Dit is een open-source Pythonbibliotheek die het mogelijk maakt om via een ELM327-compatibele OBD-II adapter verbinding te maken met het diagnosenetwerk van een voertuig. De bibliotheek abstraheert de onderliggende seriële communicatie en biedt een gebruiksvriendelijke interface voor het opvragen van voertuigdata.
+De bibliotheek ondersteunt verschillende verbindingsmethoden, waaronder USB, Bluetooth en seriële adapters. Tijdens het initialiseren van een connectie probeert \texttt{python-OBD} automatisch de beschikbare poort, baudrate en het juiste voertuigprotocol te detecteren. Hierdoor kan relatief eenvoudig een verbinding worden opgezet zonder manuele configuratie.
+
+\subsubsection{Werkwijze en algemene aanpak}
+Binnen dit onderzoek werd een iteratieve aanpak toegepast voor het verzamelen en verwerken van voertuigdata. Eerst werd een stabiele OBD-II verbinding opgezet met het voertuig. Vervolgens werd systematisch onderzocht welke parameters (PID's) beschikbaar waren op het voertuig.
+Na deze verkenningsfase werden de relevante sensorgegevens geselecteerd en continu uitgelezen. De data werd vervolgens verwerkt voor logging, analyse en visualisatie.
+
+De algemene workflow kan als volgt worden samengevat:
+\begin{itemize}
+    \item opzetten van een stabiele OBD-II verbinding;
+    \item detecteren van ondersteunde PID's;
+    \item selecteren van relevante voertuigparameters;
+    \item continu uitlezen van live data;
+    \item verwerken en opslaan van meetwaarden;
+    \item visualiseren of analyseren van de verzamelde data.
+\end{itemize}
+
+\subsubsection{Initialisatie van de connectie}
+Een standaardverbinding wordt opgezet via:
+
+\begin{verbatim}
+import obd
+connection = obd.OBD()
+\end{verbatim}
+
+Bij het uitvoeren van deze instructie worden meerdere stappen automatisch doorlopen:
+
+\begin{itemize}
+    \item detecteren van de aangesloten ELM327 adapter;
+    \item openen van de seriële verbinding;
+    \item initialiseren van de adapter via AT-commando's;
+    \item detecteren van het gebruikte OBD-II protocol;
+    \item testen van communicatie met het voertuig.
+\end{itemize}
+
+Om het succes van de connectie te verbeteren, werden tijdens de implementatie manueel de portnaam gespecificeerd, aangezien automatische detectie soms problemen gaf bij bepaalde adapters of besturingssystemen. Na een succesvolle verbinding kan de ECU real-time data terugsturen als reactie op PID-requests.
+
+\subsubsection{Ondersteunde protocollen}
+OBD-II gebruikt afhankelijk van merk, bouwjaar en regio verschillende communicatieprotocollen. \texttt{python-OBD} ondersteunt onder meer:
+
+\begin{itemize}
+    \item SAE J1850 PWM
+    \item SAE J1850 VPW
+    \item ISO 9141-2
+    \item ISO 14230-4 (KWP2000)
+    \item ISO 15765-4 CAN
+\end{itemize}
+
+(Protocol nog bekijken bij connectie)
+
+\subsubsection{Opvragen van voertuigdata}
+Na een succesvolle connectie kunnen PID-commando's worden verstuurd. Een voorbeeld hiervan is het opvragen van het motortoerental:
+
+\begin{verbatim}
+response = connection.query(obd.commands.RPM)
+\end{verbatim}
+
+De bibliotheek verwerkt automatisch het ruwe antwoord van de ECU en zet dit om naar leesbare waarden met correcte eenheden. Hierdoor hoeft de gebruiker geen hexadecimale berichten manueel te interpreteren.
+Veelgebruikte parameters zijn:
+
+\begin{itemize}
+    \item voertuigsnelheid
+    \item motortoerental
+    \item gasklepstand
+    \item koelvloeistoftemperatuur
+    \item accuspanning
+    \item motorbelasting
+\end{itemize}
+
+\subsubsection{Beschikbare commando's detecteren}
+Niet elk voertuig ondersteunt dezelfde PID's. Daarom biedt \texttt{python-OBD} functionaliteit om ondersteunde commando's automatisch te detecteren. Dit gebeurt via standaard OBD-requests zoals \texttt{PIDS\_A}, \texttt{PIDS\_B} en \texttt{PIDS\_C}, waarbij de ECU via bitmaskers aangeeft welke parameters beschikbaar zijn.
+Deze stap is belangrijk binnen de opstartfase van het systeem, omdat hierdoor enkel data wordt opgevraagd die effectief door het voertuig ondersteund wordt, wat foutmeldingen en onnodige queries voorkomt.
+
+\subsubsection{Realtime dataverwerking (asynchrone werking)}
+Voor het verzamelen van live voertuigdata werd gebruikgemaakt van de asynchrone functionaliteit van \texttt{python-OBD}. In tegenstelling tot de klassieke \texttt{query()}-methode, die blokkerend werkt, laat de asynchrone aanpak toe om data continu op de achtergrond te updaten.
+Binnen dit project werd een \texttt{Async} verbinding gebruikt waarbij specifieke PID's worden geregistreerd via de \texttt{watch()} functie. Vervolgens wordt een achtergrondthread gestart die periodiek de geselecteerde parameters opvraagt bij het voertuig.
+De meest recente waarden worden lokaal gecachet, waardoor ze onmiddellijk beschikbaar zijn voor verwerking, logging of visualisatie zonder wachttijd.
+
+\subsubsection{Statusbeheer van de connectie}
+De bibliotheek voorziet verschillende connectiestatussen:
+
+\begin{itemize}
+    \item \texttt{NOT\_CONNECTED}: geen adapter gevonden;
+    \item \texttt{ELM\_CONNECTED}: adapter gevonden, geen voertuigcommunicatie;
+    \item \texttt{OBD\_CONNECTED}: voertuig aangesloten, contact uit;
+    \item \texttt{CAR\_CONNECTED}: volledige communicatie actief.
+\end{itemize}
+
+Deze statusinformatie werd gebruikt om de betrouwbaarheid van de verbinding te monitoren en eventuele connectieproblemen te detecteren tijdens tests.
+
+\subsubsection{Voordelen binnen dit onderzoek}
+De keuze voor \texttt{python-OBD} bood meerdere voordelen binnen dit project:
+
+\begin{itemize}
+    \item snelle ontwikkeling;
+    \item ondersteuning voor verschillende adapters;
+    \item automatische protocolherkenning;
+    \item zowel synchrone als asynchrone dataverwerking;
+    \item eenvoudige integratie met data-analyse en visualisatietools.
+\end{itemize}
+
+Daardoor vormde de bibliotheek een geschikte basis voor het ontwikkelen van een prototype voor voertuigtelemetrie, waarbij zowel live datastreaming als historische analyse mogelijk werd gemaakt.
 
 \begin{figure}
     \centering
