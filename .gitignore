@@ -24,6 +24,9 @@
 # *.eps
 *.pdf
 
+# Exception: keep PDFs in bachproef/fotos
+!bachproef/fotos/**/*.pdf
+
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
 *.bcf
