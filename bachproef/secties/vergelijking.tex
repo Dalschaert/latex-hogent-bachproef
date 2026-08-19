@@ -1,2 +1,72 @@
 \chapter{\IfLanguageName{dutch}{Vergelijking van REST API en WebSockets}{Comparative Analysis of REST API and WebSockets}}%
 \label{ch:vergelijking-van-rest-api-en-websockets}
+In dit hoofdstuk worden REST API en WebSockets met elkaar vergeleken als communicatiemethoden voor het doorsturen van realtime voertuigdata naar de webapplicatie. Beide technologieën worden binnen dezelfde applicatie geïmplementeerd, zodat hun geschiktheid voor realtime voertuigmonitoring onder vergelijkbare omstandigheden kan worden onderzocht.
+De vergelijking richt zich op verschillende aspecten van de communicatie, waaronder responstijd, latency, updatefrequentie, hoeveelheid dataverkeer en systeembelasting. Daarnaast wordt onderzocht hoe beide technologieën zich gedragen bij verschillende updatefrequenties. Op basis van de resultaten wordt bepaald welke communicatiemethode het meest geschikt is voor de ontwikkelde realtime monitoringapplicatie.
+
+\section{REST API}
+Hier bespreek je:
+- wat een REST API is
+- het request-responseprincipe
+- hoe REST binnen jouw applicatie wordt gebruikt
+- hoe de frontend voertuigdata opvraagt
+- hoe vaak requests worden verstuurd
+- welke endpoints je hebt gebruikt
+- hoe de response is opgebouwd
+- voor- en nadelen van REST binnen jouw toepassing
+
+\section{WebSockets}
+Hier bespreek je:
+- wat WebSockets zijn
+- hoe een permanente verbinding werkt
+- hoe de verbinding tussen frontend en backend tot stand komt
+- hoe de backend nieuwe voertuigdata naar de frontend stuurt
+- hoe vaak berichten worden verstuurd
+- hoe de frontend ontvangen berichten verwerkt
+- voor- en nadelen van WebSockets binnen jouw toepassing
+
+\section{Onderzoeksopzet}
+Hier beschrijf je hoe je de vergelijking uitvoert:
+- welke data wordt gebruikt
+- gebruik van de simulator
+- eventueel gebruik van echte voertuigdata
+- dezelfde dataset voor beide technieken
+- dezelfde hardware en software
+- welke updatefrequenties worden getest
+- welke meetwaarden worden verzameld
+- hoe lang iedere test duurt
+- hoe je de resultaten vergelijkt
+
+Bijvoorbeeld:
+- 100 ms
+- 250 ms
+- 500 ms
+- 1000 ms
+
+\section{Responstijd en latency}
+Hier onderzoek je:
+- hoe snel een request/bericht bij de frontend aankomt
+- gemiddelde latency
+- minimale en maximale latency
+- eventuele variatie in latency
+- verschillen tussen REST en WebSockets
+- verschillen bij verschillende updatefrequenties
+
+\section{Dataverkeer en systeembelasting}
+Hier onderzoek je:
+- aantal requests bij REST
+- aantal berichten bij WebSockets
+- hoeveelheid verzonden data
+- netwerkverkeer
+- CPU-belasting
+- eventueel geheugengebruik
+- effect van hogere updatefrequenties
+
+\section{Resultaten en vergelijking}
+Hier breng je de resultaten samen:
+- REST versus WebSockets
+- vergelijking per updatefrequentie
+- vergelijking van latency
+- vergelijking van dataverkeer
+- vergelijking van systeembelasting
+- eventuele grafieken en tabellen
+- welke technologie het beste presteert binnen jouw toepassing

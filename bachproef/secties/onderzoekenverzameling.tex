@@ -1,2 +1,64 @@
 \chapter{\IfLanguageName{dutch}{Onderzoek en verzameling van voertuigdata}{Research and Collection of Vehicle Data}}%
 \label{ch:onderzoek-en-verzameling-van-voertuigdata}
+In dit hoofdstuk wordt onderzocht hoe voertuigdata via OBD-II kan worden verzameld en welke gegevens beschikbaar zijn. Hiervoor worden drie verschillende voertuigen gebruikt. Het doel hiervan is om na te gaan welke parameters via OBD-II kunnen worden uitgelezen en welke verschillen hierbij tussen voertuigen optreden.
+Eerst wordt de werking van OBD-II en de communicatie met het voertuig besproken. Vervolgens wordt beschreven hoe de verbinding met de voertuigen tot stand wordt gebracht en hoe de gegevens worden uitgelezen. Tot slot worden de beschikbare voertuigparameters van de drie voertuigen met elkaar vergeleken. De resultaten uit dit hoofdstuk vormen de basis voor de ontwikkeling van de simulatieomgeving en de realtime monitoringapplicatie.
+
+\section{Verbinding met het voertuig}
+Voor het verzamelen van de voertuigdata wordt gebruikgemaakt van een Vgate VLinker FS OBD-II-adapter. Deze adapter wordt via USB met de computer verbonden en vormt de interface tussen de OBD-II-poort van het voertuig en de software die gebruikt wordt voor het uitlezen van de voertuigdata.
+Voor de communicatie met de adapter wordt Python gebruikt in combinatie met de \texttt{python-OBD}-bibliotheek. Deze bibliotheek biedt functionaliteiten om een verbinding met een OBD-II-adapter tot stand te brengen en vervolgens verschillende voertuigparameters op te vragen.
+
+\subsection{Detecteren van de seriële poort}
+Bij het opstarten van de applicatie wordt eerst nagegaan via welke seriële poort de OBD-II-adapter beschikbaar is. Hiervoor wordt de functie \texttt{obd.scan\_serial()} uit de gebruikte Python-bibliotheek aangeroepen. Deze functie geeft een overzicht van de seriële poorten die op de computer beschikbaar zijn.
+Tijdens de ontwikkeling bleek dat een automatische verbinding met de adapter niet betrouwbaar tot stand kwam. Daarom wordt de beschikbare poort expliciet geselecteerd en vervolgens meegegeven aan de OBD-verbinding. Hierdoor kan de applicatie rechtstreeks verbinding proberen te maken met de juiste adapter.
+Een vereenvoudigde weergave van deze werkwijze is:
+
+\begin{verbatim}
+import obd
+
+obd.scan_serial()
+\end{verbatim}
+
+De gevonden poort wordt vervolgens als parameter gebruikt bij het initialiseren van de verbinding:
+
+\begin{verbatim}
+connection = obd.OBD(PORT)
+\end{verbatim}
+
+\subsection{Controleren van de verbinding}
+Na het initialiseren van de verbinding wordt gecontroleerd of de verbinding daadwerkelijk tot stand is gekomen. Dit gebeurt met behulp van de functie \texttt{is\_connected()}.
+
+\begin{verbatim}
+connection = obd.OBD(PORT)
+
+if not connection.is_connected():
+    print("Geen verbinding")
+    exit()
+
+print("Verbonden")
+\end{verbatim}
+
+Wanneer de verbinding succesvol tot stand is gebracht, kan de applicatie OBD-II-commando's naar het voertuig sturen en de bijbehorende responses ontvangen.
+
+\subsection{Uitlezen van voertuigparameters}
+Nadat een verbinding met het voertuig tot stand is gebracht, kunnen verschillende voertuigparameters worden opgevraagd. Hiervoor wordt gebruikgemaakt van de commando's die door de \texttt{python-OBD}-bibliotheek worden aangeboden. Voor elke gewenste parameter wordt een afzonderlijk verzoek naar het voertuig gestuurd. De ontvangen response wordt vervolgens door de bibliotheek verwerkt en beschikbaar gesteld aan de Python-applicatie.
+In dit onderzoek worden onder andere het motortoerental, de voertuigsnelheid en de motorbelasting uitgelezen. Deze parameters worden met behulp van de overeenkomstige OBD-commando's opgevraagd:
+
+\begin{verbatim}
+rpm = connection.query(obd.commands.RPM)
+speed = connection.query(obd.commands.SPEED)
+engine_load = connection.query(obd.commands.ENGINE_LOAD)
+\end{verbatim}
+
+Hierbij wordt met \texttt{RPM} het motortoerental opgevraagd, met \texttt{SPEED} de voertuigsnelheid en met \texttt{ENGINE\_LOAD} de berekende motorbelasting. De \texttt{query()}-functie zorgt ervoor dat voor elke parameter een request naar het voertuig wordt verstuurd en dat de bijbehorende response wordt ontvangen.
+De ontvangen gegevens worden vervolgens gebruikt voor verdere verwerking binnen de applicatie. Tijdens het onderzoek worden verschillende parameters op deze manier opgevraagd bij de drie testvoertuigen. Hierdoor kan worden vastgesteld welke parameters door elk voertuig worden ondersteund en welke parameters als gemeenschappelijke gegevensbron voor het verdere onderzoek kunnen worden gebruikt.
+
+\section{Vergelijking van de voertuigen en beschikbare parameters}
+Hier vergelijk je de drie testvoertuigen:
+- welke parameters bij elk voertuig beschikbaar zijn
+- welke parameters bij alle drie beschikbaar zijn
+- welke parameters slechts bij één of twee voertuigen beschikbaar zijn
+- eventuele verschillen in de uitgelezen waarden
+- eventuele verschillen in de snelheid waarmee data beschikbaar komt
+- welke parameters geschikt zijn om in het algemene dashboard te gebruiken
+- welke parameters uiteindelijk worden geselecteerd voor de simulatieomgeving
+- beperkingen van de vergelijking, aangezien slechts drie voertuigen worden getest

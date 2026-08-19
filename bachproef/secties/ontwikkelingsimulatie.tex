@@ -1,2 +1,63 @@
 \chapter{\IfLanguageName{dutch}{Ontwikkeling van een OBD-II-simulatieomgeving}{Development of an OBD-II Simulation Environment}}%
 \label{ch:ontwikkeling-van-een-obd-ii-simulatieomgeving}
+In dit hoofdstuk wordt de ontwikkeling van een simulatieomgeving voor OBD-II-voertuigdata beschreven. Tijdens de ontwikkeling van een applicatie voor realtime voertuigmonitoring is het niet altijd mogelijk om voortdurend over een fysiek voertuig en een OBD-II-adapter te beschikken. Hierdoor kan het testen en ontwikkelen van de applicatie worden bemoeilijkt.
+Om dit probleem op te vangen, wordt een simulatieomgeving ontwikkeld die voertuigdata kan genereren zonder dat hiervoor een fysieke verbinding met een voertuig nodig is. De simulatie is gebaseerd op de voertuigdata die in het vorige hoofdstuk werd verzameld. Hierbij wordt rekening gehouden met de beschikbare parameters en de waarden en patronen die bij de drie testvoertuigen werden vastgesteld.
+In dit hoofdstuk wordt eerst toegelicht waarom simulatie binnen dit onderzoek noodzakelijk is. Vervolgens wordt besproken hoe de echte voertuigdata als basis voor de simulatie wordt gebruikt en hoe de simulatieomgeving is ontworpen. Daarna wordt beschreven hoe de verschillende voertuigparameters en rijsituaties worden gesimuleerd. Tot slot wordt de gegenereerde data vergeleken met de verzamelde voertuigdata om na te gaan in welke mate de simulatie geschikt is voor de verdere ontwikkeling en testing van de applicatie.
+
+\section{Noodzaak van simulatie}
+Hier bespreek je:
+- waarom een simulatieomgeving nodig is
+- dat een fysiek voertuig niet altijd beschikbaar is
+- waarom dit een probleem vormt tijdens de ontwikkeling en testing
+- hoe een simulator het mogelijk maakt om zonder fysiek voertuig te ontwikkelen
+- welke voordelen simulatie biedt voor herhaalbare testen
+- welke beperkingen een simulator heeft ten opzichte van echte voertuigdata
+
+\section{Analyse van echte voertuigdata}
+Hier bespreek je:
+- welke echte voertuigdata uit het vorige hoofdstuk wordt gebruikt als basis
+- welke parameters worden gesimuleerd
+- welke waarden en bereiken bij de drie voertuigen werden vastgesteld
+- welke patronen in de data zichtbaar zijn
+- hoe deze metingen worden gebruikt om realistische simulatiegegevens te genereren
+
+\section{Ontwerp van de simulatieomgeving}
+Hier bespreek je:
+- de architectuur van de simulator
+- hoe de simulator voertuigdata genereert
+- welke componenten de simulator bevat
+- hoe de gegenereerde data wordt doorgestuurd naar de applicatie
+- hoe de simulator kan worden gestart en gestopt
+- hoe de updatefrequentie wordt ingesteld
+- hoe verschillende voertuigsituaties kunnen worden nagebootst
+
+\section{Simulatie van voertuigparameters}
+Hier bespreek je:
+- hoe RPM wordt gesimuleerd
+- hoe snelheid wordt gesimuleerd
+- hoe Throttle Position wordt gesimuleerd
+- hoe Engine Load wordt gesimuleerd
+- hoe MAF wordt gesimuleerd
+- hoe Air Temperature wordt gesimuleerd
+- hoe Coolant Temperature wordt gesimuleerd
+- hoe Engine Runtime wordt gesimuleerd
+- hoe de waarden onderling samenhangen
+- hoe wordt voorkomen dat de simulator volledig willekeurige waarden genereert
+
+\section{Simulatie van verschillende rijsituaties}
+Hier bespreek je:
+- stationair draaien
+- optrekken
+- constante snelheid
+- vertragen
+- eventueel verschillende intensiteiten van acceleratie
+- hoe voertuigparameters tijdens deze situaties veranderen
+- waarom het simuleren van realistische scenario's belangrijk is voor het testen van het dashboard
+
+\section{Validatie van de simulatie}
+Hier bespreek je:
+- hoe je controleert of de gesimuleerde data realistisch is
+- vergelijking tussen echte en gesimuleerde waarden
+- vergelijking van patronen en veranderingen
+- welke verschillen er eventueel zijn
+- in welke mate de simulator geschikt is voor ontwikkeling en testing

@@ -1,2 +1,53 @@
 \chapter{\IfLanguageName{dutch}{Ontwikkeling van een realtime monitoringdashboard}{Development of a Real-time Monitoring Dashboard}}%
 \label{ch:ontwikkeling-van-een-realtime-monitoringdashboard}
+In dit hoofdstuk wordt de ontwikkeling van het realtime monitoringdashboard beschreven. Het doel van het dashboard is om de via OBD-II verzamelde voertuiggegevens op een overzichtelijke manier aan de gebruiker te presenteren.
+De applicatie bestaat uit verschillende componenten die instaan voor het verzamelen, verwerken en visualiseren van de voertuigdata. Hierbij wordt een backend gebruikt om de gegevens te verwerken en beschikbaar te stellen aan de frontend, terwijl de frontend instaat voor de visuele weergave van de realtime voertuiggegevens.
+Eerst wordt de architectuur van de applicatie besproken. Vervolgens worden de backend en frontend afzonderlijk behandeld. Daarna wordt beschreven hoe de voertuigdata tussen de verschillende componenten wordt doorgestuurd en hoe deze gegevens realtime in het dashboard worden weergegeven.
+
+\section{Architectuur van de applicatie}
+Hier bespreek je:
+- de algemene architectuur van je systeem
+- de verschillende componenten
+- OBD-II-adapter
+- backend
+- API/WebSocket-laag
+- frontend
+- de datastroom tussen de componenten
+- eventueel een architectuurdiagram
+
+\section{Backend}
+Hier bespreek je:
+- welke technologieën je voor de backend gebruikt
+- hoe de backend verbinding maakt met OBD-II
+- hoe voertuigdata wordt uitgelezen
+- hoe de data wordt verwerkt
+- hoe de data beschikbaar wordt gemaakt voor de frontend
+- hoe de simulator op dezelfde backend kan worden aangesloten
+- hoe je omgaat met de verschillende databronnen
+
+\section{Frontend}
+Hier bespreek je:
+- welke technologieën je voor de frontend gebruikt
+- de structuur van het dashboard
+- welke voertuiggegevens worden weergegeven
+- hoe de verschillende dashboardcomponenten zijn opgebouwd
+- hoe grafieken en andere visualisaties worden gebruikt
+- hoe de interface realtime wordt bijgewerkt
+
+\section{Datastroom}
+Hier bespreek je:
+- hoe data vanuit het voertuig naar de backend gaat
+- hoe de backend de data verwerkt
+- hoe de data naar de frontend wordt doorgestuurd
+- hoe de frontend de ontvangen gegevens verwerkt
+- hoe een nieuwe meetwaarde uiteindelijk op het dashboard verschijnt
+- eventueel een sequence diagram
+
+\section{Realtime weergave}
+Hier bespreek je:
+- hoe nieuwe voertuiggegevens op het dashboard terechtkomen
+- hoe de frontend de ontvangen data verwerkt
+- hoe vaak het dashboard wordt bijgewerkt
+- hoe grafieken en waarden worden aangepast
+- hoe je voorkomt dat oude data onnodig wordt bijgehouden
+- hoe de gebruikersinterface overzichtelijk blijft bij continue datastromen
