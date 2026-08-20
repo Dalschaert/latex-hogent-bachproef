@@ -1,31 +1,45 @@
 \chapter{\IfLanguageName{dutch}{Onderzoek en verzameling van voertuigdata}{Research and Collection of Vehicle Data}}%
 \label{ch:onderzoek-en-verzameling-van-voertuigdata}
-In dit hoofdstuk wordt onderzocht hoe voertuigdata via OBD-II kan worden verzameld en welke gegevens door verschillende voertuigen beschikbaar worden gesteld. Hiervoor worden vier verschillende voertuigen gebruikt. Het doel hiervan is om na te gaan welke parameters via OBD-II kunnen worden uitgelezen, welke parameters door meerdere voertuigen worden ondersteund en welke verschillen hierbij tussen voertuigen optreden.
-Eerst wordt kort de werking van OBD-II en de communicatie tussen de computer en het voertuig besproken. Vervolgens wordt beschreven hoe de verbinding met de voertuigen tot stand wordt gebracht en hoe de voertuiggegevens via Python worden opgevraagd. Daarna wordt onderzocht welke OBD-II-commando's door de verschillende voertuigen worden ondersteund. Hierbij wordt voornamelijk gekeken naar de parameters uit Mode 01, aangezien deze mode gericht is op het opvragen van actuele voertuiggegevens en daardoor relevant is voor realtime monitoring.
-Tot slot worden de beschikbare parameters van de vier voertuigen met elkaar vergeleken. Op basis van deze vergelijking wordt bepaald welke parameters door alle of meerdere voertuigen worden ondersteund en welke parameters geschikt zijn om op te nemen in een algemeen dashboard en de verdere simulatieomgeving. Hierbij wordt ook rekening gehouden met de beperkingen van een onderzoek waarbij slechts vier voertuigen worden getest.
+In dit hoofdstuk wordt onderzocht hoe voertuigdata via OBD-II kan worden
+verzameld en welke gegevens beschikbaar zijn. Hiervoor worden vier verschillende
+voertuigen gebruikt. Het doel hiervan is om na te gaan welke parameters via
+OBD-II kunnen worden uitgelezen en welke verschillen hierbij tussen voertuigen
+optreden.
 
-\section{OBD-II}
+Eerst wordt beschreven hoe de verbinding met de voertuigen tot stand wordt
+gebracht en hoe de gegevens worden uitgelezen. Vervolgens wordt onderzocht
+welke OBD-II-commando's door de verschillende voertuigen worden ondersteund.
+Tot slot worden de beschikbare voertuigparameters van de vier voertuigen met
+elkaar vergeleken en wordt bepaald welke parameters bij alle onderzochte
+voertuigen beschikbaar zijn.
 
-\subsection{Werking van OBD-II}
-On-Board Diagnostics, afgekort als OBD, is een systeem waarmee elektronische voertuigsystemen kunnen worden uitgelezen. OBD-II is de tweede generatie van dit systeem en voorziet in een gestandaardiseerde manier om informatie over de werking en toestand van een voertuig op te vragen. Hiervoor beschikt het voertuig over een OBD-II-aansluiting waarop een extern diagnoseapparaat kan worden aangesloten.
-Via deze aansluiting kunnen verschillende soorten gegevens worden opgevraagd. Dit omvat onder andere actuele gegevens van de motor, informatie over sensoren en diagnostische gegevens zoals opgeslagen foutcodes. De hoeveelheid beschikbare informatie is echter afhankelijk van het voertuig en de aanwezige elektronische systemen. Niet elk voertuig ondersteunt daarom dezelfde parameters.
-De communicatie verloopt volgens een request-responseprincipe. De externe applicatie stuurt een verzoek naar het voertuig waarin wordt aangegeven welke gegevens gewenst zijn. Het voertuig verwerkt dit verzoek en stuurt vervolgens een response terug. Deze response bevat de gegevens die overeenkomen met het opgevraagde commando.
-Voor realtime monitoring zijn vooral de actuele meetwaarden van belang. Deze gegevens kunnen herhaaldelijk worden opgevraagd, waardoor een continue stroom van voertuigdata ontstaat. De snelheid waarmee dit mogelijk is, is onder andere afhankelijk van het gebruikte communicatieprotocol, de adapter en de tijd die het voertuig nodig heeft om op een request te reageren.
-
-\subsection{PIDs}
-Voor het opvragen van gestandaardiseerde voertuiggegevens wordt gebruikgemaakt van Parameter IDs, ook wel PIDs genoemd. Een PID identificeert een bepaalde parameter die door het voertuig kan worden opgevraagd.
-Een voorbeeld hiervan is de PID voor het motortoerental. In de gebruikte Python-bibliotheek wordt deze parameter voorgesteld door \texttt{obd.commands.RPM}. Op dezelfde manier bestaan er commando's voor bijvoorbeeld voertuigsnelheid, koelvloeistoftemperatuur, inlaatluchttemperatuur en motorbelasting.
-Niet iedere PID wordt door ieder voertuig ondersteund. Het voertuig geeft bij het opvragen van de beschikbare commando's aan welke parameters beschikbaar zijn. Hierdoor kan vooraf worden bepaald welke gegevens bij een bepaald voertuig kunnen worden uitgelezen.
-Binnen OBD-II zijn de PIDs onderverdeeld over verschillende modes. Voor dit onderzoek is voornamelijk Mode 01 relevant. Deze mode wordt gebruikt voor het opvragen van actuele gegevens van het voertuig, zoals het motortoerental, de snelheid en de motorbelasting. Andere modes kunnen bijvoorbeeld gebruikt worden voor het opvragen van diagnostische foutcodes of andere diagnostische informatie.
+De resultaten uit dit hoofdstuk vormen de basis voor de verdere ontwikkeling
+van de simulatieomgeving en de realtime monitoringapplicatie.
 
 \section{Verbinding met het voertuig}
-Voor het verzamelen van de voertuigdata wordt gebruikgemaakt van een Vgate VLinker FS OBD-II-adapter. Deze adapter ondersteunt onder andere verschillende CAN-busvarianten en wordt via USB met de computer verbonden. De adapter vormt hierdoor de interface tussen de OBD-II-poort van het voertuig en de software die gebruikt wordt voor het uitlezen van de voertuigdata.
-Voor de communicatie met de adapter wordt Python gebruikt in combinatie met de \texttt{python-OBD}-bibliotheek. Deze bibliotheek biedt functionaliteiten om een verbinding met een OBD-II-adapter tot stand te brengen en vervolgens verschillende OBD-II-commando's naar het voertuig te sturen.
-De gebruikte opstelling bestaat uit drie onderdelen: het voertuig, de OBD-II-adapter en de computer. De adapter wordt aangesloten op de OBD-II-poort van het voertuig en vervolgens via USB verbonden met de computer. De Python-applicatie communiceert vervolgens met de adapter en gebruikt deze om requests naar het voertuig te sturen.
+Voor het verzamelen van de voertuigdata wordt gebruikgemaakt van een
+Vgate VLinker FS OBD-II-adapter. Deze adapter wordt via USB met de computer
+verbonden en vormt de interface tussen de OBD-II-poort van het voertuig en de
+software die gebruikt wordt voor het uitlezen van de voertuigdata.
+
+Voor de communicatie met de adapter wordt Python gebruikt in combinatie met
+de \texttt{python-OBD}-bibliotheek. Deze bibliotheek biedt functionaliteiten om
+een verbinding met een OBD-II-adapter tot stand te brengen en vervolgens
+verschillende voertuigparameters op te vragen.
+
 
 \subsection{Detecteren van de seriële poort}
-Bij het opstarten van de applicatie wordt eerst nagegaan via welke seriële poort de OBD-II-adapter beschikbaar is. Hiervoor wordt de functie \texttt{obd.scan\_serial()} uit de gebruikte Python-bibliotheek aangeroepen. Deze functie geeft een overzicht van de seriële poorten waarop de adapter mogelijk beschikbaar is.
-Tijdens de ontwikkeling bleek dat een automatische verbinding met de adapter niet betrouwbaar tot stand kwam. Daarom wordt de beschikbare poort expliciet geselecteerd. De gebruiker krijgt eerst een lijst van de gevonden seriële poorten te zien en selecteert vervolgens de poort waarop de OBD-II-adapter is aangesloten.
+Bij het opstarten van de applicatie wordt eerst nagegaan via welke seriële poort
+de OBD-II-adapter beschikbaar is. Hiervoor wordt de functie
+\texttt{obd.scan\_serial()} uit de gebruikte Pythonbibliotheek aangeroepen.
+Deze functie geeft een overzicht van de seriële poorten die op de computer
+beschikbaar zijn.
+
+Tijdens de ontwikkeling bleek dat een automatische verbinding met de adapter
+niet betrouwbaar tot stand kwam. Daarom worden de beschikbare poorten eerst
+opgevraagd en wordt vervolgens expliciet geselecteerd via welke poort verbinding
+moet worden gemaakt.
+
 Een vereenvoudigde weergave van het detecteren van de beschikbare poorten is:
 
 \begin{verbatim}
@@ -34,16 +48,21 @@ import obd
 ports = obd.scan_serial()
 \end{verbatim}
 
-Vervolgens wordt een van de gevonden poorten geselecteerd en meegegeven aan de initialisatie van de OBD-verbinding:
+De geselecteerde poort wordt vervolgens als parameter meegegeven bij het
+initialiseren van de OBD-II-verbinding:
 
 \begin{verbatim}
 connection = obd.OBD(PORT)
 \end{verbatim}
 
-In de uiteindelijke implementatie wordt gecontroleerd of de geselecteerde poort daadwerkelijk een actieve verbinding met de OBD-II-adapter oplevert. Hierdoor wordt vermeden dat de applicatie verdergaat wanneer geen geldige verbinding met het voertuig tot stand kan worden gebracht.
+Door de seriële poort expliciet te selecteren, kan worden vermeden dat de
+applicatie probeert verbinding te maken via een verkeerde of niet-beschikbare
+poort.
 
 \subsection{Controleren van de verbinding}
-Na het initialiseren van de verbinding wordt gecontroleerd of de verbinding daadwerkelijk tot stand is gekomen. Dit gebeurt met behulp van de functie \texttt{is\_connected()}.
+Na het initialiseren van de verbinding wordt gecontroleerd of de verbinding
+daadwerkelijk tot stand is gekomen. Hiervoor wordt gebruikgemaakt van de
+functie \texttt{is\_connected()}.
 
 \begin{verbatim}
 connection = obd.OBD(PORT)
@@ -55,13 +74,19 @@ if not connection.is_connected():
 print("Verbonden")
 \end{verbatim}
 
-Wanneer de verbinding succesvol tot stand is gebracht, kan de applicatie OBD-II-commando's naar het voertuig sturen en de bijbehorende responses ontvangen.
-Naast het controleren van de verbinding wordt tijdens het onderzoek ook informatie over het gebruikte communicatieprotocol opgevraagd. De gebruikte bibliotheek maakt het mogelijk om zowel de naam als de identificatie van het protocol op te vragen. Dit is relevant omdat de verschillende testvoertuigen niet noodzakelijk hetzelfde communicatieprotocol gebruiken.
-Uit de metingen blijkt bijvoorbeeld dat drie van de vier geteste voertuigen gebruikmaken van \texttt{ISO 15765-4 (CAN 11/500)}, terwijl één voertuig gebruikmaakt van \texttt{ISO 15765-4 (CAN 29/500)}. Beide zijn gebaseerd op CAN-communicatie, maar gebruiken een verschillend CAN-frameformaat.
+Wanneer de verbinding succesvol tot stand is gebracht, kan de applicatie
+OBD-II-commando's naar het voertuig sturen en de bijbehorende responses
+ontvangen. Indien geen verbinding tot stand kan worden gebracht, wordt het
+uitlezen van de voertuigdata niet gestart.
 
 \subsection{Uitlezen van voertuigparameters}
-Nadat een verbinding met het voertuig tot stand is gebracht, kunnen verschillende voertuigparameters worden opgevraagd. Hiervoor wordt gebruikgemaakt van de commando's die door de \texttt{python-OBD}-bibliotheek worden aangeboden. Voor iedere gewenste parameter wordt een afzonderlijk request naar het voertuig gestuurd. De ontvangen response wordt vervolgens door de bibliotheek verwerkt en beschikbaar gesteld aan de Python-applicatie.
-In dit onderzoek worden onder andere het motortoerental, de voertuigsnelheid en de motorbelasting uitgelezen. Deze parameters worden met behulp van de overeenkomstige OBD-commando's opgevraagd:
+Nadat een verbinding met het voertuig tot stand is gebracht, kunnen
+verschillende voertuigparameters worden opgevraagd. Hiervoor wordt gebruikgemaakt
+van de commando's die door de \texttt{python-OBD}-bibliotheek worden aangeboden.
+Voor iedere gewenste parameter wordt via de functie \texttt{query()} een
+OBD-II-commando naar het voertuig gestuurd.
+
+Een aantal parameters kan bijvoorbeeld als volgt worden opgevraagd:
 
 \begin{verbatim}
 rpm = connection.query(obd.commands.RPM)
@@ -69,16 +94,42 @@ speed = connection.query(obd.commands.SPEED)
 engine_load = connection.query(obd.commands.ENGINE_LOAD)
 \end{verbatim}
 
-Hierbij wordt met \texttt{RPM} het motortoerental opgevraagd, met \texttt{SPEED} de voertuigsnelheid en met \texttt{ENGINE\_LOAD} de berekende motorbelasting. De functie \texttt{query()} zorgt ervoor dat voor iedere parameter een request naar het voertuig wordt verstuurd en dat de bijbehorende response wordt ontvangen.
-De ontvangen waarde kan vervolgens via het \texttt{value}-attribuut van de response worden uitgelezen. De bibliotheek voorziet hierbij ook in de bijbehorende eenheid. Hierdoor kan de waarde rechtstreeks binnen de Python-applicatie worden gebruikt voor verdere verwerking.
-Naast het opvragen van individuele parameters wordt tijdens het onderzoek ook nagegaan welke commando's door het voertuig worden ondersteund. Hiervoor wordt gebruikgemaakt van de lijst \texttt{supported\_commands} van de verbinding. Deze lijst bevat de commando's die door de bibliotheek als beschikbaar voor het verbonden voertuig worden beschouwd.
-Een vereenvoudigde manier om deze commando's op te vragen is:
+Hierbij wordt met \texttt{RPM} het motortoerental opgevraagd, met
+\texttt{SPEED} de voertuigsnelheid en met \texttt{ENGINE\_LOAD} de berekende
+motorbelasting. De ontvangen response wordt door de bibliotheek verwerkt,
+waarna de waarde binnen de Pythonapplicatie kan worden gebruikt.
+
+Niet ieder voertuig ondersteunt echter dezelfde OBD-II-commando's. Daarom werd
+voor ieder testvoertuig eerst onderzocht welke commando's beschikbaar waren,
+voordat werd bepaald welke gegevens in de verdere applicatie konden worden
+gebruikt.
+
+\section{Inventarisatie van beschikbare OBD-II-data}
+Om de beschikbare voertuigdata op een systematische manier te onderzoeken,
+werd voor ieder testvoertuig een export gemaakt van de door het voertuig
+ondersteunde OBD-II-commando's. Hiervoor werd na het opzetten van de verbinding
+gebruikgemaakt van de verzameling \texttt{supported\_commands} van de
+\texttt{python-OBD}-bibliotheek.
+
+De beschikbare commando's werden voor ieder voertuig verzameld en naar een
+CSV-bestand geschreven. Naast de ondersteunde commando's werden ook enkele
+algemene gegevens opgeslagen, waaronder het gebruikte OBD-II-protocol en,
+indien beschikbaar, het VIN van het voertuig.
+
+Een vereenvoudigde weergave van het verzamelen van de ondersteunde commando's
+is:
 
 \begin{verbatim}
 supported = list(connection.supported_commands)
+
+for cmd in supported:
+    print(cmd.name, cmd.command, cmd.mode)
 \end{verbatim}
 
-Vervolgens worden de beschikbare commando's gefilterd op basis van hun mode. Voor het onderzoek naar actuele voertuiggegevens wordt voornamelijk gekeken naar de commando's uit Mode 01:
+Voor het onderzoek naar actuele voertuigparameters zijn voornamelijk de
+Mode~01-commando's relevant. Deze mode bevat actuele gegevens die tijdens de
+werking van het voertuig kunnen worden opgevraagd. Daarom werden deze
+commando's afzonderlijk uit de volledige verzameling geselecteerd:
 
 \begin{verbatim}
 mode1 = [
@@ -87,96 +138,163 @@ mode1 = [
 ]
 \end{verbatim}
 
-Op deze manier wordt per voertuig een overzicht opgebouwd van de actuele parameters die volgens de OBD-II-communicatie beschikbaar zijn.
+Een voorbeeld van de gedetecteerde en ondersteunde OBD-II-commando's bij een
+van de testvoertuigen
 
-\subsection{Verzamelen van de beschikbare parameters}
-Om de verschillen tussen de voertuigen te onderzoeken, wordt voor ieder voertuig een exportbestand aangemaakt. Tijdens deze meting worden verschillende gegevens verzameld, waaronder de VIN indien deze beschikbaar is, het gebruikte communicatieprotocol, de ondersteunde OBD-II-commando's en de beschikbare Mode 01-commando's.
-Daarnaast wordt een testquery uitgevoerd, waarbij het motortoerental wordt opgevraagd. Dit dient onder andere om te controleren of na het opbouwen van de verbinding daadwerkelijk gegevens van het voertuig kunnen worden ontvangen.
-De verzamelde gegevens worden opgeslagen in CSV-formaat. Hierdoor kunnen de resultaten van de verschillende voertuigen op een uniforme manier worden verwerkt en met elkaar worden vergeleken.
-Naast de actuele parameters worden ook diagnostische commando's geregistreerd. Zo wordt bijvoorbeeld nagegaan of het voertuig diagnostische foutcodes beschikbaar stelt via Mode 03. Deze gegevens zijn niet noodzakelijk voor de realtime monitoring van het dashboard, maar geven wel bijkomende informatie over de mogelijkheden van de OBD-II-verbinding.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fotos/pids.png}
+    \caption{Voorbeeld van de ondersteunde OBD-II-commando's van een testvoertuig}
+    \label{fig:ondersteunde-pids}
+\end{figure}
+
+Door deze werkwijze bij ieder voertuig op dezelfde manier toe te passen, kon
+een overzicht worden opgesteld van de parameters die door ieder testvoertuig
+worden ondersteund. Dit maakt het mogelijk om de voertuigen onderling te
+vergelijken zonder vooraf aan te nemen dat iedere OBD-II-parameter beschikbaar
+is.
 
 \section{Vergelijking van de voertuigen en beschikbare parameters}
-Voor het onderzoek werden vier verschillende voertuigen gebruikt. Voor ieder voertuig werd een afzonderlijke meting uitgevoerd waarbij de beschikbare OBD-II-commando's werden geregistreerd. De voertuigen worden in dit onderzoek aangeduid als voertuig A, B, C en D.
-De resultaten tonen aan dat er duidelijke verschillen bestaan tussen de voertuigen. Hoewel een groot aantal gestandaardiseerde parameters door meerdere voertuigen wordt ondersteund, beschikt niet ieder voertuig over exact dezelfde set aan parameters.
-Een eerste verschil kan worden vastgesteld in het gebruikte communicatieprotocol. Voertuig A, voertuig C en voertuig D gebruiken het protocol \texttt{ISO 15765-4 (CAN 11/500)}, terwijl voertuig B het protocol \texttt{ISO 15765-4 (CAN 29/500)} gebruikt. Dit toont aan dat de communicatie tussen de computer en het voertuig kan verschillen, ondanks het gebruik van dezelfde OBD-II-interface.
-Ook de beschikbaarheid van een VIN verschilt tussen de voertuigen. Voor voertuig A, B en D kon de VIN via OBD-II worden opgevraagd. Bij voertuig C was dit niet mogelijk. Dit illustreert dat ook gegevens die volgens de OBD-II-standaard beschikbaar kunnen zijn, niet noodzakelijk door ieder voertuig effectief worden aangeboden.
+De inventarisatie werd uitgevoerd op vier verschillende voertuigen. Hierbij
+bleek dat de beschikbare OBD-II-parameters niet volledig overeenkomen tussen
+de verschillende voertuigen. Hoewel een aantal basisparameters bij alle
+voertuigen beschikbaar is, worden bepaalde aanvullende parameters slechts door
+een deel van de testvoertuigen ondersteund.
 
-\subsection{Gemeenschappelijk beschikbare parameters}
-Voor de ontwikkeling van een algemeen dashboard zijn vooral de parameters interessant die door alle vier de voertuigen worden ondersteund. Uit de vergelijking van de Mode 01-commando's blijkt dat verschillende parameters bij alle vier de voertuigen beschikbaar zijn.
-De belangrijkste gemeenschappelijke parameters zijn:
-
-\begin{itemize}
-    \item \texttt{RPM}: motortoerental;
-    \item \texttt{SPEED}: voertuigsnelheid;
-    \item \texttt{ENGINE\_LOAD}: berekende motorbelasting;
-    \item \texttt{MAF}: luchtmassastroom;
-    \item \texttt{COOLANT\_TEMP}: koelvloeistoftemperatuur;
-    \item \texttt{INTAKE\_TEMP}: inlaatluchttemperatuur;
-    \item \texttt{AMBIANT\_AIR\_TEMP}: omgevingstemperatuur;
-    \item \texttt{BAROMETRIC\_PRESSURE}: atmosferische luchtdruk;
-    \item \texttt{INTAKE\_PRESSURE}: inlaatspruitstukdruk;
-    \item \texttt{CONTROL\_MODULE\_VOLTAGE}: spanning van de control module;
-    \item \texttt{RUN\_TIME}: tijd sinds de motor gestart werd;
-    \item \texttt{THROTTLE\_POS}: gasklepstand;
-    \item \texttt{ACCELERATOR\_POS\_D}: stand van het gaspedaal;
-    \item \texttt{ACCELERATOR\_POS\_E}: een aanvullende gaspedaalpositie;
-    \item \texttt{RELATIVE\_THROTTLE\_POS}: relatieve gasklepstand;
-    \item \texttt{O2\_SENSORS}: informatie over de aanwezige zuurstofsensoren.
-\end{itemize}
-
-Niet al deze parameters zijn echter even geschikt voor het realtime dashboard. Sommige parameters zijn voornamelijk diagnostisch of geven informatie die minder relevant is voor de gebruiker. Daarom wordt bij de selectie van de parameters niet alleen gekeken naar beschikbaarheid, maar ook naar de relevantie voor realtime voertuigmonitoring.
-Voor de verdere ontwikkeling zijn met name het motortoerental, de voertuigsnelheid, de motorbelasting, de luchtmassastroom, de koelvloeistoftemperatuur en de inlaatluchttemperatuur interessant. Deze parameters geven samen een bruikbaar beeld van de actuele toestand van de motor en het voertuig.
-
-\subsection{Parameters die niet door alle voertuigen worden ondersteund}
-Naast de gemeenschappelijke parameters zijn er ook verschillende parameters die slechts door één of meerdere voertuigen worden ondersteund.
-Een duidelijk voorbeeld hiervan is \texttt{FUEL\_RATE}. Deze parameter is beschikbaar bij voertuig B, maar niet bij de andere geteste voertuigen. Hetzelfde geldt voor verschillende brandstofgerelateerde parameters, zoals \texttt{FUEL\_LEVEL}, \texttt{FUEL\_INJECT\_TIMING} en bepaalde brandstofdrukparameters. Deze parameters kunnen daardoor niet zonder meer als algemene parameter in een dashboard voor alle voertuigen worden gebruikt.
-Ook voertuig D beschikt over een aantal parameters die bij de andere voertuigen niet voorkomen. Voorbeelden hiervan zijn \texttt{TIMING\_ADVANCE}, \texttt{LONG\_FUEL\_TRIM\_1}, \texttt{SHORT\_FUEL\_TRIM\_1}, \texttt{OIL\_TEMP} en \texttt{THROTTLE\_POS\_B}. Deze gegevens kunnen interessant zijn voor specifieke voertuigen, maar zijn minder geschikt wanneer de applicatie onafhankelijk van het voertuig moet functioneren.
-Voertuig A beschikt eveneens over enkele specifieke parameters, waaronder verschillende diagnostische gegevens en parameters met betrekking tot zuurstof- en NOx-sensoren. Deze worden niet door alle andere testvoertuigen ondersteund.
-De resultaten tonen hierdoor aan dat het niet wenselijk is om ervan uit te gaan dat iedere OBD-II-parameter bij ieder voertuig beschikbaar is. Een generieke applicatie moet daarom rekening houden met ontbrekende parameters.
-
-\subsection{Verschillen in uitgelezen waarden}
-Tijdens de testmetingen werden ook verschillen vastgesteld in de actuele waarden die door de voertuigen werden teruggestuurd. Zo werden tijdens de verbinding verschillende waarden voor het motortoerental gemeten. Deze waarden waren afhankelijk van de toestand van het voertuig op het moment van de meting.
-Tijdens de afzonderlijke tests werden bijvoorbeeld de volgende waarden voor het motortoerental geregistreerd:
+Voor de vergelijking wordt voornamelijk gekeken naar Mode~01-parameters die
+relevant zijn voor het realtime uitlezen en weergeven van voertuigdata. Een
+overzicht van de belangrijkste onderzochte parameters wordt weergegeven in
+Tabel~\ref{tab:vergelijking-obd-parameters}.
 
 \begin{table}[H]
     \centering
-    \caption{Gemeten motortoerental tijdens de testmetingen}
-    \label{tab:rpm-voertuigen}
-    \begin{tabular}{lc}
+    \caption{Vergelijking van beschikbare OBD-II-parameters bij de vier testvoertuigen}
+    \label{tab:vergelijking-obd-parameters}
+    \begin{tabular}{lcccc}
         \hline
-        \textbf{Voertuig} & \textbf{Motortoerental} \\
+        \textbf{Parameter} &
+        \textbf{Voertuig A} &
+        \textbf{Voertuig B} &
+        \textbf{Voertuig C} &
+        \textbf{Voertuig D} \\
         \hline
-        A & 827,0 rpm \\
-        B & 886,5 rpm \\
-        C & 707,0 rpm \\
-        D & 1289,5 rpm \\
+        RPM                       & Ja & Ja & Ja & Ja \\
+        Voertuigsnelheid          & Ja & Ja & Ja & Ja \\
+        Motorbelasting            & Ja & Ja & Ja & Ja \\
+        Koelvloeistoftemperatuur  & Ja & Ja & Ja & Ja \\
+        Inlaatluchttemperatuur    & Ja & Ja & Ja & Ja \\
+        Inlaatspruitstukdruk      & Ja & Ja & Ja & Ja \\
+        Omgevingstemperatuur      & Ja & Ja & Ja & Ja \\
+        Motorlooptijd             & Ja & Ja & Ja & Ja \\
+        Regelmodule-spanning      & Ja & Ja & Ja & Ja \\
+        MAF                       & Ja & Ja & Ja & Nee \\
+        Gaskleppositie            & Ja & Ja & Nee & Ja \\
+        Olietemperatuur           & Nee & Ja & Nee & Ja \\
+        Brandstofniveau           & Nee & Ja & Nee & Ja \\
         \hline
     \end{tabular}
 \end{table}
 
-Deze waarden mogen niet geïnterpreteerd worden als vaste waarden voor de voertuigen. De metingen werden namelijk op verschillende momenten uitgevoerd en het motortoerental is afhankelijk van de actuele toestand van de motor. Het verschil tussen de voertuigen toont wel aan dat dezelfde OBD-II-parameter bij verschillende voertuigen verschillende actuele waarden kan opleveren.
-Voor parameters zoals snelheid, motorbelasting en temperatuur geldt op dezelfde manier dat de waarde afhankelijk is van de toestand van het voertuig op het moment van de meting. Daarom wordt in dit onderzoek vooral de beschikbaarheid van de parameters vergeleken en niet geprobeerd om de absolute waarden van de verschillende voertuigen rechtstreeks met elkaar te vergelijken.
+Uit de vergelijking blijkt duidelijk dat de ondersteuning van OBD-II-parameters
+afhankelijk is van het voertuig. Zo is de luchtmassastroom
+(\texttt{MAF}) beschikbaar bij voertuigen A, B en C, maar niet bij voertuig D.
+De gaskleppositie (\texttt{THROTTLE\_POS}) is beschikbaar bij voertuigen A, B
+en D, maar ontbreekt bij voertuig C.
 
-\subsection{Geschiktheid voor realtime monitoring}
-Bij het bepalen van de parameters voor het algemene dashboard wordt rekening gehouden met drie criteria. Ten eerste moet de parameter door alle of zoveel mogelijk testvoertuigen worden ondersteund. Ten tweede moet de parameter relevant zijn voor het weergeven van de actuele toestand van het voertuig. Ten derde moet de parameter geschikt zijn om herhaaldelijk op te vragen voor realtime monitoring.
-Op basis van deze criteria zijn het motortoerental, de voertuigsnelheid, de motorbelasting, de luchtmassastroom, de koelvloeistoftemperatuur en de inlaatluchttemperatuur geschikte kandidaten voor het algemene dashboard.
-Het motortoerental geeft informatie over de actuele werking van de motor. De snelheid geeft de actuele snelheid van het voertuig weer. De motorbelasting geeft een indicatie van de mate waarin de motor op dat moment wordt belast. De luchtmassastroom geeft informatie over de hoeveelheid lucht die de motor binnenkomt. De koelvloeistoftemperatuur kan gebruikt worden om de bedrijfstemperatuur van de motor te monitoren en de inlaatluchttemperatuur geeft informatie over de temperatuur van de aangezogen lucht.
-Door deze parameters te combineren ontstaat een algemene set van gegevens die bij verschillende voertuigen kan worden gebruikt zonder dat de applicatie afhankelijk wordt van voertuigspecifieke parameters.
+Andere parameters komen slechts bij een beperkter aantal voertuigen voor. Zo
+zijn in deze testopstelling de olietemperatuur en het brandstofniveau
+beschikbaar bij voertuigen B en D, maar niet bij voertuigen A en C. Dit toont
+aan dat een applicatie die met verschillende voertuigen moet kunnen werken niet
+zonder meer kan veronderstellen dat iedere mogelijke OBD-II-parameter
+beschikbaar is.
 
-\subsection{Selectie van parameters voor de simulatieomgeving}
-De vergelijking van de voertuigen vormt ook de basis voor de selectie van de parameters die in de simulatieomgeving worden gebruikt. Het doel van de simulatieomgeving is om voertuigdata te kunnen genereren en verwerken op een manier die vergelijkbaar is met de data die tijdens een echte OBD-II-verbinding wordt ontvangen.
-Daarom wordt voor de algemene parameters voornamelijk gebruikgemaakt van gegevens die bij alle vier de testvoertuigen beschikbaar zijn. Hierdoor kan de simulatieomgeving gebaseerd worden op een gemeenschappelijke dataset en blijft de werking van de applicatie niet afhankelijk van één specifiek voertuig.
-Parameters die slechts bij één voertuig beschikbaar zijn, worden niet opgenomen in de minimale gemeenschappelijke dataset. Deze parameters kunnen eventueel later als voertuigspecifieke uitbreidingen worden toegevoegd.
-De uiteindelijke parameterselectie wordt hierdoor gebaseerd op de resultaten van het onderzoek in plaats van uitsluitend op de parameters die theoretisch door OBD-II kunnen worden ondersteund.
+Naast verschillen in beschikbare parameters werd ook een verschil in het
+gebruikte CAN-protocol vastgesteld. Voertuigen A, C en D maakten tijdens de
+metingen gebruik van \texttt{ISO 15765-4 (CAN 11/500)}, terwijl voertuig B
+gebruikmaakte van \texttt{ISO 15765-4 (CAN 29/500)}. De gebruikte adapter en
+bibliotheek konden in beide gevallen met het voertuig communiceren.
+
+\subsection{Gemeenschappelijk beschikbare parameters}
+Voor de ontwikkeling van een algemeen dashboard zijn vooral de parameters
+interessant die door alle vier de testvoertuigen worden ondersteund. Uit de
+vergelijking blijkt dat verschillende actuele voertuigparameters bij alle vier
+de voertuigen beschikbaar zijn.
+
+De gemeenschappelijk beschikbare parameters binnen de uitgevoerde tests zijn:
+
+\begin{itemize}
+    \item motortoerental (\texttt{RPM});
+    \item voertuigsnelheid (\texttt{SPEED});
+    \item motorbelasting (\texttt{ENGINE\_LOAD});
+    \item koelvloeistoftemperatuur (\texttt{COOLANT\_TEMP});
+    \item inlaatluchttemperatuur (\texttt{INTAKE\_TEMP});
+    \item inlaatspruitstukdruk (\texttt{INTAKE\_PRESSURE});
+    \item omgevingstemperatuur (\texttt{AMBIANT\_AIR\_TEMP});
+    \item motorlooptijd (\texttt{RUN\_TIME});
+    \item regelmodule-spanning (\texttt{CONTROL\_MODULE\_VOLTAGE}).
+\end{itemize}
+
+Deze parameters vormen een geschikte basis voor het algemene dashboard, omdat
+ze bij alle onderzochte voertuigen kunnen worden opgevraagd. Hierdoor kan
+dezelfde basisweergave worden gebruikt zonder afhankelijk te zijn van
+voertuigspecifieke parameters.
+
+Parameters zoals \texttt{MAF} en \texttt{THROTTLE\_POS} kunnen daarentegen
+niet als algemeen beschikbaar worden beschouwd. Hoewel deze bij meerdere
+testvoertuigen aanwezig zijn, ontbreekt telkens ondersteuning bij één van de
+vier voertuigen.
+
+\subsection{Verschillen tussen de testvoertuigen}
+De resultaten tonen aan dat OBD-II wel een gestandaardiseerde manier biedt om
+voertuigdata op te vragen, maar dat dit niet betekent dat ieder voertuig
+dezelfde verzameling parameters beschikbaar stelt. De concrete ondersteuning
+van parameters verschilt tussen de onderzochte voertuigen.
+
+Dit is relevant voor de ontwikkeling van de monitoringapplicatie. Wanneer een
+parameter niet wordt ondersteund, kan deze niet op dezelfde manier worden
+weergegeven als een beschikbare parameter. De applicatie moet daarom rekening
+houden met ontbrekende gegevens en mag niet veronderstellen dat iedere
+mogelijke parameter bij ieder aangesloten voertuig aanwezig is.
+
+De verschillen tonen eveneens aan waarom vooraf een inventarisatie van de
+beschikbare parameters werd uitgevoerd. Door eerst meerdere voertuigen te
+onderzoeken, kon een gemeenschappelijke verzameling parameters worden bepaald
+die als basis kan dienen voor de verdere ontwikkeling van het systeem.
+
+\subsection{Selectie voor de verdere ontwikkeling}
+Op basis van de vergelijking wordt voor de algemene werking van de applicatie
+voornamelijk uitgegaan van parameters die bij alle vier de onderzochte
+voertuigen beschikbaar zijn. Hierdoor kan het dashboard met verschillende
+voertuigen worden gebruikt zonder dat de belangrijkste gegevens afhankelijk
+zijn van één specifiek voertuig.
+
+De verzamelde gegevens vormen daarnaast een uitgangspunt voor de ontwikkeling
+van de simulatieomgeving. De simulator kan hierdoor worden gebaseerd op
+parameters die ook daadwerkelijk via de onderzochte voertuigen konden worden
+uitgelezen. De concrete uitwerking van deze simulatieomgeving wordt in het
+volgende hoofdstuk besproken.
 
 \subsection{Beperkingen van de vergelijking}
-Hoewel de vergelijking een beeld geeft van de verschillen in OBD-II-ondersteuning, zijn er enkele beperkingen aan het onderzoek. De belangrijkste beperking is het beperkte aantal testvoertuigen. Er werden slechts vier voertuigen onderzocht. Hierdoor kunnen de resultaten niet worden beschouwd als een volledige representatie van alle voertuigen die OBD-II ondersteunen.
-Daarnaast kunnen de beschikbare parameters afhankelijk zijn van het bouwjaar, de fabrikant, het motortype, de aanwezige elektronische systemen en de implementatie van OBD-II in het voertuig. Het feit dat een parameter bij de vier geteste voertuigen beschikbaar is, betekent daarom niet dat deze parameter bij ieder ander voertuig gegarandeerd beschikbaar zal zijn.
-Ook werden de voertuigen niet onder identieke omstandigheden getest. De actuele waarden van parameters zoals RPM, snelheid en motorbelasting zijn afhankelijk van de toestand van het voertuig op het moment van de meting. Hierdoor kunnen deze waarden niet gebruikt worden om de prestaties van de voertuigen rechtstreeks met elkaar te vergelijken.
-Verder werd in deze fase voornamelijk gekeken naar de aanwezigheid van OBD-II-commando's en de mogelijkheid om de bijbehorende gegevens op te vragen. De exacte updatefrequentie van iedere afzonderlijke parameter werd niet systematisch voor alle voertuigen gemeten. Verschillen in de snelheid waarmee parameters beschikbaar komen kunnen daarom in een latere fase verder onderzocht worden.
+Bij de interpretatie van deze resultaten moet rekening worden gehouden met het
+beperkte aantal onderzochte voertuigen. In totaal werden vier voertuigen
+getest. De resultaten geven daardoor inzicht in de verschillen die binnen deze
+testopstelling werden vastgesteld, maar kunnen niet worden veralgemeend naar
+alle voertuigen met een OBD-II-interface.
 
-\section{Conclusie}
-Uit het onderzoek blijkt dat OBD-II een geschikte manier is om actuele voertuiggegevens op te vragen en deze via een softwareapplicatie te verwerken. Met behulp van de Vgate VLinker FS-adapter en de \texttt{python-OBD}-bibliotheek kan een verbinding met verschillende voertuigen worden opgebouwd en kunnen gestandaardiseerde OBD-II-commando's worden uitgevoerd.
-De vergelijking van de vier testvoertuigen toont aan dat er zowel overeenkomsten als verschillen bestaan in de beschikbare parameters. Een aantal belangrijke parameters, waaronder het motortoerental, de voertuigsnelheid, de motorbelasting, de luchtmassastroom, de koelvloeistoftemperatuur en de inlaatluchttemperatuur, wordt door alle vier de onderzochte voertuigen ondersteund. Andere parameters zijn slechts bij één of meerdere voertuigen beschikbaar.
-Deze resultaten tonen aan dat een algemene realtime monitoringapplicatie rekening moet houden met verschillen tussen voertuigen. Door voor de basisfunctionaliteit voornamelijk gebruik te maken van gemeenschappelijke parameters kan een generiek dashboard worden ontwikkeld dat bij verschillende voertuigen bruikbaar is. Voertuigspecifieke parameters kunnen vervolgens als optionele uitbreidingen worden behandeld.
-De verzamelde gegevens en de gemaakte vergelijking vormen daarmee de basis voor de volgende fase van het onderzoek, waarin de verwerking en simulatie van voertuigdata en de ontwikkeling van de realtime monitoringapplicatie verder worden uitgewerkt.
+Een parameter die bij alle vier de testvoertuigen beschikbaar is, is dus niet
+noodzakelijk bij ieder ander voertuig beschikbaar. Omgekeerd kan een parameter
+die binnen deze testopstelling slechts bij één of enkele voertuigen werd
+gevonden, bij andere voertuigen wel aanwezig zijn.
+
+Daarnaast geeft de lijst met ondersteunde commando's aan welke parameters door
+het voertuig als ondersteund worden gerapporteerd. De praktische
+beschikbaarheid en bruikbaarheid van een parameter kan afhankelijk zijn van het
+voertuig, de elektronische regeleenheid en de omstandigheden waarin de meting
+wordt uitgevoerd.
+
+De vergelijking moet daarom voornamelijk worden beschouwd als een praktische
+inventarisatie voor de ontwikkeling van de applicatie. Binnen de scope van
+deze bachelorproef is het doel niet om een volledig overzicht van alle mogelijke
+OBD-II-implementaties op te stellen, maar om te bepalen welke gegevens binnen
+de beschikbare testopstelling bruikbaar zijn voor de verdere ontwikkeling van
+de realtime monitoringapplicatie.
