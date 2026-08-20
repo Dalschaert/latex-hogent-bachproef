@@ -1,18 +1,122 @@
-%%=============================================================================
-%% Conclusie
-%%=============================================================================
-
-\chapter{Conclusie}%
+\chapter{\IfLanguageName{dutch}{Conclusie}{Conclusion}}%
 \label{ch:conclusie}
+Deze bachelorproef onderzocht hoe realtime voertuigdata via OBD-II kan worden
+verzameld, verwerkt en gevisualiseerd in een webgebaseerde monitoringapplicatie.
+Daarbij werd onderzocht welke voertuigparameters beschikbaar zijn en hoe deze
+gegevens efficiënt van een backend naar een frontend kunnen worden doorgestuurd.
+Voor dit laatste werden REST API en WebSockets met elkaar vergeleken bij
+verschillende updatefrequenties.
 
-% TODO: Trek een duidelijke conclusie, in de vorm van een antwoord op de
-% onderzoeksvra(a)g(en). Wat was jouw bijdrage aan het onderzoeksdomein en
-% hoe biedt dit meerwaarde aan het vakgebied/doelgroep? 
-% Reflecteer kritisch over het resultaat. In Engelse teksten wordt deze sectie
-% ``Discussion'' genoemd. Had je deze uitkomst verwacht? Zijn er zaken die nog
-% niet duidelijk zijn?
-% Heeft het onderzoek geleid tot nieuwe vragen die uitnodigen tot verder 
-%onderzoek?
+Tijdens het onderzoek werden meerdere voertuigen getest met behulp van een
+Vgate VLinker FS OBD-II-adapter. Hieruit bleek dat de beschikbare
+OBD-II-parameters kunnen verschillen tussen voertuigen. Hoewel OBD-II een
+gestandaardiseerde interface biedt, ondersteunt niet ieder voertuig dezelfde
+gegevens. Bij het ontwikkelen van een algemeen monitoringdashboard moet hiermee
+rekening worden gehouden.
 
-\lipsum[76-80]
+Op basis van de verzamelde voertuigdata werd een realtime monitoringapplicatie
+ontwikkeld met een FastAPI-backend en een React-frontend. De backend staat in
+voor het uitlezen en verwerken van de OBD-II-data, waarna de gegevens naar de
+frontend worden doorgestuurd en in het dashboard worden weergegeven. Daarnaast
+werd een simulatieomgeving ontwikkeld waarmee de applicatie ook zonder een
+fysiek voertuig kan worden ontwikkeld en getest.
 
+Een belangrijk onderdeel van het onderzoek was de vergelijking tussen REST API
+en WebSockets. Bij REST vraagt de frontend via polling op vaste tijdstippen
+nieuwe voertuigdata op. Bij WebSockets wordt een blijvende verbinding gebruikt
+waarlangs opeenvolgende gegevens naar de frontend kunnen worden gestuurd.
+Beide technieken werden getest met update-intervallen van 100, 250 en 1000
+milliseconden. Iedere configuratie werd gedurende 60 seconden getest en
+meerdere keren herhaald. Hierbij werden voornamelijk de latency en het
+netwerkverbruik onderzocht.
+
+% ============================================================================
+% TODO NA METINGEN 1
+% Vul hier de belangrijkste meetresultaten in:
+% - gemiddelde latency;
+% - P95-latency;
+% - netwerkverbruik;
+% - belangrijkste verschillen tussen REST en WebSockets.
+% ============================================================================
+
+Uit de performantiemetingen bleek dat [REST/WebSockets] gemiddeld de laagste
+latency behaalde. Het verschil was het duidelijkst bij een update-interval van
+[100/250/1000] milliseconden. Ook de P95-latency toonde aan dat
+[RESULTAAT].
+
+Op het vlak van netwerkverbruik bleek [REST/WebSockets] het meest efficiënt.
+Bij [INTERVAL] werd [KORT BELANGRIJKSTE RESULTAAT]. De resultaten tonen
+hiermee aan dat zowel de gekozen communicatiemethode als de updatefrequentie
+invloed hebben op de prestaties van de realtime communicatie.
+
+% EINDE TODO 1
+
+Een hogere updatefrequentie zorgt ervoor dat nieuwe voertuiggegevens sneller
+beschikbaar kunnen worden gemaakt in het dashboard, maar verhoogt tegelijkertijd
+de hoeveelheid communicatie die moet worden verwerkt. Bij REST resulteert dit
+in een groter aantal afzonderlijke HTTP-requests en responses, terwijl
+WebSockets opeenvolgende berichten via dezelfde verbinding kunnen versturen.
+
+% ============================================================================
+% TODO NA METINGEN 2
+% Alleen behouden indien je metingen aantonen dat OBD-II zelf een
+% beperkende factor vormt voor de werkelijk behaalde updatefrequentie.
+% ============================================================================
+
+Daarnaast bleek dat de maximaal haalbare updatefrequentie niet uitsluitend
+wordt bepaald door de communicatie tussen backend en frontend. Ook het uitlezen
+van de voertuigparameters via OBD-II neemt tijd in beslag. Hierdoor kan de
+OBD-II-communicatie zelf een beperkende factor vormen voor de snelheid waarmee
+volledige datasets beschikbaar zijn.
+
+% EINDE TODO 2
+
+% ============================================================================
+% TODO NA METINGEN 3
+% Kies hier REST of WebSockets op basis van de resultaten.
+% ============================================================================
+
+Op basis van de uitgevoerde vergelijking kan worden geconcludeerd dat
+[REST/WebSockets] binnen de context van de ontwikkelde applicatie de meest
+geschikte communicatiemethode is voor realtime voertuigmonitoring.
+[VOEG HIER IN ÉÉN OF TWEE ZINNEN TOE WAAROM, OP BASIS VAN DE GEMETEN
+LATENCY EN HET NETWERKVERBRUIK.]
+
+% EINDE TODO 3
+
+Het onderzoek kent enkele beperkingen. De voertuigtests werden uitgevoerd met
+een beperkt aantal voertuigen, waardoor de resultaten rond beschikbare
+OBD-II-parameters niet zonder meer naar alle voertuigen kunnen worden
+veralgemeend. Daarnaast kunnen de gebruikte hardware, OBD-II-adapter en
+testomgeving invloed hebben op de performantiemetingen. De vergelijking tussen
+REST en WebSockets moet daarom voornamelijk worden geïnterpreteerd binnen de
+context van de ontwikkelde applicatie.
+
+Ook de simulator blijft een vereenvoudiging van werkelijk voertuiggedrag.
+Hoewel deze geschikt is om de applicatie zonder fysiek voertuig te ontwikkelen
+en te testen, kunnen niet alle eigenschappen en beperkingen van echte
+OBD-II-communicatie worden nagebootst.
+
+Ondanks deze beperkingen toont het onderzoek aan dat het mogelijk is om
+OBD-II-data via een webgebaseerde applicatie realtime te verzamelen, verwerken
+en visualiseren. De ontwikkelde oplossing brengt de volledige datastroom samen:
+van het uitlezen van voertuigparameters via OBD-II tot het verwerken en
+weergeven van deze gegevens in een realtime dashboard.
+
+Voor toekomstig onderzoek kan de testopstelling worden uitgebreid met meer
+voertuigen en langere performantiemetingen. Daarnaast kunnen andere
+communicatietechnologieën, zoals Server-Sent Events of MQTT, worden onderzocht.
+Ook kan de simulatieomgeving verder worden uitgebreid met meer realistische
+rijsituaties en relaties tussen voertuigparameters.
+
+% ============================================================================
+% TODO NA METINGEN 4
+% Definitieve hoofdconclusie in één zin.
+% ============================================================================
+
+Samenvattend blijkt binnen de onderzochte testopstelling dat
+[REST/WebSockets] bij een update-interval van [100/250/1000] milliseconden
+de meest geschikte oplossing vormt voor het realtime doorsturen van
+OBD-II-voertuigdata, omdat [BELANGRIJKSTE REDEN].
+
+% EINDE TODO 4

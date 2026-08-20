@@ -1,74 +1,20 @@
 \chapter{\IfLanguageName{dutch}{Testing en evaluatie van het systeem}{Testing and Evaluation of the System}}%
 \label{ch:testing-en-evaluatie-van-het-systeem}
-In dit hoofdstuk wordt het ontwikkelde systeem als geheel getest en geëvalueerd. Het doel van deze fase is om na te gaan in welke mate de ontwikkelde applicatie geschikt is voor het realtime verzamelen, verwerken en visualiseren van OBD-II-voertuigdata.
-De tests worden uitgevoerd met zowel echte voertuigdata als gesimuleerde data. Hierbij wordt nagegaan of de verschillende onderdelen van de applicatie correct samenwerken en of de voertuiggegevens op een consistente en bruikbare manier in het dashboard worden weergegeven.
-Daarnaast worden de resultaten van de uitgevoerde testen geanalyseerd en vergeleken met de vooropgestelde doelstellingen en onderzoeksvragen. Op basis hiervan wordt de uiteindelijke werking van het systeem geëvalueerd.
-
-\section{Testopstelling}
-Hier bespreek je:
-- welke hardware en software wordt gebruikt
-- de gebruikte OBD-II-adapter
-- de drie testvoertuigen
-- de computer waarop de applicatie draait
-- de gebruikte backend en frontend
-- de simulator
-- de gekozen communicatiemethode
-- de uiteindelijke updatefrequentie
+In dit hoofdstuk wordt het ontwikkelde systeem als geheel getest en geëvalueerd. Hierbij wordt nagegaan of de verschillende onderdelen van de applicatie correct samenwerken en of OBD-II-voertuigdata succesvol kan worden uitgelezen, verwerkt en weergegeven in het realtime monitoringdashboard.
+De applicatie wordt getest met echte voertuigdata en, waar relevant, met de ontwikkelde simulatieomgeving. De resultaten worden vervolgens gebruikt om te beoordelen in welke mate de ontwikkelde oplossing voldoet aan de vooropgestelde doelstellingen van het onderzoek.
 
 \section{Functionele testen}
-Hier test je of de applicatie doet wat ze moet doen:
-- verbinding maken met het voertuig
-- voertuigdata uitlezen
-- data verwerken in de backend
-- data doorsturen naar de frontend
-- waarden correct weergeven
-- grafieken correct bijwerken
-- simulator gebruiken als databron
-- verschillende voertuigparameters weergeven
+Tijdens de functionele testen wordt nagegaan of de volledige datastroom correct werkt. Hierbij wordt gecontroleerd of een verbinding met het voertuig kan worden opgebouwd, voertuigdata kan worden uitgelezen en de ontvangen gegevens door de backend kunnen worden verwerkt.
+Vervolgens wordt nagegaan of de data correct naar de frontend wordt doorgestuurd en of de ontvangen waarden correct in het dashboard worden weergegeven. Ook wordt gecontroleerd of nieuwe voertuiggegevens realtime zichtbaar worden wanneer de waarden veranderen.
 
 \section{Testen met echte voertuigdata}
-Hier bespreek je:
-- testen met voertuig 1
-- testen met voertuig 2
-- testen met voertuig 3
-- welke parameters beschikbaar zijn
-- of de waarden correct worden weergegeven
-- of de realtime updates correct werken
-- eventuele verschillen tussen de voertuigen
-
+De applicatie wordt getest met de voertuigen die eerder in het onderzoek werden gebruikt. Hierbij wordt nagegaan of de geselecteerde OBD-II-parameters correct kunnen worden uitgelezen en weergegeven in het dashboard.
+De tests hebben voornamelijk als doel om te controleren of de volledige keten, van het voertuig en de OBD-II-adapter tot de backend en frontend, correct functioneert met echte voertuigdata.
 \section{Testen met gesimuleerde data}
-Hier bespreek je:
-- testen met de ontwikkelde simulator
-- verschillende gesimuleerde rijsituaties
-- stationair draaien
-- accelereren
-- constante snelheid
-- vertragen
-- of de data correct wordt verwerkt en weergegeven
-- vergelijking met de werking bij echte voertuigdata
+De simulatieomgeving wordt gebruikt om de applicatie te testen wanneer geen fysiek voertuig beschikbaar is. Hierbij wordt nagegaan of de gegenereerde voertuigdata op dezelfde manier door de backend en frontend kan worden verwerkt als echte OBD-II-data.
+De simulator wordt voornamelijk geëvalueerd als hulpmiddel voor ontwikkeling en functionele testing en wordt niet gebruikt voor de performantievergelijking tussen REST API en WebSockets.
 
-\section{Evaluatie van de resultaten}
-Hier analyseer je:
-- of de applicatie voldoet aan de vooropgestelde doelstellingen
-- of de realtime monitoring correct werkt
-- of de gekozen communicatiemethode geschikt blijkt
-- of de simulator bruikbaar is tijdens ontwikkeling en testing
-- of de gekozen updatefrequentie geschikt is
-- welke resultaten uit de verschillende testfasen naar voren komen
-
-\section{Beperkingen van het onderzoek}
-Hier bespreek je:
-- het beperkte aantal van drie testvoertuigen
-- beperkingen van de gebruikte OBD-II-adapter
-- verschillen in beschikbare voertuigparameters
-- beperkingen van de simulatie
-- eventuele beperkingen in de meetomgeving
-- welke aspecten niet binnen de scope van het onderzoek vallen
-
-\section{Conclusie van de evaluatie}
-Hier vat je samen:
-- wat de belangrijkste resultaten zijn
-- in welke mate de doelstellingen zijn bereikt
-- wat de belangrijkste bevindingen zijn
-- welke conclusies je uit de testen kunt trekken
-- eventuele mogelijke verbeteringen voor toekomstig onderzoek
+\section{Evaluatie en beperkingen}
+Op basis van de uitgevoerde testen wordt beoordeeld in welke mate de ontwikkelde applicatie geschikt is voor realtime voertuigmonitoring. Hierbij wordt gekeken naar de correcte werking van de volledige datastroom, de bruikbaarheid van het dashboard en de inzetbaarheid van de simulator tijdens de ontwikkeling.
+Het onderzoek kent enkele beperkingen. Zo werd slechts een beperkt aantal voertuigen onderzocht en kunnen de beschikbare OBD-II-parameters verschillen tussen voertuigen. Daarnaast vormt de simulator een vereenvoudigde weergave van echte voertuigdata en kan deze niet alle eigenschappen van een werkelijk voertuig nabootsen.
+De resultaten uit dit hoofdstuk worden samen met de vergelijking tussen REST API en WebSockets gebruikt om de uiteindelijke werking van het ontwikkelde systeem te beoordelen.

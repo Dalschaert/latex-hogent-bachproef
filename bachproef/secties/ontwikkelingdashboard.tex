@@ -1,53 +1,161 @@
 \chapter{\IfLanguageName{dutch}{Ontwikkeling van een realtime monitoringdashboard}{Development of a Real-time Monitoring Dashboard}}%
 \label{ch:ontwikkeling-van-een-realtime-monitoringdashboard}
-In dit hoofdstuk wordt de ontwikkeling van het realtime monitoringdashboard beschreven. Het doel van het dashboard is om de via OBD-II verzamelde voertuiggegevens op een overzichtelijke manier aan de gebruiker te presenteren.
-De applicatie bestaat uit verschillende componenten die instaan voor het verzamelen, verwerken en visualiseren van de voertuigdata. Hierbij wordt een backend gebruikt om de gegevens te verwerken en beschikbaar te stellen aan de frontend, terwijl de frontend instaat voor de visuele weergave van de realtime voertuiggegevens.
-Eerst wordt de architectuur van de applicatie besproken. Vervolgens worden de backend en frontend afzonderlijk behandeld. Daarna wordt beschreven hoe de voertuigdata tussen de verschillende componenten wordt doorgestuurd en hoe deze gegevens realtime in het dashboard worden weergegeven.
+In dit hoofdstuk wordt de ontwikkeling van het realtime monitoringdashboard beschreven. Het doel van het dashboard is om de via OBD-II verzamelde voertuiggegevens op een overzichtelijke manier aan de gebruiker te presenteren. Naast gegevens afkomstig van een fysiek voertuig kan ook gebruikgemaakt worden van de simulatieomgeving die in het vorige hoofdstuk werd ontwikkeld.
+De applicatie bestaat uit verschillende componenten die samen instaan voor het verzamelen, verwerken en visualiseren van de voertuigdata. Een backend vormt hierbij de verbinding tussen de databron en de frontend. Deze backend leest de voertuiggegevens uit, verwerkt deze en stelt ze vervolgens beschikbaar aan de frontend. De frontend ontvangt deze gegevens en verwerkt ze tot een realtime visuele weergave.
+Binnen de applicatie worden zowel een REST API als WebSockets geïmplementeerd om voertuigdata van de backend naar de frontend te versturen. Hierdoor kunnen beide communicatiemethoden binnen dezelfde applicatie worden gebruikt en in een later hoofdstuk onder dezelfde omstandigheden met elkaar worden vergeleken.
+Eerst wordt de algemene architectuur van de applicatie besproken. Vervolgens worden de backend en frontend afzonderlijk behandeld. Daarna wordt beschreven hoe de voertuigdata doorheen het systeem stroomt en hoe nieuwe gegevens uiteindelijk realtime op het dashboard worden weergegeven.
 
 \section{Architectuur van de applicatie}
-Hier bespreek je:
-- de algemene architectuur van je systeem
-- de verschillende componenten
-- OBD-II-adapter
-- backend
-- API/WebSocket-laag
-- frontend
-- de datastroom tussen de componenten
-- eventueel een architectuurdiagram
+De applicatie is opgebouwd uit verschillende componenten die elk een specifieke verantwoordelijkheid hebben. Hierbij wordt een onderscheid gemaakt tussen de databron, de backend, de communicatielaag en de frontend.
+De databron kan bestaan uit een fysiek voertuig dat via de OBD-II-adapter verbonden is met de computer of uit de simulatieomgeving die in het vorige hoofdstuk werd ontwikkeld. Beide databronnen leveren voertuiggegevens die verder verwerkt kunnen worden door de applicatie.
+De backend vormt de centrale laag van het systeem. Deze component staat in voor het verkrijgen van de voertuigdata en het beschikbaar stellen ervan aan de frontend. Wanneer een fysiek voertuig als databron wordt gebruikt, communiceert de backend met de OBD-II-adapter. Wanneer de simulatieomgeving wordt gebruikt, worden de gesimuleerde voertuiggegevens als databron gebruikt.
+Tussen de backend en de frontend bevindt zich de communicatielaag. Binnen deze applicatie worden hiervoor twee methoden voorzien: een REST API en een WebSocket-verbinding. Beide methoden hebben als doel om dezelfde voertuigdata aan de frontend beschikbaar te stellen, maar verschillen in de manier waarop deze gegevens worden verzonden.
+De frontend vormt ten slotte de visuele laag van de applicatie. De ontvangen gegevens worden hier verwerkt en weergegeven in het monitoringdashboard. Hierdoor kan de gebruiker de actuele toestand van het voertuig volgen.
+De algemene datastroom kan hierdoor als volgt worden voorgesteld:
+
+\begin{verbatim}
+Fysiek voertuig                Simulatieomgeving
+       |                               |
+OBD-II-adapter                         |
+       |                               |
+       +------------ Backend ----------+
+                        |
+                 REST / WebSocket
+                        |
+                     Frontend
+                        |
+                     Dashboard
+\end{verbatim}
+
+Door de verschillende verantwoordelijkheden van elkaar te scheiden, kunnen de afzonderlijke onderdelen onafhankelijk worden aangepast. Zo kan bijvoorbeeld tussen echte en gesimuleerde voertuigdata worden gewisseld zonder dat de volledige frontend aangepast moet worden. Op dezelfde manier kunnen verschillende communicatiemethoden tussen backend en frontend worden toegepast.
 
 \section{Backend}
-Hier bespreek je:
-- welke technologieën je voor de backend gebruikt
-- hoe de backend verbinding maakt met OBD-II
-- hoe voertuigdata wordt uitgelezen
-- hoe de data wordt verwerkt
-- hoe de data beschikbaar wordt gemaakt voor de frontend
-- hoe de simulator op dezelfde backend kan worden aangesloten
-- hoe je omgaat met de verschillende databronnen
+Voor de backend van de applicatie wordt Python gebruikt in combinatie met FastAPI. De keuze voor Python sluit aan bij het uitlezen van de OBD-II-data, waarvoor eveneens Python en de \texttt{python-OBD}-bibliotheek worden gebruikt. Hierdoor kan de communicatie met het voertuig rechtstreeks geïntegreerd worden in de backend.
+FastAPI wordt gebruikt om de voertuiggegevens beschikbaar te stellen aan de frontend. De backend vormt hierdoor een tussenlaag tussen de databron en de webapplicatie. De frontend communiceert niet rechtstreeks met de OBD-II-adapter, maar ontvangt de gegevens steeds via de backend.
+
+\subsection{Verwerken van voertuigdata}
+Wanneer een fysiek voertuig wordt gebruikt, maakt de backend gebruik van de eerder ontwikkelde OBD-II-functionaliteit om voertuiggegevens op te vragen. De details over het opzetten van deze verbinding en het uitvoeren van OBD-II-queries werden reeds besproken in het hoofdstuk over de verzameling van voertuigdata.
+De waarden die via OBD-II worden ontvangen, worden in de backend verwerkt tot een gemeenschappelijke datastructuur. Hierdoor kunnen de gegevens op een consistente manier naar de frontend worden gestuurd.
+Een vereenvoudigde voorstelling van deze datastructuur kan bijvoorbeeld als volgt worden weergegeven:
+
+\begin{verbatim}
+{
+    "rpm": ...,
+    "speed": ...,
+    "engine_load": ...,
+    "maf": ...,
+    "intake_temperature": ...,
+    "coolant_temperature": ...,
+    "engine_runtime": ...
+}
+\end{verbatim}
+
+Door een vaste datastructuur te gebruiken hoeft de frontend niet rechtstreeks rekening te houden met de manier waarop de oorspronkelijke OBD-II-response is opgebouwd. De backend is verantwoordelijk voor het omzetten van de ontvangen gegevens naar een formaat dat door de frontend kan worden verwerkt.
+
+\subsection{Verschillende databronnen}
+Naast een fysiek voertuig kan ook de simulatieomgeving als databron worden gebruikt. De simulator genereert gegevens in een structuur die aansluit bij de gegevens afkomstig van de echte OBD-II-verbinding.
+Hierdoor kan de backend beide databronnen op een gelijkaardige manier verwerken. Voor de frontend maakt het daardoor zo weinig mogelijk verschil of de ontvangen waarden afkomstig zijn van een fysiek voertuig of van de simulator.
+Deze aanpak is vooral nuttig tijdens de ontwikkeling. Wanneer geen voertuig beschikbaar is, kan de simulator worden gebruikt om de volledige datastroom van backend naar frontend te testen. Wanneer wel een voertuig beschikbaar is, kan de databron worden gewijzigd naar de werkelijke OBD-II-verbinding.
+
+\subsection{Beschikbaar stellen van de gegevens}
+De backend stelt de verwerkte voertuiggegevens op twee manieren beschikbaar: via een REST-endpoint en via een WebSocket-endpoint.
+Bij de REST-implementatie kan de frontend periodiek een HTTP-request uitvoeren om de meest recente voertuiggegevens op te vragen. De backend verwerkt het request, haalt de actuele gegevens op en stuurt deze terug in de response.
+Een vereenvoudigde voorstelling hiervan is:
+
+\begin{verbatim}
+Frontend  ---> HTTP GET ---> Backend
+Frontend  <---   Data   <--- Backend
+\end{verbatim}
+
+Bij de WebSocket-implementatie wordt een verbinding tussen de frontend en backend geopend die actief kan blijven. Via deze verbinding kunnen meerdere updates worden verstuurd zonder voor iedere update een nieuw HTTP-request vanuit de frontend uit te voeren.
+Dit kan vereenvoudigd worden voorgesteld als:
+
+\begin{verbatim}
+Frontend  <------ WebSocket ------> Backend
+              meerdere updates
+\end{verbatim}
+
+In dit hoofdstuk worden beide methoden enkel vanuit het perspectief van de implementatie behandeld. De verschillen in performantie en netwerkgebruik worden later afzonderlijk onderzocht.
 
 \section{Frontend}
-Hier bespreek je:
-- welke technologieën je voor de frontend gebruikt
-- de structuur van het dashboard
-- welke voertuiggegevens worden weergegeven
-- hoe de verschillende dashboardcomponenten zijn opgebouwd
-- hoe grafieken en andere visualisaties worden gebruikt
-- hoe de interface realtime wordt bijgewerkt
+Voor de frontend wordt React in combinatie met TypeScript gebruikt. React maakt het mogelijk om de gebruikersinterface op te bouwen uit afzonderlijke componenten. Hierdoor kunnen verschillende onderdelen van het dashboard onafhankelijk van elkaar worden ontwikkeld en bijgewerkt.
+TypeScript wordt gebruikt om de structuur van de voertuigdata expliciet vast te leggen. Hierdoor kan binnen de frontend worden gecontroleerd welke gegevens verwacht worden wanneer nieuwe voertuigdata vanuit de backend wordt ontvangen.
+
+\subsection{Opbouw van het dashboard}
+Het dashboard is opgebouwd uit verschillende componenten die samen een overzicht geven van de actuele voertuiggegevens. Iedere component is verantwoordelijk voor het weergeven van een bepaald onderdeel van de ontvangen data.
+De gegevens kunnen op verschillende manieren worden weergegeven. Actuele waarden kunnen rechtstreeks als numerieke waarde of meter worden getoond, terwijl gegevens waarvan het verloop relevant is in een grafiek kunnen worden weergegeven.
+De selectie van de weergegeven voertuiggegevens is gebaseerd op het onderzoek uit het hoofdstuk over de verzameling van voertuigdata. Hierbij ligt de nadruk op parameters die bruikbaar zijn voor realtime monitoring en die bij de onderzochte voertuigen voldoende algemeen beschikbaar waren.
+Door het dashboard op te bouwen uit afzonderlijke componenten kan de interface eenvoudig worden uitgebreid of aangepast. Wanneer later een bijkomende voertuigparameter wordt toegevoegd, hoeft hierdoor niet de volledige interface opnieuw opgebouwd te worden.
+
+\subsection{Ontvangen en verwerken van gegevens}
+De frontend houdt de meest recente voertuiggegevens bij in de toestand van de applicatie. Wanneer nieuwe data vanuit de backend wordt ontvangen, wordt deze toestand aangepast.
+React verwerkt deze verandering en werkt vervolgens de componenten bij die afhankelijk zijn van de gewijzigde gegevens. Hierdoor worden nieuwe voertuigwaarden automatisch zichtbaar in de interface.
+Conceptueel verloopt dit proces als volgt:
+
+\begin{verbatim}
+Data ontvangen
+      |
+      v
+Applicatiestatus aanpassen
+      |
+      v
+React-componenten bijwerken
+      |
+      v
+Nieuwe waarden zichtbaar
+\end{verbatim}
+
+De manier waarop nieuwe data wordt ontvangen is afhankelijk van de gekozen communicatiemethode. Bij REST wordt periodiek een nieuwe aanvraag uitgevoerd, terwijl bij WebSockets gegevens via de bestaande verbinding kunnen worden ontvangen.
+De verdere verwerking en visualisatie van de ontvangen data blijft zoveel mogelijk gelijk. Dit is belangrijk voor de latere vergelijking tussen beide communicatiemethoden, aangezien hierdoor voornamelijk de manier van gegevensoverdracht verschilt en niet de volledige werking van het dashboard.
 
 \section{Datastroom}
-Hier bespreek je:
-- hoe data vanuit het voertuig naar de backend gaat
-- hoe de backend de data verwerkt
-- hoe de data naar de frontend wordt doorgestuurd
-- hoe de frontend de ontvangen gegevens verwerkt
-- hoe een nieuwe meetwaarde uiteindelijk op het dashboard verschijnt
-- eventueel een sequence diagram
+De volledige datastroom begint bij de gekozen databron. Wanneer een fysiek voertuig wordt gebruikt, worden de gegevens via de OBD-II-adapter uit het voertuig gelezen. Wanneer de simulator wordt gebruikt, worden de gegevens softwarematig gegenereerd.
+De backend ontvangt of verzamelt deze gegevens en zet ze om naar de gemeenschappelijke datastructuur die binnen de applicatie wordt gebruikt. Vervolgens worden de gegevens via REST of WebSockets naar de frontend doorgestuurd.
+Bij gebruik van REST wordt de datastroom gestart door de frontend. De frontend stuurt periodiek een request naar de backend. Na ontvangst van het request worden de actuele voertuiggegevens teruggestuurd.
+De datastroom kan hierbij als volgt worden weergegeven:
+
+\begin{verbatim}
+Voertuig / Simulator
+        |
+        v
+     Backend
+        ^
+        | HTTP request
+        |
+     Frontend
+        |
+        v
+    Dashboard
+\end{verbatim}
+
+Bij WebSockets blijft na het opzetten van de verbinding een communicatiekanaal tussen de backend en frontend beschikbaar. Nieuwe gegevens kunnen vervolgens via deze bestaande verbinding naar de frontend worden gestuurd.
+
+\begin{verbatim}
+Voertuig / Simulator
+        |
+        v
+     Backend
+        |
+        | WebSocket
+        v
+     Frontend
+        |
+        v
+    Dashboard
+\end{verbatim}
+
+Wanneer de frontend nieuwe voertuigdata ontvangt, wordt de interne toestand van de applicatie aangepast. De relevante dashboardcomponenten worden vervolgens opnieuw weergegeven met de meest recente waarden.
+De volledige weg van een nieuwe meetwaarde kan daardoor worden samengevat als het uitlezen of genereren van de waarde, het verwerken ervan in de backend, het verzenden naar de frontend en het uiteindelijk visualiseren in het dashboard.
 
 \section{Realtime weergave}
-Hier bespreek je:
-- hoe nieuwe voertuiggegevens op het dashboard terechtkomen
-- hoe de frontend de ontvangen data verwerkt
-- hoe vaak het dashboard wordt bijgewerkt
-- hoe grafieken en waarden worden aangepast
-- hoe je voorkomt dat oude data onnodig wordt bijgehouden
-- hoe de gebruikersinterface overzichtelijk blijft bij continue datastromen
+Het dashboard is ontworpen om veranderingen in de voertuigdata continu zichtbaar te maken. Hiervoor worden nieuwe gegevens regelmatig vanuit de backend naar de frontend doorgestuurd en vervolgens in de gebruikersinterface verwerkt.
+Bij gebruik van REST bepaalt de frontend hoe vaak nieuwe gegevens worden opgevraagd. Hiervoor wordt een pollinginterval ingesteld. Een korter interval zorgt ervoor dat sneller nieuwe waarden beschikbaar zijn in het dashboard, maar leidt tegelijkertijd tot een groter aantal HTTP-requests.
+Bij WebSockets hoeft de frontend niet voor iedere update een afzonderlijk request uit te voeren. Nadat de WebSocket-verbinding tot stand is gebracht, kunnen nieuwe gegevens via dezelfde verbinding vanuit de backend naar de frontend worden gestuurd. De frequentie waarmee dit gebeurt, wordt binnen de applicatie bepaald en kan onafhankelijk van de gebruikte communicatiemethode worden ingesteld.
+Wanneer nieuwe voertuigdata wordt ontvangen, wordt de huidige voertuigdata in de frontend vervangen door de nieuwe gegevens. React detecteert deze wijziging en zorgt ervoor dat de componenten die afhankelijk zijn van deze data opnieuw worden weergegeven. Hierdoor worden de meest recente voertuigwaarden automatisch zichtbaar in het dashboard.
+De frontend houdt hierbij geen volledige historiek van alle ontvangen meetwaarden bij. Het dashboard richt zich voornamelijk op het weergeven van de actuele toestand van het voertuig. Hierdoor hoeft de hoeveelheid opgeslagen data in de frontend niet voortdurend toe te nemen wanneer de applicatie gedurende langere tijd actief blijft.
+Dezelfde verwerking van de ontvangen voertuigdata wordt gebruikt voor zowel REST als WebSockets. Hierdoor blijft de visualisatie onafhankelijk van de gebruikte communicatiemethode en kan in het volgende hoofdstuk onderzocht worden welke invloed de gekozen methode heeft op de performantie van de gegevensoverdracht.
+
+\section{Conclusie}
+In dit hoofdstuk werd de ontwikkeling van het realtime monitoringdashboard beschreven. De applicatie bestaat uit een databron, een Python-backend met FastAPI en een React-frontend. Als databron kan zowel een fysiek voertuig via de OBD-II-adapter als de eerder ontwikkelde simulatieomgeving worden gebruikt.
+De backend verwerkt de voertuigdata en stelt deze in een gemeenschappelijke structuur beschikbaar aan de frontend. Hiervoor werden zowel een REST API als een WebSocket-verbinding geïmplementeerd. De frontend verwerkt de ontvangen gegevens en werkt de verschillende onderdelen van het dashboard bij wanneer nieuwe data beschikbaar is.
+Door de verwerking van de voertuigdata zoveel mogelijk onafhankelijk te houden van de gekozen communicatiemethode, kunnen REST en WebSockets binnen dezelfde applicatie worden toegepast. Hierdoor kan in het volgende deel van het onderzoek een gecontroleerde vergelijking worden uitgevoerd tussen beide methoden, waarbij onder andere gekeken kan worden naar de snelheid en netwerkbelasting van de gegevensoverdracht.

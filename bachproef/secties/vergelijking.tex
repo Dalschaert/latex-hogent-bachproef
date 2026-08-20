@@ -1,72 +1,276 @@
 \chapter{\IfLanguageName{dutch}{Vergelijking van REST API en WebSockets}{Comparative Analysis of REST API and WebSockets}}%
 \label{ch:vergelijking-van-rest-api-en-websockets}
-In dit hoofdstuk worden REST API en WebSockets met elkaar vergeleken als communicatiemethoden voor het doorsturen van realtime voertuigdata naar de webapplicatie. Beide technologieën worden binnen dezelfde applicatie geïmplementeerd, zodat hun geschiktheid voor realtime voertuigmonitoring onder vergelijkbare omstandigheden kan worden onderzocht.
-De vergelijking richt zich op verschillende aspecten van de communicatie, waaronder responstijd, latency, updatefrequentie, hoeveelheid dataverkeer en systeembelasting. Daarnaast wordt onderzocht hoe beide technologieën zich gedragen bij verschillende updatefrequenties. Op basis van de resultaten wordt bepaald welke communicatiemethode het meest geschikt is voor de ontwikkelde realtime monitoringapplicatie.
+In dit hoofdstuk worden REST API en WebSockets met elkaar vergeleken als communicatiemethoden voor het doorsturen van realtime voertuigdata van de backend naar de frontend. Beide technologieën zijn binnen dezelfde applicatie geïmplementeerd, waardoor hun geschiktheid voor realtime voertuigmonitoring onder vergelijkbare omstandigheden kan worden onderzocht.
+Voor de vergelijking wordt gebruikgemaakt van echte voertuigdata die via de OBD-II-adapter wordt uitgelezen. Beide communicatiemethoden verwerken hierbij dezelfde voertuigparameters en worden getest met dezelfde hardware- en softwareconfiguratie. Op deze manier wordt getracht om verschillen in de meetresultaten zoveel mogelijk toe te schrijven aan de gebruikte communicatiemethode en het ingestelde update-interval.
+De vergelijking richt zich op twee belangrijke aspecten: latency en netwerkverbruik. Daarnaast wordt onderzocht welke invloed de updatefrequentie heeft op beide communicatiemethoden. Hiervoor worden update-intervallen van 100, 250 en 1000 milliseconden getest. Iedere configuratie wordt gedurende 60 seconden uitgevoerd en drie keer herhaald.
+Op basis van de verzamelde resultaten wordt uiteindelijk beoordeeld welke communicatiemethode binnen de context van de ontwikkelde realtime OBD-II-monitoringapplicatie het meest geschikt is.
 
 \section{REST API}
-Hier bespreek je:
-- wat een REST API is
-- het request-responseprincipe
-- hoe REST binnen jouw applicatie wordt gebruikt
-- hoe de frontend voertuigdata opvraagt
-- hoe vaak requests worden verstuurd
-- welke endpoints je hebt gebruikt
-- hoe de response is opgebouwd
-- voor- en nadelen van REST binnen jouw toepassing
+Binnen de ontwikkelde monitoringapplicatie wordt een REST API gebruikt als eerste methode om voertuigdata van de backend naar de frontend door te sturen. De backend is ontwikkeld met FastAPI en voorziet hiervoor het endpoint \texttt{/api/vehicle-data}.
+Het endpoint haalt de actuele voertuigdata op en geeft deze terug aan de client. Een vereenvoudigde weergave van het gebruikte endpoint is:
+
+\begin{verbatim}
+@app.get("/api/vehicle-data")
+def get_vehicle_data():
+    return get_dashboard_data()
+\end{verbatim}
+
+De communicatie volgt het request-responseprincipe. De frontend start de communicatie door een HTTP GET-request naar de backend te sturen. Na ontvangst van het request haalt de backend de actuele voertuigdata op en stuurt deze als response terug naar de frontend. FastAPI zet het gebruikte \texttt{VehicleData}-object hierbij om naar een JSON-representatie die door de frontend kan worden verwerkt.
+De communicatie kan conceptueel als volgt worden voorgesteld:
+
+\begin{verbatim}
+Frontend                   Backend
+   |                          |
+   | ---- GET request ------> |
+   |                          |
+   | <---- voertuigdata ----- |
+   |                          |
+\end{verbatim}
+
+Omdat de backend bij REST niet zelfstandig nieuwe gegevens naar de frontend stuurt, wordt gebruikgemaakt van polling. De frontend verstuurt op vaste tijdsintervallen een nieuw request naar het endpoint. Hiervoor wordt binnen de React-applicatie gebruikgemaakt van \texttt{setInterval()}.
+Een vereenvoudigde weergave hiervan is:
+
+\begin{verbatim}
+const interval = setInterval(async () => {
+    const data = await getVehicleData();
+    setVehicleData(data);
+}, updateInterval);
+\end{verbatim}
+
+De functie \texttt{getVehicleData()} voert vervolgens het HTTP-request naar de backend uit:
+
+\begin{verbatim}
+export async function getVehicleData() {
+    const response = await fetch(
+        "http://localhost:8000/api/vehicle-data"
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch vehicle data");
+    }
+
+    return response.json();
+}
+\end{verbatim}
+
+Wanneer de nieuwe voertuigdata wordt ontvangen, wordt deze met \texttt{setVehicleData()} opgeslagen in de state van de React-component. Hierdoor wordt het dashboard opnieuw gerenderd met de meest recente waarden.
+Een voordeel van REST binnen deze toepassing is de relatief eenvoudige werking. Iedere aanvraag staat op zichzelf en de frontend bepaalt wanneer nieuwe gegevens nodig zijn. Hierdoor hoeft geen permanente verbinding tussen frontend en backend te worden onderhouden.
+Bij een hoge updatefrequentie moeten echter veel afzonderlijke HTTP-requests worden uitgevoerd. Ieder request en iedere response bevat naast de eigenlijke voertuigdata bijkomende protocolinformatie. Naarmate het pollinginterval kleiner wordt, neemt het aantal requests per seconde toe. In de verdere vergelijking wordt onderzocht welke invloed dit heeft op de latency en het netwerkverbruik.
 
 \section{WebSockets}
-Hier bespreek je:
-- wat WebSockets zijn
-- hoe een permanente verbinding werkt
-- hoe de verbinding tussen frontend en backend tot stand komt
-- hoe de backend nieuwe voertuigdata naar de frontend stuurt
-- hoe vaak berichten worden verstuurd
-- hoe de frontend ontvangen berichten verwerkt
-- voor- en nadelen van WebSockets binnen jouw toepassing
+Als tweede communicatiemethode worden WebSockets gebruikt. WebSockets maken het mogelijk om een blijvende verbinding tussen frontend en backend op te zetten. Nadat deze verbinding tot stand is gebracht, kunnen meerdere berichten via dezelfde verbinding worden verzonden zonder voor iedere update een nieuw HTTP-request uit te voeren.
+Binnen de FastAPI-backend wordt hiervoor het endpoint \texttt{/ws/vehicle-data} voorzien. Wanneer een client verbinding maakt met dit endpoint, wordt de WebSocket-verbinding geaccepteerd:
+
+\begin{verbatim}
+@app.websocket("/ws/vehicle-data")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+\end{verbatim}
+
+Na het accepteren van de verbinding blijft de backend nieuwe voertuigdata versturen zolang de WebSocket-verbinding actief is. De voertuigdata wordt daarbij als JSON naar de frontend verzonden.
+Een vereenvoudigde voorstelling van deze werkwijze is:
+
+\begin{verbatim}
+vehicle_data = get_dashboard_data()
+
+await websocket.send_json(
+    vehicle_data.model_dump()
+)
+\end{verbatim}
+
+Tussen twee opeenvolgende berichten wordt een ingesteld tijdsinterval toegepast. Hierdoor kan worden bepaald met welke frequentie nieuwe voertuigdata naar de frontend wordt gestuurd.
+Conceptueel verloopt de communicatie als volgt:
+
+\begin{verbatim}
+Frontend                    Backend
+   |                           |
+   | ---- verbinding --------> |
+   |                           |
+   | <---- voertuigdata ------ |
+   | <---- voertuigdata ------ |
+   | <---- voertuigdata ------ |
+   |            ...            |
+\end{verbatim}
+
+Aan de frontendzijde wordt een WebSocket-object aangemaakt dat verbinding maakt met het WebSocket-endpoint van de backend:
+
+\begin{verbatim}
+const ws = new WebSocket(
+    "ws://localhost:8000/ws/vehicle-data"
+);
+\end{verbatim}
+
+Nieuwe berichten worden verwerkt via de \texttt{onmessage}-functie. De ontvangen JSON-data wordt omgezet naar een JavaScript-object en vervolgens doorgegeven aan de React-component:
+
+\begin{verbatim}
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    onData(data);
+};
+\end{verbatim}
+
+Wanneer de WebSocket-verbinding niet langer nodig is, wordt deze vanuit de frontend gesloten. Hierdoor kan binnen dezelfde applicatie tussen REST en WebSockets worden gewisseld.
+Het belangrijkste verschil met REST is dat niet voor iedere update een afzonderlijk HTTP-request nodig is. Nadat de verbinding is opgebouwd, kunnen opeenvolgende datasets over dezelfde verbinding worden verzonden. Daartegenover staat dat de WebSocket-verbinding gedurende de communicatie actief moet blijven.
+Welke invloed dit verschil heeft op de latency en het netwerkverbruik wordt in de volgende secties onderzocht.
 
 \section{Onderzoeksopzet}
-Hier beschrijf je hoe je de vergelijking uitvoert:
-- welke data wordt gebruikt
-- gebruik van de simulator
-- eventueel gebruik van echte voertuigdata
-- dezelfde dataset voor beide technieken
-- dezelfde hardware en software
-- welke updatefrequenties worden getest
-- welke meetwaarden worden verzameld
-- hoe lang iedere test duurt
-- hoe je de resultaten vergelijkt
+Om REST API en WebSockets op een zo consistent mogelijke manier te vergelijken, worden beide communicatiemethoden getest binnen dezelfde applicatie en met dezelfde fysieke testopstelling. Voor de metingen wordt gebruikgemaakt van echte voertuigdata die via de Vgate VLinker FS OBD-II-adapter wordt uitgelezen.
+Tijdens alle metingen wordt hetzelfde voertuig gebruikt. Daarnaast blijven de gebruikte computer, OBD-II-adapter, backend, frontend en de opgevraagde voertuigparameters hetzelfde. Het voertuig wordt tijdens de metingen stationair gehouden, zodat de omstandigheden tussen de verschillende testreeksen zo weinig mogelijk veranderen.
+Voor beide communicatiemethoden worden drie verschillende update-intervallen getest: 100, 250 en 1000 milliseconden. De ingestelde intervallen van 100, 250 en 1000 milliseconden komen theoretisch overeen met respectievelijk maximaal 10, 4 en 1 update per seconde. De werkelijk behaalde updatefrequentie kan hiervan afwijken, aangezien ook het uitlezen en verwerken van de OBD-II-data tijd in beslag neemt. Daarom wordt tijdens iedere test eveneens het werkelijke aantal ontvangen updates geregistreerd.
+Iedere configuratie wordt gedurende 60 seconden getest. Om toevallige schommelingen in individuele metingen te beperken, wordt iedere configuratie drie keer uitgevoerd. Hierdoor ontstaan in totaal achttien testruns: negen voor REST en negen voor WebSockets.
+Tijdens iedere test worden de latency en het netwerkverbruik geregistreerd. De latency wordt bepaald door het tijdstip waarop de backend de gegevens verstuurt te vergelijken met het tijdstip waarop deze door de frontend worden ontvangen. Naast de gemiddelde latency wordt ook de P95-latency bepaald. Deze waarde geeft aan onder welke latency 95\% van de waarnemingen valt en geeft daardoor meer inzicht in mogelijke uitschieters dan uitsluitend het gemiddelde.
+Daarnaast wordt tijdens iedere testrun het aantal daadwerkelijk ontvangen updates geregistreerd. Op basis hiervan kan de werkelijke updatefrequentie worden bepaald. Dit maakt het mogelijk om na te gaan in welke mate de ingestelde update-intervallen in de praktijk worden behaald bij het uitlezen van echte OBD-II-data.
+Het netwerkverbruik wordt gedurende dezelfde testperiode geregistreerd. Hierdoor kan worden onderzocht hoeveel netwerkverkeer beide communicatiemethoden veroorzaken bij dezelfde updatefrequentie. Dit is vooral relevant omdat REST voor iedere update een afzonderlijk HTTP-request en bijbehorende response gebruikt, terwijl bij WebSockets een bestaande verbinding gebruikt kan worden om opeenvolgende berichten te versturen.
+Door de verschillende configuraties onder zoveel mogelijk gelijke omstandigheden uit te voeren, kunnen de resultaten onderling worden vergeleken. Hierbij moet wel rekening worden gehouden met het feit dat gebruik wordt gemaakt van echte OBD-II-data. De responstijd van het voertuig en de OBD-II-adapter kan enige variatie introduceren. Omdat dezelfde databron en testopstelling voor beide communicatiemethoden worden gebruikt, blijft deze invloed echter aanwezig bij zowel REST als WebSockets.
 
-Bijvoorbeeld:
-- 100 ms
-- 250 ms
-- 500 ms
-- 1000 ms
+\section{Latency}
+Latency geeft binnen dit onderzoek aan hoeveel tijd verstrijkt tussen het verzenden van voertuigdata door de backend en het ontvangen van deze data door de frontend. Een lage latency is belangrijk voor realtime monitoring, aangezien een grotere vertraging ervoor zorgt dat de informatie op het dashboard minder actueel is.
+Om deze latency te kunnen bepalen, wordt aan de verstuurde voertuigdata een timestamp toegevoegd die aangeeft wanneer de backend de gegevens verstuurt. Deze timestamp wordt binnen de applicatie aangeduid als \texttt{sentAt}.
+Wanneer het bericht de frontend bereikt, wordt opnieuw het huidige tijdstip geregistreerd. De latency wordt vervolgens bepaald door het verschil tussen beide tijdstippen te berekenen:
 
-\section{Responstijd en latency}
-Hier onderzoek je:
-- hoe snel een request/bericht bij de frontend aankomt
-- gemiddelde latency
-- minimale en maximale latency
-- eventuele variatie in latency
-- verschillen tussen REST en WebSockets
-- verschillen bij verschillende updatefrequenties
+\begin{equation}
+    L = t_{\text{ontvangen}} - t_{\text{verzonden}}
+\end{equation}
 
-\section{Dataverkeer en systeembelasting}
-Hier onderzoek je:
-- aantal requests bij REST
-- aantal berichten bij WebSockets
-- hoeveelheid verzonden data
-- netwerkverkeer
-- CPU-belasting
-- eventueel geheugengebruik
-- effect van hogere updatefrequenties
+waarbij $t_{\text{verzonden}}$ het tijdstip is waarop de backend de data verstuurt en $t_{\text{ontvangen}}$ het tijdstip waarop dezelfde data door de frontend wordt ontvangen.
+Voor iedere testrun worden meerdere latencywaarden verzameld. Op basis hiervan wordt eerst de gemiddelde latency berekend:
+
+\begin{equation}
+    \overline{L} =
+    \frac{1}{n}
+    \sum_{i=1}^{n} L_i
+\end{equation}
+
+waarbij $L_i$ één gemeten latencywaarde is en $n$ het totale aantal metingen.
+Naast de gemiddelde latency wordt de P95-latency bepaald. De P95-latency is de waarde waaronder 95\% van de gemeten latencywaarden valt. Deze maatstaf maakt het mogelijk om niet alleen naar het gemiddelde te kijken, maar ook grotere vertragingen tijdens de test zichtbaar te maken.
+Daarnaast worden de minimale en maximale latency bijgehouden om een beeld te krijgen van de spreiding van de gemeten waarden.
+De resultaten kunnen na het uitvoeren van de tests als volgt worden weergegeven:
+
+\begin{table}[H]
+    \centering
+    \caption{Latencyresultaten per testconfiguratie}
+    \label{tab:latency-resultaten}
+    \begin{tabular}{lrrrr}
+        \hline
+        \textbf{Configuratie} &
+        \textbf{Gem. latency} &
+        \textbf{P95} &
+        \textbf{Min.} &
+        \textbf{Max.} \\
+        \hline
+        REST 100 ms        & -- & -- & -- & -- \\
+        WebSocket 100 ms   & -- & -- & -- & -- \\
+        REST 250 ms        & -- & -- & -- & -- \\
+        WebSocket 250 ms   & -- & -- & -- & -- \\
+        REST 1000 ms       & -- & -- & -- & -- \\
+        WebSocket 1000 ms  & -- & -- & -- & -- \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Netwerkverbruik}
+Naast latency wordt het netwerkverbruik van REST en WebSockets onderzocht. Hierbij wordt nagegaan hoeveel data nodig is om gedurende dezelfde periode voertuiggegevens van de backend naar de frontend over te brengen.
+Bij REST wordt voor iedere update een afzonderlijk HTTP-request uitgevoerd. Het netwerkverkeer bestaat daardoor niet uitsluitend uit de JSON-data met voertuiggegevens, maar ook uit de bijkomende informatie die nodig is voor de HTTP-requests en responses.
+Het theoretische aantal requests per seconde wordt bepaald door het ingestelde pollinginterval:
+
+\begin{table}[H]
+    \centering
+    \caption{Theoretisch aantal updates per seconde}
+    \label{tab:updates-per-seconde}
+    \begin{tabular}{lr}
+        \hline
+        \textbf{Interval} & \textbf{Updates per seconde} \\
+        \hline
+        100 ms  & 10 \\
+        250 ms  & 4 \\
+        1000 ms & 1 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Deze waarden stellen het theoretische maximum op basis van het ingestelde interval voor. In de praktijk kan het werkelijke aantal updates lager liggen doordat het uitlezen van de OBD-II-data en de verdere verwerking eveneens tijd in beslag nemen.
+Bij WebSockets wordt eerst één verbinding tussen frontend en backend opgebouwd. Vervolgens worden de verschillende berichten via dezelfde verbinding verzonden. Hierdoor hoeft niet voor iedere update opnieuw een afzonderlijk HTTP-request te worden uitgevoerd.
+Het netwerkverbruik wordt tijdens iedere testrun gemeten met behulp van Wireshark. Omdat de frontend en backend lokaal worden uitgevoerd, wordt het netwerkverkeer tussen beide componenten geregistreerd op de loopback-interface. Het verkeer van de applicatie wordt gefilterd op de poort waarop de FastAPI-backend actief is.
+Voor iedere testrun wordt gedurende dezelfde periode van 60 seconden het netwerkverkeer geregistreerd. Vervolgens wordt de totale hoeveelheid verzonden en ontvangen data bepaald. Omdat iedere configuratie gedurende dezelfde tijd wordt uitgevoerd, kunnen deze waarden rechtstreeks met elkaar worden vergeleken.
+Tijdens de benchmarkperiode worden uitsluitend de aanvragen en berichten geregistreerd die deel uitmaken van de REST- of WebSocket-test. Andere API-aanvragen van de applicatie, zoals het ophalen van beschikbare poorten of de verbindingsstatus, worden buiten de meetperiode uitgevoerd zodat deze het gemeten netwerkverbruik niet beïnvloeden.
+Daarnaast wordt het gemiddelde netwerkverbruik per seconde berekend:
+
+\begin{equation}
+    B_{\text{gemiddeld}} =
+    \frac{B_{\text{totaal}}}{T}
+\end{equation}
+
+waarbij $B_{\text{totaal}}$ de totale hoeveelheid gemeten data is en $T$ de duur van de test in seconden. Binnen dit onderzoek bedraagt $T$ telkens 60 seconden.
+Naast het netwerkverbruik wordt het werkelijke aantal ontvangen updates geregistreerd. De werkelijk behaalde updatefrequentie kan worden berekend als:
+
+\begin{equation}
+    F_{\text{werkelijk}} =
+    \frac{N_{\text{updates}}}{T}
+\end{equation}
+
+waarbij $N_{\text{updates}}$ het aantal ontvangen updates gedurende een testrun is en $T$ opnieuw de testduur in seconden voorstelt.
+De resultaten kunnen als volgt worden samengevat:
+
+\begin{table}[H]
+    \centering
+    \caption{Netwerkverbruik per testconfiguratie}
+    \label{tab:netwerk-resultaten}
+    \begin{tabular}{lrrrr}
+        \hline
+        \textbf{Configuratie} &
+        \textbf{Updates} &
+        \textbf{Updates/s} &
+        \textbf{Totale data} &
+        \textbf{Data/s} \\
+        \hline
+        REST 100 ms        & -- & -- & -- & -- \\
+        WebSocket 100 ms   & -- & -- & -- & -- \\
+        REST 250 ms        & -- & -- & -- & -- \\
+        WebSocket 250 ms   & -- & -- & -- & -- \\
+        REST 1000 ms       & -- & -- & -- & -- \\
+        WebSocket 1000 ms  & -- & -- & -- & -- \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Invloed van de updatefrequentie}
+Naast het rechtstreekse verschil tussen REST en WebSockets wordt onderzocht welke invloed de gekozen updatefrequentie heeft op beide communicatiemethoden.
+De ingestelde intervallen van 1000, 250 en 100 milliseconden komen theoretisch overeen met respectievelijk maximaal 1, 4 en 10 updates per seconde. De werkelijke updatefrequentie kan lager liggen doordat het uitlezen en verwerken van de OBD-II-data eveneens tijd in beslag neemt. Daarom wordt naast het ingestelde interval ook het werkelijk aantal ontvangen updates per seconde geregistreerd.
+Bij REST betekent een kleiner pollinginterval dat de frontend vaker probeert om een HTTP-request uit te voeren. Bij WebSockets betekent een kleiner interval dat de backend probeert om vaker een bericht via de bestaande verbinding te versturen. In beide gevallen kan de tijd die nodig is om de voertuigdata via OBD-II uit te lezen een beperking vormen voor de werkelijk haalbare updatefrequentie.
+Door beide communicatiemethoden bij dezelfde intervallen te testen, kan worden onderzocht of het verschil in latency en netwerkverbruik verandert wanneer de updatefrequentie wordt verhoogd.
+De verschillende updatefrequenties maken het daarnaast mogelijk om te onderzoeken welke frequentie binnen de ontwikkelde toepassing een geschikte balans biedt tussen de actualiteit van de weergegeven voertuigdata en de hoeveelheid communicatie die hiervoor nodig is.
 
 \section{Resultaten en vergelijking}
-Hier breng je de resultaten samen:
-- REST versus WebSockets
-- vergelijking per updatefrequentie
-- vergelijking van latency
-- vergelijking van dataverkeer
-- vergelijking van systeembelasting
-- eventuele grafieken en tabellen
-- welke technologie het beste presteert binnen jouw toepassing
+Na het uitvoeren van de 18 testruns worden de resultaten samengebracht om REST en WebSockets rechtstreeks met elkaar te vergelijken.
+Voor iedere configuratie worden de resultaten van de drie afzonderlijke runs verwerkt. Hierbij worden de gemiddelde latency, P95-latency, de werkelijk behaalde updatefrequentie en het netwerkverbruik bepaald. Door dezelfde configuratie meerdere keren uit te voeren, kan worden nagegaan of de resultaten tussen verschillende runs voldoende consistent zijn.
+Eerst worden de latencyresultaten onderzocht. Hierbij wordt nagegaan welke communicatiemethode gemiddeld de laagste vertraging heeft en in welke mate de P95-latency verschilt tussen REST en WebSockets. Ook de minimale en maximale gemeten latency kunnen hierbij worden gebruikt om de spreiding van de resultaten te beoordelen.
+Vervolgens wordt de werkelijk behaalde updatefrequentie onderzocht. Hierbij wordt nagegaan hoeveel updates de frontend tijdens iedere testrun daadwerkelijk heeft ontvangen en in welke mate dit overeenkomt met de theoretische updatefrequentie van het ingestelde interval.
+Daarna wordt het netwerkverbruik onderzocht. Omdat beide communicatiemethoden dezelfde soort voertuigdata transporteren en gedurende dezelfde tijd worden getest, kan worden nagegaan hoeveel bijkomend netwerkverkeer door de verschillende communicatieprincipes wordt veroorzaakt.
+Ten slotte worden de resultaten per updatefrequentie met elkaar vergeleken. Hierdoor kan worden onderzocht of het verschil tussen REST en WebSockets verandert wanneer de frequentie van de updates wordt verhoogd.
+Een samenvattende tabel kan na het uitvoeren van de tests als volgt worden ingevuld:
+
+\begin{table}[H]
+    \centering
+    \caption{Samenvatting van de vergelijking tussen REST en WebSockets}
+    \label{tab:rest-websocket-overzicht}
+    \begin{tabular}{lrrrrr}
+        \hline
+        \textbf{Configuratie} &
+        \textbf{Gem. latency} &
+        \textbf{P95 latency} &
+        \textbf{Updates/s} &
+        \textbf{Totale data} &
+        \textbf{Data/s} \\
+        \hline
+        REST 100 ms        & -- & -- & -- & -- & -- \\
+        WebSocket 100 ms   & -- & -- & -- & -- & -- \\
+        REST 250 ms        & -- & -- & -- & -- & -- \\
+        WebSocket 250 ms   & -- & -- & -- & -- & -- \\
+        REST 1000 ms       & -- & -- & -- & -- & -- \\
+        WebSocket 1000 ms  & -- & -- & -- & -- & -- \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Op basis van deze resultaten wordt beoordeeld welke communicatiemethode binnen de context van de ontwikkelde realtime monitoringapplicatie het meest geschikt is. Hierbij wordt niet uitsluitend gekeken naar de laagste gemiddelde latency, maar ook naar de P95-latency, de werkelijk behaalde updatefrequentie, het netwerkverbruik en de invloed van het gekozen update-interval.
+Aangezien de resultaten gebaseerd zijn op één fysieke testopstelling en één voertuig tijdens de performantiemetingen, kunnen de gemeten waarden niet zonder meer worden veralgemeend naar iedere mogelijke voertuig- of hardwareconfiguratie. De vergelijking maakt echter wel mogelijk om REST en WebSockets onder dezelfde omstandigheden binnen de ontwikkelde toepassing te evalueren.

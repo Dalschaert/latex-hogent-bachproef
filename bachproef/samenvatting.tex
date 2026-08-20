@@ -1,48 +1,49 @@
-%%=============================================================================
-%% Samenvatting
-%%=============================================================================
+\chapter{\IfLanguageName{dutch}{Samenvatting}{Abstract}}%
+\label{ch:samenvatting}
+Via de OBD-II-interface kunnen verschillende gegevens uit een voertuig worden
+uitgelezen, zoals motortoerental, snelheid en temperatuurwaarden. Deze gegevens
+kunnen gebruikt worden om de toestand van een voertuig realtime op te volgen.
+Het uitlezen van de gegevens vormt echter slechts een deel van een
+monitoringsysteem. De data moet ook verwerkt, doorgestuurd en op een
+overzichtelijke manier aan de gebruiker weergegeven worden.
 
-% TODO: De "abstract" of samenvatting is een kernachtige (~ 1 blz. voor een
-% thesis) synthese van het document.
-%
-% Een goede abstract biedt een kernachtig antwoord op volgende vragen:
-%
-% 1. Waarover gaat de bachelorproef?
-% 2. Waarom heb je er over geschreven?
-% 3. Hoe heb je het onderzoek uitgevoerd?
-% 4. Wat waren de resultaten? Wat blijkt uit je onderzoek?
-% 5. Wat betekenen je resultaten? Wat is de relevantie voor het werkveld?
-%
-% Daarom bestaat een abstract uit volgende componenten:
-%
-% - inleiding + kaderen thema
-% - probleemstelling
-% - (centrale) onderzoeksvraag
-% - onderzoeksdoelstelling
-% - methodologie
-% - resultaten (beperk tot de belangrijkste, relevant voor de onderzoeksvraag)
-% - conclusies, aanbevelingen, beperkingen
-%
-% LET OP! Een samenvatting is GEEN voorwoord!
+Deze bachelorproef onderzoekt daarom hoe OBD-II-voertuigdata realtime kan worden
+uitgelezen, verwerkt en gevisualiseerd in een webgebaseerde
+monitoringapplicatie. Daarbij wordt specifiek onderzocht welke van de
+communicatiemethoden REST API en WebSockets het meest geschikt is voor het
+doorsturen van voertuigdata tussen de backend en frontend.
 
-%%---------- Nederlandse samenvatting -----------------------------------------
-%
-% TODO: Als je je bachelorproef in het Engels schrijft, moet je eerst een
-% Nederlandse samenvatting invoegen. Haal daarvoor onderstaande code uit
-% commentaar.
-% Wie zijn bachelorproef in het Nederlands schrijft, kan dit negeren, de inhoud
-% wordt niet in het document ingevoegd.
+Voor het onderzoek werd voertuigdata verzameld van meerdere voertuigen met
+behulp van een Vgate VLinker FS OBD-II-adapter en de Pythonbibliotheek
+\texttt{python-OBD}. Hierbij werd onderzocht welke voertuigparameters
+beschikbaar zijn en welke verschillen tussen voertuigen voorkomen. Vervolgens
+werd een monitoringapplicatie ontwikkeld met een FastAPI-backend en een
+React-frontend. Daarnaast werd een simulatieomgeving ontwikkeld waarmee de
+applicatie ook zonder een fysiek voertuig kan worden ontwikkeld en getest.
 
-\IfLanguageName{english}{%
-\selectlanguage{dutch}
-\chapter*{Samenvatting}
-\lipsum[1-4]
-\selectlanguage{english}
-}{}
+REST API en WebSockets werden binnen dezelfde applicatie geïmplementeerd en
+onder vergelijkbare omstandigheden getest. Hiervoor werden update-intervallen
+van 100, 250 en 1000 milliseconden gebruikt. Iedere configuratie werd gedurende
+60 seconden getest en meerdere keren herhaald. De vergelijking richt zich
+voornamelijk op de gemiddelde latency, P95-latency en het netwerkverbruik.
 
-%%---------- Samenvatting -----------------------------------------------------
-% De samenvatting in de hoofdtaal van het document
+% ============================================================================
+% TODO NA METINGEN
+% Hier de belangrijkste resultaten van de vergelijking invullen.
+% ============================================================================
 
-\chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
+Uit de resultaten bleek dat [REST/WebSockets] binnen de onderzochte
+testopstelling gemiddeld de laagste latency behaalde. Ook op het vlak van
+P95-latency bleek [RESULTAAT]. Wat het netwerkverbruik betreft, veroorzaakte
+[REST/WebSockets] [MINDER/MEER] netwerkverkeer. Een update-interval van
+[100/250/1000] milliseconden bleek uiteindelijk de meest geschikte balans te
+bieden tussen de actualiteit van de voertuigdata en de benodigde communicatie.
 
-\lipsum[1-4]
+% EINDE TODO
+
+Het onderzoek toont aan dat OBD-II kan worden gebruikt als basis voor een
+webgebaseerde realtime monitoringapplicatie. Daarnaast blijkt dat de keuze van
+de communicatiemethode en de updatefrequentie invloed heeft op de manier waarop
+voertuigdata naar de frontend wordt doorgestuurd. De resultaten moeten worden
+geïnterpreteerd binnen de gebruikte testopstelling en het beperkte aantal
+onderzochte voertuigen.

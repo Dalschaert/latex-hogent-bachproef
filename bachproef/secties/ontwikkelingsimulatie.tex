@@ -1,63 +1,79 @@
 \chapter{\IfLanguageName{dutch}{Ontwikkeling van een OBD-II-simulatieomgeving}{Development of an OBD-II Simulation Environment}}%
 \label{ch:ontwikkeling-van-een-obd-ii-simulatieomgeving}
-In dit hoofdstuk wordt de ontwikkeling van een simulatieomgeving voor OBD-II-voertuigdata beschreven. Tijdens de ontwikkeling van een applicatie voor realtime voertuigmonitoring is het niet altijd mogelijk om voortdurend over een fysiek voertuig en een OBD-II-adapter te beschikken. Hierdoor kan het testen en ontwikkelen van de applicatie worden bemoeilijkt.
-Om dit probleem op te vangen, wordt een simulatieomgeving ontwikkeld die voertuigdata kan genereren zonder dat hiervoor een fysieke verbinding met een voertuig nodig is. De simulatie is gebaseerd op de voertuigdata die in het vorige hoofdstuk werd verzameld. Hierbij wordt rekening gehouden met de beschikbare parameters en de waarden en patronen die bij de drie testvoertuigen werden vastgesteld.
-In dit hoofdstuk wordt eerst toegelicht waarom simulatie binnen dit onderzoek noodzakelijk is. Vervolgens wordt besproken hoe de echte voertuigdata als basis voor de simulatie wordt gebruikt en hoe de simulatieomgeving is ontworpen. Daarna wordt beschreven hoe de verschillende voertuigparameters en rijsituaties worden gesimuleerd. Tot slot wordt de gegenereerde data vergeleken met de verzamelde voertuigdata om na te gaan in welke mate de simulatie geschikt is voor de verdere ontwikkeling en testing van de applicatie.
+In dit hoofdstuk wordt de ontwikkeling van een simulatieomgeving voor OBD-II-voertuigdata beschreven. Tijdens de ontwikkeling van een applicatie voor realtime voertuigmonitoring is het niet altijd mogelijk om voortdurend over een fysiek voertuig en een OBD-II-adapter te beschikken. Hierdoor kan het testen en ontwikkelen van de applicatie worden bemoeilijkt. Daarnaast zijn bepaalde rijsituaties niet altijd eenvoudig herhaaldelijk uit te voeren met een fysiek voertuig.
+Om dit probleem op te vangen, wordt een simulatieomgeving ontwikkeld die voertuigdata kan genereren zonder dat hiervoor een fysieke verbinding met een voertuig nodig is. De simulator neemt hierbij tijdens het ontwikkelen en testen de rol van een fysiek voertuig over. Hierdoor kan de monitoringapplicatie gegevens ontvangen en verwerken zonder dat telkens een voertuig beschikbaar moet zijn.
+De simulatie is gebaseerd op de voertuigdata die in het vorige hoofdstuk werd verzameld. Hierbij wordt rekening gehouden met de beschikbare parameters, de gemeten waarden en de patronen die tijdens de metingen werden vastgesteld. De simulator heeft niet als doel om een specifiek voertuig volledig na te bootsen. Het doel is om een realistische en consistente stroom van voertuigdata te genereren die geschikt is voor de ontwikkeling en testing van de monitoringapplicatie.
+In dit hoofdstuk wordt eerst toegelicht waarom een simulatieomgeving noodzakelijk is. Vervolgens wordt besproken hoe de verzamelde voertuigdata wordt gebruikt als basis voor de simulatie. Daarna wordt de opbouw en werking van de simulatieomgeving beschreven. Vervolgens wordt uitgelegd hoe verschillende voertuigtoestanden en rijsituaties worden nagebootst. Tot slot wordt de gegenereerde data gevalideerd aan de hand van de eerder verzamelde echte voertuigdata.
 
 \section{Noodzaak van simulatie}
-Hier bespreek je:
-- waarom een simulatieomgeving nodig is
-- dat een fysiek voertuig niet altijd beschikbaar is
-- waarom dit een probleem vormt tijdens de ontwikkeling en testing
-- hoe een simulator het mogelijk maakt om zonder fysiek voertuig te ontwikkelen
-- welke voordelen simulatie biedt voor herhaalbare testen
-- welke beperkingen een simulator heeft ten opzichte van echte voertuigdata
+Tijdens de ontwikkeling van een realtime monitoringapplicatie is het noodzakelijk om de verwerking en visualisatie van voertuigdata regelmatig te testen. Wanneer hiervoor uitsluitend een fysiek voertuig wordt gebruikt, is de ontwikkelaar afhankelijk van de beschikbaarheid van het voertuig, de OBD-II-adapter en de mogelijkheid om het voertuig op dat moment te gebruiken.
+Dit vormt een beperking tijdens het ontwikkelingsproces. Bij iedere wijziging aan de applicatie zou opnieuw een verbinding met een fysiek voertuig moeten worden gemaakt om te controleren of de applicatie correct werkt. Hierdoor wordt het moeilijker om snel en herhaaldelijk verschillende onderdelen van de applicatie te testen.
+Daarnaast zijn bepaalde situaties moeilijk reproduceerbaar met een fysiek voertuig. Een specifieke acceleratie of vertraging kan bijvoorbeeld niet telkens exact onder dezelfde omstandigheden worden uitgevoerd. Hierdoor kunnen verschillende testmomenten van elkaar verschillen, waardoor het moeilijker wordt om wijzigingen in de applicatie betrouwbaar te vergelijken.
+Een simulatieomgeving biedt hiervoor een alternatief. Door voertuigdata softwarematig te genereren, kan de monitoringapplicatie worden ontwikkeld en getest zonder dat er voortdurend een fysiek voertuig beschikbaar moet zijn. Dezelfde situatie kan bovendien meerdere keren worden uitgevoerd, waardoor testen beter reproduceerbaar worden.
+Een bijkomend voordeel van simulatie is dat specifieke situaties gecontroleerd kunnen worden opgewekt. Zo kan de simulator een voertuig laten starten in een stationaire toestand, vervolgens laten accelereren, een constante snelheid laten aanhouden en daarna laten vertragen. Hierdoor kan worden onderzocht hoe de monitoringapplicatie reageert op verschillende veranderingen in de ontvangen data.
+De simulator vervangt de echte voertuigmetingen echter niet. Gesimuleerde data wordt gegenereerd op basis van een vereenvoudigd model en kan daardoor niet alle eigenschappen en variaties van een werkelijk voertuig weergeven. De echte metingen blijven daarom noodzakelijk als basis voor het onderzoek. De simulator wordt voornamelijk gebruikt als hulpmiddel voor de verdere ontwikkeling en testing van de applicatie.
 
 \section{Analyse van echte voertuigdata}
-Hier bespreek je:
-- welke echte voertuigdata uit het vorige hoofdstuk wordt gebruikt als basis
-- welke parameters worden gesimuleerd
-- welke waarden en bereiken bij de drie voertuigen werden vastgesteld
-- welke patronen in de data zichtbaar zijn
-- hoe deze metingen worden gebruikt om realistische simulatiegegevens te genereren
+De basis voor de simulatieomgeving wordt gevormd door de metingen die met vier verschillende voertuigen werden uitgevoerd. Voor elk voertuig werd via OBD-II nagegaan welke commando's beschikbaar waren en welke voertuigparameters konden worden uitgelezen.
+Uit deze metingen bleek dat de beschikbaarheid van OBD-II-parameters kan verschillen tussen voertuigen. Hoewel een groot aantal parameters door meerdere voertuigen wordt ondersteund, zijn niet alle parameters bij ieder voertuig beschikbaar. Daarom wordt bij de ontwikkeling van de simulator uitgegaan van de parameters die geschikt zijn voor gebruik in de algemene monitoringapplicatie.
+Naast de beschikbaarheid van de parameters werden ook de daadwerkelijk uitgelezen waarden onderzocht. De metingen geven een indicatie van de bereiken waarin de verschillende waarden zich tijdens het gebruik van de voertuigen bevinden. Hierbij werd niet alleen gekeken naar afzonderlijke waarden, maar ook naar de veranderingen die optreden wanneer de toestand van het voertuig verandert.
+De verzamelde gegevens worden gebruikt als referentie voor de simulator. De simulator neemt de gemeten waarden niet simpelweg over als vaste waarden. In plaats daarvan worden de metingen gebruikt om realistische bereiken en patronen te bepalen. Hierdoor kan de simulator nieuwe gegevens genereren die aansluiten bij het gedrag dat tijdens de echte metingen werd waargenomen.
+Een belangrijk uitgangspunt hierbij is dat de simulator geen exacte kopie van één van de testvoertuigen probeert te vormen. De simulator is bedoeld als algemene testomgeving voor de monitoringapplicatie. Daarom wordt voornamelijk gebruikgemaakt van algemene kenmerken die uit de verschillende metingen naar voren komen.
+Daarnaast wordt rekening gehouden met de onderlinge samenhang tussen de gegevens. Wanneer een voertuig bijvoorbeeld versnelt, veranderen meerdere voertuigparameters tegelijkertijd. Door deze samenhang ook in de simulator toe te passen, kan een realistischer gegevensverloop worden gegenereerd dan wanneer iedere waarde volledig onafhankelijk en willekeurig wordt bepaald.
 
 \section{Ontwerp van de simulatieomgeving}
-Hier bespreek je:
-- de architectuur van de simulator
-- hoe de simulator voertuigdata genereert
-- welke componenten de simulator bevat
-- hoe de gegenereerde data wordt doorgestuurd naar de applicatie
-- hoe de simulator kan worden gestart en gestopt
-- hoe de updatefrequentie wordt ingesteld
-- hoe verschillende voertuigsituaties kunnen worden nagebootst
+De simulatieomgeving bestaat uit een softwarecomponent die periodiek voertuigdata genereert en deze beschikbaar stelt aan de monitoringapplicatie. De simulator neemt hierbij de rol over van het fysieke voertuig en de OBD-II-verbinding.
+De simulator houdt een interne toestand van het gesimuleerde voertuig bij. Deze toestand bepaalt welke gegevens op een bepaald moment worden gegenereerd. Wanneer de toestand verandert, worden ook de bijbehorende voertuiggegevens aangepast.
+De simulatieomgeving kan schematisch worden voorgesteld als een gegevensstroom. Eerst wordt een beginsituatie bepaald. Vervolgens wordt op basis van de gekozen rijsituatie een nieuwe voertuigtoestand berekend. Uit deze toestand worden de voertuiggegevens gegenereerd. Deze gegevens worden daarna doorgestuurd naar de monitoringapplicatie, waar ze op dezelfde manier kunnen worden verwerkt als gegevens afkomstig van een echte OBD-II-verbinding.
+Deze scheiding tussen de simulator en de monitoringapplicatie maakt het mogelijk om beide onderdelen onafhankelijk van elkaar te ontwikkelen. De monitoringapplicatie hoeft hierbij niet te weten of de ontvangen gegevens afkomstig zijn van een fysiek voertuig of van de simulator.
+De simulator wordt periodiek uitgevoerd zodat een continue stroom van gegevens ontstaat. Bij iedere update worden de waarden opnieuw berekend en doorgestuurd. De tijd tussen twee opeenvolgende updates bepaalt de updatefrequentie van de simulatie.
+Door de updatefrequentie te kunnen instellen, kan de simulator onder verschillende omstandigheden worden gebruikt. Hierdoor kan bijvoorbeeld worden onderzocht hoe de monitoringapplicatie reageert wanneer gegevens zeer frequent veranderen, maar ook wanneer updates minder frequent plaatsvinden.
+De simulator kan onafhankelijk van een fysiek voertuig worden gestart en gestopt. Hierdoor kan de ontwikkelaar op elk gewenst moment een test uitvoeren zonder eerst een OBD-II-adapter met een voertuig te moeten verbinden.
 
-\section{Simulatie van voertuigparameters}
-Hier bespreek je:
-- hoe RPM wordt gesimuleerd
-- hoe snelheid wordt gesimuleerd
-- hoe Throttle Position wordt gesimuleerd
-- hoe Engine Load wordt gesimuleerd
-- hoe MAF wordt gesimuleerd
-- hoe Air Temperature wordt gesimuleerd
-- hoe Coolant Temperature wordt gesimuleerd
-- hoe Engine Runtime wordt gesimuleerd
-- hoe de waarden onderling samenhangen
-- hoe wordt voorkomen dat de simulator volledig willekeurige waarden genereert
+\section{Genereren van voertuigdata}
+De simulator genereert voertuigdata op basis van de huidige toestand van het gesimuleerde voertuig. Hierbij wordt gebruikgemaakt van de parameters die tijdens het onderzoek als geschikt werden geselecteerd voor de algemene monitoringapplicatie.
+De waarden worden niet volledig onafhankelijk van elkaar gegenereerd. De simulator gebruikt de huidige toestand en de gekozen rijsituatie om te bepalen hoe de waarden tijdens de volgende update veranderen.
+Wanneer een nieuwe simulatie-update wordt uitgevoerd, wordt eerst bepaald welke verandering in de voertuigtoestand moet plaatsvinden. Vervolgens worden de verschillende waarden aangepast aan deze nieuwe toestand. Hierdoor ontstaat een reeks van opeenvolgende metingen waarin de veranderingen geleidelijk verlopen.
+Deze aanpak voorkomt dat de simulator volledig willekeurige waarden produceert. Wanneer iedere parameter onafhankelijk een willekeurige waarde zou krijgen, kunnen combinaties ontstaan die niet overeenkomen met een realistische voertuigtoestand. Door de parameters aan een gemeenschappelijke voertuigtoestand te koppelen, blijven de gegenereerde gegevens onderling consistent.
+Er wordt daarnaast gebruikgemaakt van beperkte variaties in de gegenereerde waarden. Hierdoor zijn opeenvolgende metingen niet noodzakelijk identiek wanneer de voertuigtoestand stabiel blijft. Dit zorgt ervoor dat de simulatie beter aansluit bij echte meetgegevens, waarin eveneens kleine variaties kunnen voorkomen.
 
 \section{Simulatie van verschillende rijsituaties}
-Hier bespreek je:
-- stationair draaien
-- optrekken
-- constante snelheid
-- vertragen
-- eventueel verschillende intensiteiten van acceleratie
-- hoe voertuigparameters tijdens deze situaties veranderen
-- waarom het simuleren van realistische scenario's belangrijk is voor het testen van het dashboard
+Om de monitoringapplicatie onder verschillende omstandigheden te kunnen testen, ondersteunt de simulator meerdere rijsituaties. Elke rijsituatie beschrijft een bepaalde toestand van het voertuig en bepaalt hoe de voertuigdata gedurende een bepaalde periode verandert.
+
+\subsection{Stationair draaien}
+Bij stationair draaien staat het voertuig stil terwijl de motor actief blijft. De snelheid blijft hierdoor op nul en de overige voertuiggegevens blijven grotendeels rond een stabiel niveau.
+Er kunnen beperkte variaties worden toegepast zodat de gegevens niet volledig constant blijven. Deze situatie wordt gebruikt om te testen of de monitoringapplicatie stabiele voertuigdata correct verwerkt en weergeeft.
+
+\subsection{Optrekken}
+Tijdens het optrekken verandert de toestand van het voertuig geleidelijk van stilstand of een lagere snelheid naar een hogere snelheid. De relevante voertuiggegevens worden hierbij overeenkomstig aangepast.
+De simulator kan verschillende intensiteiten van acceleratie gebruiken. Een rustige acceleratie zorgt voor kleinere veranderingen tussen opeenvolgende updates, terwijl een sterkere acceleratie grotere veranderingen veroorzaakt.
+Deze situatie is belangrijk voor het testen van het realtime karakter van de monitoringapplicatie, omdat meerdere gegevens tegelijkertijd kunnen veranderen.
+
+\subsection{Constante snelheid}
+Bij een constante snelheid blijft het voertuig gedurende een bepaalde periode rond dezelfde snelheid rijden. De bijbehorende voertuiggegevens worden eveneens rond een stabiel niveau gehouden.
+Om te vermijden dat de simulatie volledig statisch wordt, kunnen kleine variaties in de waarden worden toegepast. Hierdoor ontstaat een gegevensstroom die meer overeenkomt met echte metingen.
+Deze situatie maakt het mogelijk om te controleren of de monitoringapplicatie gedurende langere tijd stabiele gegevens correct blijft verwerken.
+
+\subsection{Vertragen}
+Tijdens het vertragen wordt de voertuigtoestand geleidelijk aangepast naar een lagere snelheid. De bijbehorende voertuiggegevens veranderen mee met deze overgang.
+Net zoals bij acceleratie worden de veranderingen geleidelijk uitgevoerd. Hierdoor ontstaan geen onrealistische sprongen tussen opeenvolgende meetmomenten.
+
+\subsection{Overgangen tussen rijsituaties}
+Naast afzonderlijke rijsituaties is het belangrijk dat verschillende situaties na elkaar kunnen worden uitgevoerd. Een realistische simulatie bestaat immers uit een continue reeks van voertuigtoestanden.
+Een simulatiescenario kan bijvoorbeeld starten met stationair draaien, gevolgd worden door een acceleratie, daarna een constante snelheid bevatten en vervolgens eindigen met een vertraging. Hierdoor ontstaat een continue gegevensstroom waarin de monitoringapplicatie verschillende soorten veranderingen moet verwerken.
+Het gebruik van dergelijke scenario's maakt het mogelijk om niet alleen afzonderlijke waarden te testen, maar ook de overgang tussen verschillende voertuigtoestanden.
+
+\section{Onderlinge samenhang van de voertuigdata}
+Een belangrijk aspect van de simulatie is dat de verschillende voertuiggegevens niet volledig onafhankelijk van elkaar worden gegenereerd. De simulator werkt vanuit een gemeenschappelijke voertuigtoestand waaruit de verschillende waarden worden afgeleid.
+Hierdoor heeft een verandering in de toestand van het voertuig invloed op meerdere gegevens tegelijkertijd. Tijdens een acceleratie veranderen bijvoorbeeld verschillende parameters mee met de toenemende belasting van het voertuig. Tijdens een vertraging veranderen deze gegevens opnieuw in de tegenovergestelde richting.
+Niet alle waarden reageren met dezelfde snelheid. Sommige voertuiggegevens kunnen snel veranderen wanneer de rijtoestand verandert, terwijl andere gegevens slechts geleidelijk veranderen. De simulator houdt hier rekening mee door verschillende soorten waarden op een verschillende manier aan te passen.
+Deze aanpak zorgt ervoor dat de gegenereerde gegevens onderling logisch blijven. Het doel is hierbij niet om het volledige fysieke gedrag van een voertuig wiskundig te modelleren, maar om voldoende samenhang te creëren zodat de gegevens geschikt zijn voor het testen van een realtime monitoringapplicatie.
 
 \section{Validatie van de simulatie}
-Hier bespreek je:
-- hoe je controleert of de gesimuleerde data realistisch is
-- vergelijking tussen echte en gesimuleerde waarden
-- vergelijking van patronen en veranderingen
-- welke verschillen er eventueel zijn
-- in welke mate de simulator geschikt is voor ontwikkeling en testing
+Na de ontwikkeling van de simulator wordt nagegaan in welke mate de gegenereerde gegevens overeenkomen met de kenmerken van de eerder verzamelde echte voertuigdata. Hierbij wordt niet verwacht dat de simulator exact dezelfde waarden als een specifiek voertuig produceert. De validatie richt zich voornamelijk op de realistische bereiken, patronen en veranderingen in de gegevens.
+Eerst worden de waarden die door de simulator worden gegenereerd vergeleken met de bereiken die tijdens de echte metingen werden vastgesteld. Hierbij wordt gecontroleerd of de simulator geen waarden genereert die duidelijk buiten de waargenomen bereiken vallen.
+Vervolgens worden de veranderingen in de gegevens onderzocht. Hierbij wordt gekeken naar het verloop tijdens verschillende rijsituaties. Tijdens een acceleratie wordt bijvoorbeeld verwacht dat de voertuiggegevens op een consistente manier veranderen. Bij een constante snelheid wordt dan weer verwacht dat de waarden grotendeels stabiel blijven.
+Naast de afzonderlijke waarden wordt ook gekeken naar de onderlinge samenhang. Een realistische simulatie moet ervoor zorgen dat veranderingen in verschillende gegevens logisch met elkaar overeenkomen. Dit wordt gecontroleerd door de gegevensstroom tijdens de verschillende scenario's te analyseren.
+Ten slotte wordt nagegaan of de simulator voldoende geschikt is voor het testen van de monitoringapplicatie. Hierbij wordt gekeken of de applicatie de gesimuleerde gegevens op dezelfde manier kan ontvangen en verwerken als gegevens afkomstig van een echte verbinding.
+Eventuele verschillen tussen echte en gesimuleerde gegevens worden niet beschouwd als een fout op zich. De simulator heeft immers niet als doel om een specifiek voertuig exact na te bootsen. Het belangrijkste criterium is dat de simulator consistente en voldoende realistische gegevens kan genereren voor ontwikkelings- en testdoeleinden.
+De simulator wordt hierdoor beschouwd als een aanvulling op de echte voertuigmetingen. De echte metingen vormen de basis voor het onderzoek naar OBD-II en de beschikbare voertuigdata, terwijl de simulator het mogelijk maakt om de verdere ontwikkeling en testing van de realtime monitoringapplicatie op een gecontroleerde en herhaalbare manier uit te voeren.

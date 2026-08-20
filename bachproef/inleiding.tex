@@ -1,74 +1,157 @@
-%%=============================================================================
-%% Inleiding
-%%=============================================================================
-
 \chapter{\IfLanguageName{dutch}{Inleiding}{Introduction}}%
 \label{ch:inleiding}
+Voertuigen bevatten steeds meer elektronische systemen die tijdens het rijden
+grote hoeveelheden gegevens verzamelen. Via de OBD-II-interface kan een deel
+van deze voertuigdata worden uitgelezen, waaronder gegevens over onder andere
+het motortoerental, de voertuigsnelheid, temperaturen en de belasting van de
+motor. Deze gegevens kunnen worden gebruikt voor diagnose, analyse en het
+realtime opvolgen van de toestand van een voertuig.
 
-\section{{Probleemstelling}}%
-\label{sec:probleemstelling}
+Het uitlezen van deze gegevens vormt echter slechts één onderdeel van een
+monitoringsysteem. Om voertuigdata op een bruikbare manier aan een gebruiker
+te presenteren, moeten de gegevens worden uitgelezen, verwerkt, doorgestuurd
+naar een gebruikersinterface en daar op een overzichtelijke manier worden
+weergegeven. Hierbij speelt ook de gekozen communicatiemethode tussen backend
+en frontend een belangrijke rol, zeker wanneer gegevens frequent moeten worden
+bijgewerkt.
 
-Moderne voertuigen genereren via elektronische regeleenheden een grote hoeveelheid technische data, waaronder motorparameters, sensorgegevens en diagnostische informatie. Via de OBD-II-interface is een deel van deze data toegankelijk voor externe toepassingen. Hoewel deze gegevens technisch beschikbaar zijn, blijven ze voor veel gebruikers moeilijk interpreteerbaar en beperkt bruikbaar in hun ruwe vorm.
+Binnen deze bachelorproef wordt daarom een webgebaseerde applicatie ontwikkeld
+voor het realtime monitoren van OBD-II-voertuigdata. Daarnaast wordt onderzocht
+hoe REST API en WebSockets zich binnen deze toepassing tot elkaar verhouden.
+Door beide communicatiemethoden onder dezelfde omstandigheden te testen, wordt
+nagegaan welke methode het meest geschikt is voor het doorsturen van realtime
+voertuigdata.
 
-Bestaande toepassingen focussen voornamelijk op foutdiagnose of eenvoudige parameterweergave, maar bieden zelden een performante, schaalbare en analytische real-time visualisatie van voertuigdata. Bovendien houden veel oplossingen onvoldoende rekening met beperkingen zoals updatefrequentie, adapterafhankelijkheid en schaalbaarheid bij meerdere gelijktijdige datastromen.
+\section{Probleemstelling}
+Moderne voertuigen verzamelen via verschillende elektronische regeleenheden
+een grote hoeveelheid technische informatie. Een deel van deze gegevens is via
+de OBD-II-interface toegankelijk voor externe toepassingen. Hoewel OBD-II een
+gestandaardiseerde interface biedt, verschilt de daadwerkelijk beschikbare
+informatie tussen voertuigen. Niet ieder voertuig ondersteunt namelijk dezelfde
+parameters.
 
-De doelgroep van deze bachelorproef bestaat uit technisch geïnteresseerde autobezitters en autoliefhebbers die hun voertuig actief willen monitoren en analyseren op basis van real-time data. Concreet gaat het om:
-\begin{itemize}
-    \item particuliere autobezitters met interesse in voertuigperformantie en -diagnose;
-    \item autoliefhebbers die voertuigdata willen gebruiken voor analyse of optimalisatie;
-    \item studenten en ontwikkelaars die werken rond voertuigdata, telematica of real-time dataverwerking;
-    \item de opdrachtgever of co-promotor die inzicht wil verkrijgen in performante real-time dataverwerking binnen webapplicaties.
-\end{itemize}
+Daarnaast moet de uitgelezen voertuigdata op een efficiënte manier van de
+backend naar de frontend van een monitoringapplicatie worden doorgestuurd.
+Hiervoor bestaan verschillende communicatiemethoden. REST API's worden veel
+gebruikt binnen webapplicaties en werken volgens een request-responseprincipe.
+Voor realtime toepassingen kan hierbij polling worden gebruikt, waarbij de
+frontend op vaste tijdstippen nieuwe gegevens opvraagt. WebSockets gebruiken
+daarentegen een blijvende verbinding waarlangs opeenvolgende gegevens kunnen
+worden verstuurd.
 
-De meerwaarde van dit onderzoek ligt in het ontwikkelen en onderbouwen van een technisch performante oplossing die voertuigdata niet alleen uitleest, maar ook efficiënt streamt, verwerkt en visualiseert binnen een schaalbare webarchitectuur.
+Bij frequent veranderende voertuigdata is het daarom relevant om na te gaan
+welke invloed deze verschillende communicatieprincipes hebben op de overdracht
+van de gegevens. Vooral latency en netwerkverbruik zijn hierbij van belang.
+Ook de gekozen updatefrequentie kan invloed hebben op deze eigenschappen.
 
+Een bijkomend praktisch probleem is dat tijdens de ontwikkeling niet voortdurend
+een fysiek voertuig met een aangesloten OBD-II-adapter beschikbaar is. Daarom
+is een simulatieomgeving nuttig waarmee de werking van de applicatie ook zonder
+fysieke voertuigverbinding kan worden ontwikkeld en getest.
 
-\section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
-\label{sec:onderzoeksvraag}
+Deze bachelorproef richt zich daarom op de ontwikkeling van een volledige
+monitoringapplicatie, vanaf het uitlezen van OBD-II-data tot de realtime
+weergave ervan in een webinterface. Daarbij wordt specifiek onderzocht hoe
+REST API en WebSockets presteren bij verschillende updatefrequenties.
 
+\section{Onderzoeksvraag}
 De centrale onderzoeksvraag van deze bachelorproef luidt als volgt:
 
-\textit{Welke technologieën en architecturale ontwerpkeuzes maken het mogelijk om real-time voertuigdata performant, schaalbaar en gebruiksvriendelijk te simuleren, streamen en visualiseren binnen een webapplicatie?}
+\begin{quote}
+\textit{Hoe kan OBD-II-voertuigdata realtime worden uitgelezen, verwerkt en
+gevisualiseerd in een webapplicatie, en welke van de communicatiemethoden REST
+API en WebSockets is binnen deze toepassing het meest geschikt voor het
+doorsturen van deze data?}
+\end{quote}
 
-Om deze hoofdvraag te beantwoorden, worden volgende deelvragen onderzocht:
-
-\begin{itemize}
-    \item Hoe kan OBD-II-data efficiënt worden uitgelezen via vaste, adaptieve en PID-gebaseerde strategieën?
-    \item Welke real-time streamingtechnologie (bijvoorbeeld WebSockets, MQTT of Server-Sent Events) biedt de beste performantie en stabiliteit voor continue voertuigdata?
-    \item Wat is het verschil in realisme en performantie tussen vaste gesimuleerde data en reële OBD-II-logs?
-    \item Welke visualisatietechnieken zijn het meest geschikt voor continue real-time datastromen?
-\end{itemize}
-
-Deze vragen richten zich niet louter op het inventariseren van bestaande technologieën, maar op het evalueren en vergelijken ervan binnen de specifieke context van real-time voertuigdata.
-
-
-\section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
-\label{sec:onderzoeksdoelstelling}
-
-De doelstelling van deze bachelorproef is tweeledig.
-
-Enerzijds wordt een onderbouwde technische analyse uitgevoerd van verschillende technologieën en ontwerpkeuzes voor het verwerken en streamen van real-time voertuigdata. Hierbij worden performantie, schaalbaarheid, stabiliteit en gebruiksvriendelijkheid als evaluatiecriteria gehanteerd.
-
-Anderzijds wordt een proof-of-concept ontwikkeld in de vorm van een webapplicatie die voertuigdata via OBD-II uitleest, verwerkt, logt en in real time visualiseert. Het project is geslaagd indien:
+Om deze hoofdvraag te beantwoorden, worden de volgende deelvragen onderzocht:
 
 \begin{itemize}
-    \item real-time voertuigdata stabiel kan worden uitgelezen en verwerkt;
-    \item de applicatie meerdere datastromen performant kan verwerken;
-    \item de visualisatie begrijpelijk en responsief blijft bij continue updates;
-    \item de gekozen architectuur schaalbaar en reproduceerbaar is.
+    \item Welke voertuigparameters kunnen via OBD-II worden uitgelezen en welke
+    verschillen bestaan hierbij tussen de onderzochte voertuigen?
+
+    \item Hoe kan een webapplicatie worden opgebouwd om OBD-II-voertuigdata
+    realtime te verwerken en te visualiseren?
+
+    \item Hoe kunnen voertuiggegevens worden gesimuleerd zodat de applicatie ook
+    zonder een fysieke voertuigverbinding kan worden ontwikkeld en getest?
+
+    \item Welke verschillen bestaan tussen REST API en WebSockets op het vlak
+    van latency en netwerkverbruik bij update-intervallen van 100, 250 en
+    1000 milliseconden?
+
+    \item Welke communicatiemethode en updatefrequentie zijn binnen de
+    ontwikkelde toepassing het meest geschikt voor realtime
+    voertuigmonitoring?
 \end{itemize}
 
-Het eindresultaat moet aantonen dat de geselecteerde technologieën effectief bijdragen tot een performante en schaalbare oplossing voor real-time voertuigmonitoring.
+
+\section{Onderzoeksdoelstelling}
+Het doel van deze bachelorproef is het ontwikkelen en evalueren van een
+webgebaseerde applicatie voor het realtime monitoren van voertuigdata via
+OBD-II.
+
+Eerst wordt onderzocht welke voertuigparameters via OBD-II beschikbaar zijn.
+Hiervoor worden meerdere voertuigen getest en wordt nagegaan welke parameters
+gemeenschappelijk beschikbaar zijn en welke verschillen tussen voertuigen
+optreden.
+
+Vervolgens wordt een monitoringapplicatie ontwikkeld die bestaat uit een
+backend voor het uitlezen en verwerken van voertuigdata en een frontend voor
+het realtime weergeven ervan. Daarnaast wordt een simulatieomgeving ontwikkeld
+waarmee voertuigdata kan worden nagebootst wanneer geen fysiek voertuig
+beschikbaar is.
+
+Binnen de ontwikkelde applicatie worden zowel REST API als WebSockets
+geïmplementeerd. Beide communicatiemethoden worden vervolgens getest met
+update-intervallen van 100, 250 en 1000 milliseconden. Hierbij worden de
+latency en het netwerkverbruik gemeten en met elkaar vergeleken.
+
+Het eindresultaat moet aantonen in welke mate de ontwikkelde architectuur
+geschikt is voor realtime OBD-II-monitoring en welke van de onderzochte
+communicatiemethoden binnen deze toepassing de meest geschikte oplossing vormt.
 
 
-\section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
-\label{sec:opzet-bachelorproef}
-
+\section{Opzet van deze bachelorproef}
 De rest van deze bachelorproef is als volgt opgebouwd.
 
-In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein. Hierbij wordt ingegaan op OBD-II, beschikbare voertuigdata via PIDs, verschillen tussen voertuigtypes en de technische beperkingen van data-acquisitie. Daarnaast worden relevante technologieën voor real-time dataverwerking en simulatie besproken op basis van literatuur.
+In Hoofdstuk~\ref{ch:stand-van-zaken} wordt de bestaande kennis rond OBD-II,
+realtime dataverwerking, communicatietechnologieën, simulatie en visualisatie
+besproken. Dit hoofdstuk vormt de theoretische basis voor de verdere
+ontwikkeling en vergelijking.
 
-In Hoofdstuk~\ref{ch:methodologie} wordt de praktische uitwerking van het onderzoek toegelicht. Hierin worden de gebruikte technologieën beschreven, waaronder de OBD-II-adapter en de Pythonbibliotheek voor het uitlezen van voertuigdata. Verder wordt de opzet van de datalogging, simulatie en real-time visualisatie besproken, evenals de manier waarop performantie en schaalbaarheid worden geëvalueerd.
+In Hoofdstuk~\ref{ch:methodologie} wordt de gevolgde onderzoeksaanpak
+toegelicht. De verschillende fasen van het onderzoek worden beschreven, van
+het verzamelen van voertuigdata tot de ontwikkeling en evaluatie van de
+monitoringapplicatie.
 
-In Hoofdstuk~\ref{ch:conclusie} wordt een antwoord geformuleerd op de onderzoeksvragen. De bekomen resultaten worden samengevat en kritisch geëvalueerd, waarna aanbevelingen worden geformuleerd voor toekomstig onderzoek en verdere optimalisatie van het systeem.
+In Hoofdstuk~\ref{ch:onderzoek-en-verzameling-van-voertuigdata} wordt
+beschreven hoe de verbinding met verschillende voertuigen tot stand wordt
+gebracht en welke OBD-II-parameters beschikbaar zijn. De resultaten worden
+vergeleken om te bepalen welke gegevens verder binnen de applicatie kunnen
+worden gebruikt.
 
+In Hoofdstuk~\ref{ch:ontwikkeling-van-een-obd-ii-simulatieomgeving} wordt de
+ontwikkeling van de simulatieomgeving besproken. Deze omgeving maakt het
+mogelijk om de applicatie ook zonder een aangesloten voertuig verder te
+ontwikkelen en te testen.
+
+In Hoofdstuk~\ref{ch:ontwikkeling-van-een-realtime-monitoringdashboard} wordt
+de ontwikkeling van de monitoringapplicatie beschreven. Hierbij komen de
+architectuur, backend, frontend en datastroom tussen de verschillende
+componenten aan bod.
+
+In Hoofdstuk~\ref{ch:vergelijking-van-rest-api-en-websockets} worden REST API
+en WebSockets met elkaar vergeleken. Beide communicatiemethoden worden getest
+bij verschillende update-intervallen en geëvalueerd op basis van latency en
+netwerkverbruik.
+
+Vervolgens wordt het volledige systeem getest en geëvalueerd. Hierbij wordt
+nagegaan in welke mate de ontwikkelde applicatie voldoet aan de vooropgestelde
+doelstellingen en worden de belangrijkste beperkingen van het onderzoek
+besproken.
+
+Tot slot wordt in Hoofdstuk~\ref{ch:conclusie} een antwoord geformuleerd op
+de centrale onderzoeksvraag en de bijhorende deelvragen. De belangrijkste
+bevindingen worden samengevat en er worden mogelijkheden voor toekomstig
+onderzoek besproken.

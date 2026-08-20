@@ -1,57 +1,32 @@
-%%=============================================================================
-%% Methodologie
-%%=============================================================================
-
 \chapter{\IfLanguageName{dutch}{Methodologie}{Methodology}}%
 \label{ch:methodologie}
+Dit onderzoek volgt een gestructureerde aanpak voor het verzamelen, verwerken en visualiseren van realtime voertuigdata via OBD-II. De methodologie bestaat uit verschillende opeenvolgende fasen. Eerst wordt onderzocht hoe voertuigdata via OBD-II kan worden verzameld en welke gegevens bij verschillende voertuigen beschikbaar zijn. Vervolgens wordt een simulatieomgeving ontwikkeld waarmee voertuigdata kan worden nagebootst wanneer geen fysiek voertuig beschikbaar is.
+Op basis hiervan wordt een realtime monitoringapplicatie ontwikkeld waarin de voertuiggegevens via een backend worden verwerkt en in een webgebaseerd dashboard worden weergegeven. Vervolgens worden REST API en WebSockets als communicatiemethoden tussen backend en frontend met elkaar vergeleken. Hierbij wordt onderzocht welke invloed de gekozen communicatiemethode en updatefrequentie hebben op de performantie van de gegevensoverdracht. Ten slotte wordt het volledige systeem getest en geëvalueerd.
+Elke fase bouwt verder op de resultaten van de voorgaande fase. Op deze manier wordt niet alleen een werkende webapplicatie ontwikkeld, maar wordt ook onderzocht welke communicatiemethode het meest geschikt is voor het realtime verwerken en visualiseren van OBD-II-data.
 
-%% TODO: In dit hoofstuk geef je een korte toelichting over hoe je te werk bent
-%% gegaan. Verdeel je onderzoek in grote fasen, en licht in elke fase toe wat
-%% de doelstelling was, welke deliverables daar uit gekomen zijn, en welke
-%% onderzoeksmethoden je daarbij toegepast hebt. Verantwoord waarom je
-%% op deze manier te werk gegaan bent.
-%% 
-%% Voorbeelden van zulke fasen zijn: literatuurstudie, opstellen van een
-%% requirements-analyse, opstellen long-list (bij vergelijkende studie),
-%% selectie van geschikte tools (bij vergelijkende studie, "short-list"),
-%% opzetten testopstelling/PoC, uitvoeren testen en verzamelen
-%% van resultaten, analyse van resultaten, ...
-%%
-%% !!!!! LET OP !!!!!
-%%
-%% Het is uitdrukkelijk NIET de bedoeling dat je het grootste deel van de corpus
-%% van je bachelorproef in dit hoofstuk verwerkt! Dit hoofdstuk is eerder een
-%% kort overzicht van je plan van aanpak.
-%%
-%% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
-%% en geef het een gepaste titel.
 
-Dit onderzoek volgt een gestructureerde aanpak voor het verzamelen, verwerken en visualiseren van realtime voertuigdata via OBD-II. De methodologie bestaat uit verschillende opeenvolgende fasen, waarbij eerst wordt onderzocht hoe voertuigdata kan worden verzameld en vervolgens een systeem wordt ontwikkeld om deze data realtime te verwerken en te visualiseren. Vervolgens worden verschillende communicatiemethoden en updatefrequenties onderzocht en wordt een simulatieomgeving ontwikkeld om het systeem ook zonder een fysiek voertuig te kunnen testen. Ten slotte wordt de ontwikkelde oplossing getest en geëvalueerd op het vlak van performantie, betrouwbaarheid en stabiliteit.
-Elke fase bouwt verder op de resultaten van de voorgaande fase. Op deze manier wordt niet alleen een werkende webapplicatie ontwikkeld, maar wordt ook onderzocht welke technieken het meest geschikt zijn voor het verwerken en visualiseren van realtime OBD-II-data.
 \subsection{Onderzoek en verzameling van OBD-II-data}
 In de eerste fase wordt onderzocht hoe voertuigdata kan worden uitgelezen via OBD-II. Hiervoor wordt gebruikgemaakt van een OBD-II-adapter en een Pythonbibliotheek om een verbinding met het voertuig tot stand te brengen en beschikbare sensorgegevens uit te lezen.
-Er wordt onderzocht welke parameters beschikbaar zijn en in welke mate deze parameters verschillen tussen voertuigen. Daarnaast wordt gekeken naar de betrouwbaarheid en frequentie waarmee de gegevens kunnen worden uitgelezen. Hierbij wordt ook aandacht besteed aan de beperkingen die kunnen optreden bij het verzamelen van realtime voertuigdata, zoals niet-beschikbare parameters of verbindingsproblemen.
-De resultaten van deze fase worden gebruikt om te bepalen welke voertuiggegevens in het verdere onderzoek en in het monitoringdashboard worden gebruikt.
+Er wordt onderzocht welke parameters beschikbaar zijn en in welke mate deze parameters verschillen tussen de onderzochte voertuigen. Daarnaast wordt nagegaan welke gegevens voldoende algemeen beschikbaar zijn om verder te gebruiken binnen de applicatie.
+De resultaten van deze fase worden gebruikt om te bepalen welke voertuiggegevens in de simulatieomgeving en het monitoringdashboard worden opgenomen.
+
 \subsection{Ontwikkeling van een OBD-II-simulatieomgeving}
-Omdat een fysiek voertuig en OBD-II-adapter niet altijd beschikbaar zijn tijdens de ontwikkeling en het testen van de applicatie, wordt een simulatieomgeving ontwikkeld. Deze simulator genereert voertuiggegevens die het gedrag van echte voertuigdata zo goed mogelijk benaderen.
-Er worden verschillende situaties gesimuleerd, zoals stationair draaien, accelereren, constante snelheid en vertragen. Hierdoor kan de werking van de applicatie worden getest onder verschillende omstandigheden zonder dat hiervoor voortdurend een fysiek voertuig nodig is.
-Daarnaast wordt onderzocht in welke mate de simulator kan worden gebruikt als alternatief voor een fysieke databron tijdens de ontwikkeling en het testen van de webapplicatie.
+Omdat een fysiek voertuig en een OBD-II-adapter niet altijd beschikbaar zijn tijdens de ontwikkeling en het testen van de applicatie, wordt een simulatieomgeving ontwikkeld. Deze simulator genereert voertuiggegevens die gebaseerd zijn op de kenmerken van de eerder verzamelde echte voertuigdata.
+Er worden verschillende rijsituaties gesimuleerd, zoals stationair draaien, accelereren, constante snelheid en vertragen. Hierdoor kan de werking van de applicatie onder verschillende omstandigheden worden ontwikkeld en getest zonder dat hiervoor voortdurend een fysiek voertuig nodig is.
+De simulator heeft niet als doel een specifiek voertuig exact na te bootsen, maar om een consistente en voldoende realistische gegevensstroom te genereren die bruikbaar is tijdens de verdere ontwikkeling en testing van de applicatie.
+
 \subsection{Ontwerp en ontwikkeling van de realtime monitoringapplicatie}
 Op basis van de verzamelde voertuigdata wordt een webapplicatie ontwikkeld voor het realtime verwerken en visualiseren van OBD-II-data. De applicatie bestaat uit een backend die instaat voor het verzamelen en verwerken van de voertuiggegevens en een frontend waarin deze gegevens aan de gebruiker worden weergegeven.
-Tijdens deze fase wordt de architectuur van het systeem bepaald en wordt onderzocht hoe de verschillende componenten met elkaar kunnen communiceren. Het dashboard wordt ontworpen om relevante voertuigparameters op een overzichtelijke manier weer te geven. Hierbij wordt onder andere gebruikgemaakt van grafieken en andere visuele componenten om veranderingen in de voertuigdata realtime zichtbaar te maken.
+Tijdens deze fase wordt de architectuur van het systeem bepaald en worden de verschillende componenten ontwikkeld. Zowel echte OBD-II-data als gesimuleerde voertuigdata kunnen hierbij als databron worden gebruikt.
+Het dashboard wordt ontworpen om de geselecteerde voertuigparameters op een overzichtelijke manier weer te geven. Nieuwe gegevens worden realtime verwerkt zodat veranderingen in de toestand van het voertuig onmiddellijk zichtbaar worden in de gebruikersinterface.
+
 \subsection{Vergelijking van REST API en WebSockets}
-Vervolgens worden REST API's en WebSockets onderzocht als mogelijke communicatiemethoden tussen de backend en frontend. Beide technieken worden geïmplementeerd binnen de context van de ontwikkelde applicatie, zodat hun geschiktheid voor realtime voertuigmonitoring kan worden onderzocht.
-De technieken worden met elkaar vergeleken op basis van onder andere responstijd, updatefrequentie, hoeveelheid communicatie en stabiliteit van de verbinding. Hierbij wordt onderzocht in welke mate beide technologieën geschikt zijn voor het continu doorsturen van veranderende voertuiggegevens naar een webapplicatie.
-Op basis van de resultaten wordt bepaald welke communicatiemethode het meest geschikt is voor de realtime monitoring van OBD-II-data.
-\subsection{Performantieanalyse en optimalisatie}
-In deze fase wordt de performantie van het ontwikkelde systeem onderzocht. Hierbij wordt gekeken naar de invloed van verschillende updatefrequenties en communicatiemethoden op de werking van de applicatie.
-Verschillende updatefrequenties worden getest om te bepalen welke frequentie een goede balans biedt tussen realtime responsiviteit en systeembelasting. Hierbij kan bijvoorbeeld worden onderzocht wat het effect is van updates om de 100, 250, 500 en 1000 milliseconden.
-Daarnaast worden aspecten zoals responstijd, latency, netwerkverkeer, systeembelasting en stabiliteit geanalyseerd. Op basis van deze resultaten worden waar nodig optimalisaties uitgevoerd om de applicatie zo efficiënt en stabiel mogelijk te laten functioneren.
+Vervolgens worden REST API's en WebSockets onderzocht als communicatiemethoden tussen de backend en frontend. Beide technieken worden binnen dezelfde applicatie geïmplementeerd, zodat hun geschiktheid voor realtime voertuigmonitoring onder vergelijkbare omstandigheden kan worden onderzocht.
+Voor de vergelijking wordt gebruikgemaakt van echte OBD-II-data die via een fysiek voertuig en de OBD-II-adapter wordt uitgelezen. Beide communicatiemethoden verwerken hierbij dezelfde voertuigparameters en maken gebruik van dezelfde backend, frontend en hardwareconfiguratie. Hierdoor wordt getracht de omstandigheden tussen de verschillende metingen zo constant mogelijk te houden.
+REST en WebSockets worden getest met update-intervallen van 100, 250 en 1000 milliseconden. Iedere configuratie wordt gedurende 60 seconden getest en meerdere keren herhaald. Tijdens deze metingen worden de latency en het netwerkverbruik geregistreerd. Op basis hiervan kan worden onderzocht welke invloed de communicatiemethode en updatefrequentie hebben op de overdracht van realtime voertuigdata.
+Op basis van de verzamelde resultaten wordt bepaald welke communicatiemethode binnen de context van de ontwikkelde OBD-II-monitoringapplicatie het meest geschikt is.
+
 \subsection{Testing en evaluatie}
-In de laatste fase wordt het volledige systeem getest en geëvalueerd. Hierbij wordt gebruikgemaakt van zowel echte OBD-II-data als de ontwikkelde simulatieomgeving. De applicatie wordt getest met verschillende voertuigen om na te gaan welke voertuigparameters beschikbaar zijn en hoe deze gegevens binnen de applicatie worden verwerkt en weergegeven.
-Daarnaast worden de verschillende communicatiemethoden en updatefrequenties geëvalueerd. Hierbij wordt onder andere gekeken naar de responstijd, latency, systeembelasting en de vloeiendheid waarmee de voertuiggegevens in het dashboard worden bijgewerkt.
-De resultaten van de verschillende testen worden geanalyseerd en met elkaar vergeleken. Op basis hiervan wordt beoordeeld welke communicatiemethode en updatefrequentie het meest geschikt zijn voor realtime voertuigmonitoring. Tot slot wordt nagegaan in welke mate de ontwikkelde simulatieomgeving geschikt is om de applicatie te ontwikkelen en testen wanneer geen fysiek voertuig beschikbaar is.
-
-
-
-
+In de laatste fase wordt het volledige systeem getest en geëvalueerd. Hierbij wordt nagegaan of de verschillende onderdelen van de ontwikkelde applicatie correct samenwerken en of echte OBD-II-data succesvol kan worden uitgelezen, verwerkt en weergegeven in het realtime monitoringdashboard.
+Daarnaast wordt geëvalueerd in welke mate de ontwikkelde simulatieomgeving bruikbaar is tijdens de ontwikkeling wanneer geen fysiek voertuig beschikbaar is. De simulator wordt hierbij niet gebruikt voor de performantievergelijking tussen REST en WebSockets, maar vormt een afzonderlijk hulpmiddel voor de ontwikkeling en het testen van de applicatie.
+De resultaten van de REST- en WebSocketvergelijking uit de voorgaande fase worden samen met de functionele werking van het systeem gebruikt om de ontwikkelde oplossing als geheel te evalueren.
