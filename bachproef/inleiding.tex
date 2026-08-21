@@ -1,10 +1,11 @@
 \chapter{\IfLanguageName{dutch}{Inleiding}{Introduction}}%
 \label{ch:inleiding}
+
 Voertuigen bevatten steeds meer elektronische systemen die tijdens het rijden
 grote hoeveelheden gegevens verzamelen. Via de OBD-II-interface kan een deel
-van deze voertuigdata worden uitgelezen, waaronder gegevens over onder andere
-het motortoerental, de voertuigsnelheid, temperaturen en de belasting van de
-motor. Deze gegevens kunnen worden gebruikt voor diagnose, analyse en het
+van deze voertuigdata worden uitgelezen, waaronder gegevens over het motortoerental, 
+de voertuigsnelheid, temperaturen en de belasting van de motor. 
+Deze gegevens kunnen worden gebruikt voor diagnose, analyse en het
 realtime opvolgen van de toestand van een voertuig.
 
 Het uitlezen van deze gegevens vormt echter slechts één onderdeel van een
@@ -18,11 +19,13 @@ bijgewerkt.
 Binnen deze bachelorproef wordt daarom een webgebaseerde applicatie ontwikkeld
 voor het realtime monitoren van OBD-II-voertuigdata. Daarnaast wordt onderzocht
 hoe REST API en WebSockets zich binnen deze toepassing tot elkaar verhouden.
-Door beide communicatiemethoden onder dezelfde omstandigheden te testen, wordt
-nagegaan welke methode het meest geschikt is voor het doorsturen van realtime
-voertuigdata.
+Door beide communicatiemethoden onder vergelijkbare omstandigheden te testen,
+wordt nagegaan welke methode het meest geschikt is voor het doorsturen van
+realtime voertuigdata.
+
 
 \section{Probleemstelling}
+
 Moderne voertuigen verzamelen via verschillende elektronische regeleenheden
 een grote hoeveelheid technische informatie. Een deel van deze gegevens is via
 de OBD-II-interface toegankelijk voor externe toepassingen. Hoewel OBD-II een
@@ -42,7 +45,9 @@ worden verstuurd.
 Bij frequent veranderende voertuigdata is het daarom relevant om na te gaan
 welke invloed deze verschillende communicatieprincipes hebben op de overdracht
 van de gegevens. Vooral latency en netwerkverbruik zijn hierbij van belang.
-Ook de gekozen updatefrequentie kan invloed hebben op deze eigenschappen.
+Daarnaast kunnen uitschieters in latency en de werkelijk behaalde
+updatefrequentie inzicht geven in de prestaties van beide
+communicatiemethoden.
 
 Een bijkomend praktisch probleem is dat tijdens de ontwikkeling niet voortdurend
 een fysiek voertuig met een aangesloten OBD-II-adapter beschikbaar is. Daarom
@@ -54,7 +59,9 @@ monitoringapplicatie, vanaf het uitlezen van OBD-II-data tot de realtime
 weergave ervan in een webinterface. Daarbij wordt specifiek onderzocht hoe
 REST API en WebSockets presteren bij verschillende updatefrequenties.
 
+
 \section{Onderzoeksvraag}
+
 De centrale onderzoeksvraag van deze bachelorproef luidt als volgt:
 
 \begin{quote}
@@ -67,6 +74,7 @@ doorsturen van deze data?}
 Om deze hoofdvraag te beantwoorden, worden de volgende deelvragen onderzocht:
 
 \begin{itemize}
+
     \item Welke voertuigparameters kunnen via OBD-II worden uitgelezen en welke
     verschillen bestaan hierbij tussen de onderzochte voertuigen?
 
@@ -77,16 +85,21 @@ Om deze hoofdvraag te beantwoorden, worden de volgende deelvragen onderzocht:
     zonder een fysieke voertuigverbinding kan worden ontwikkeld en getest?
 
     \item Welke verschillen bestaan tussen REST API en WebSockets op het vlak
-    van latency en netwerkverbruik bij update-intervallen van 100, 250 en
-    1000 milliseconden?
+    van gemiddelde latency, P95-latency en netwerkverbruik bij
+    update-intervallen van 100, 250 en 1000 milliseconden?
+
+    \item In welke mate worden de ingestelde updatefrequenties bij REST API en
+    WebSockets in de praktijk behaald?
 
     \item Welke communicatiemethode en updatefrequentie zijn binnen de
     ontwikkelde toepassing het meest geschikt voor realtime
     voertuigmonitoring?
+
 \end{itemize}
 
 
 \section{Onderzoeksdoelstelling}
+
 Het doel van deze bachelorproef is het ontwikkelen en evalueren van een
 webgebaseerde applicatie voor het realtime monitoren van voertuigdata via
 OBD-II.
@@ -105,7 +118,8 @@ beschikbaar is.
 Binnen de ontwikkelde applicatie worden zowel REST API als WebSockets
 geïmplementeerd. Beide communicatiemethoden worden vervolgens getest met
 update-intervallen van 100, 250 en 1000 milliseconden. Hierbij worden de
-latency en het netwerkverbruik gemeten en met elkaar vergeleken.
+gemiddelde latency, P95-latency, werkelijk behaalde updatefrequentie en het
+netwerkverbruik gemeten en met elkaar vergeleken.
 
 Het eindresultaat moet aantonen in welke mate de ontwikkelde architectuur
 geschikt is voor realtime OBD-II-monitoring en welke van de onderzochte
@@ -113,6 +127,7 @@ communicatiemethoden binnen deze toepassing de meest geschikte oplossing vormt.
 
 
 \section{Opzet van deze bachelorproef}
+
 De rest van deze bachelorproef is als volgt opgebouwd.
 
 In Hoofdstuk~\ref{ch:stand-van-zaken} wordt de bestaande kennis rond OBD-II,
@@ -143,15 +158,14 @@ componenten aan bod.
 
 In Hoofdstuk~\ref{ch:vergelijking-van-rest-api-en-websockets} worden REST API
 en WebSockets met elkaar vergeleken. Beide communicatiemethoden worden getest
-bij verschillende update-intervallen en geëvalueerd op basis van latency en
-netwerkverbruik.
+bij verschillende update-intervallen en geëvalueerd op basis van gemiddelde
+latency, P95-latency, werkelijk behaalde updatefrequentie en netwerkverbruik.
 
-Vervolgens wordt het volledige systeem getest en geëvalueerd. Hierbij wordt
-nagegaan in welke mate de ontwikkelde applicatie voldoet aan de vooropgestelde
-doelstellingen en worden de belangrijkste beperkingen van het onderzoek
-besproken.
+In Hoofdstuk~\ref{ch:testing-en-evaluatie-van-het-systeem} wordt het volledige systeem getest en geëvalueerd. 
+Hierbij wordt nagegaan of de verschillende onderdelen correct samenwerken en worden de belangrijkste 
+beperkingen van de ontwikkelde oplossing besproken.
 
 Tot slot wordt in Hoofdstuk~\ref{ch:conclusie} een antwoord geformuleerd op
 de centrale onderzoeksvraag en de bijhorende deelvragen. De belangrijkste
-bevindingen worden samengevat en er worden mogelijkheden voor toekomstig
-onderzoek besproken.
+bevindingen worden samengevat, de beperkingen van het onderzoek worden
+besproken en er worden mogelijkheden voor toekomstig onderzoek voorgesteld.

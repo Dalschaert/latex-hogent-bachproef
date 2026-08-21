@@ -38,17 +38,24 @@ Wanneer een fysiek voertuig wordt gebruikt, maakt de backend gebruik van de eerd
 De waarden die via OBD-II worden ontvangen, worden in de backend verwerkt tot een gemeenschappelijke datastructuur. Hierdoor kunnen de gegevens op een consistente manier naar de frontend worden gestuurd.
 Een vereenvoudigde voorstelling van deze datastructuur kan bijvoorbeeld als volgt worden weergegeven:
 
+\begin{listing}[H]
 \begin{verbatim}
-{
-    "rpm": ...,
-    "speed": ...,
-    "engine_load": ...,
-    "maf": ...,
-    "intake_temperature": ...,
-    "coolant_temperature": ...,
-    "engine_runtime": ...
-}
+class VehicleData(BaseModel):
+    speed: float
+    rpm: float
+    engineLoad: float
+    coolantTemperature: float
+    intakePressure: float
+    intakeTemperature: float
+    maf: float
+    controlModuleVoltage: float
+    ambientTemperature: float
+
+    sentAt: Optional[float] = None
 \end{verbatim}
+\caption{Gemeenschappelijk datamodel voor voertuiggegevens}
+\label{lst:vehicle-data-model}
+\end{listing}
 
 Door een vaste datastructuur te gebruiken hoeft de frontend niet rechtstreeks rekening te houden met de manier waarop de oorspronkelijke OBD-II-response is opgebouwd. De backend is verantwoordelijk voor het omzetten van de ontvangen gegevens naar een formaat dat door de frontend kan worden verwerkt.
 

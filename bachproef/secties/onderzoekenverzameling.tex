@@ -18,9 +18,18 @@ van de simulatieomgeving en de realtime monitoringapplicatie.
 
 \section{Verbinding met het voertuig}
 Voor het verzamelen van de voertuigdata wordt gebruikgemaakt van een
-Vgate VLinker FS OBD-II-adapter. Deze adapter wordt via USB met de computer
+Vgate vLinker FS OBD-II-adapter. Deze adapter wordt via USB met de computer
 verbonden en vormt de interface tussen de OBD-II-poort van het voertuig en de
-software die gebruikt wordt voor het uitlezen van de voertuigdata.
+software die gebruikt wordt voor het uitlezen van de voertuigdata. De adapter
+wordt rechtstreeks aangesloten op de OBD-II-poort van het voertuig, zoals
+weergegeven in Figuur~\ref{fig:obd-adapter-aangesloten}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{fotos/obdAdapter.jpeg}
+    \caption{Vgate vLinker FS aangesloten op de OBD-II-poort van een testvoertuig}
+    \label{fig:obd-adapter-aangesloten}
+\end{figure}
 
 Voor de communicatie met de adapter wordt Python gebruikt in combinatie met
 de \texttt{python-OBD}-bibliotheek. Deze bibliotheek biedt functionaliteiten om
@@ -88,11 +97,15 @@ OBD-II-commando naar het voertuig gestuurd.
 
 Een aantal parameters kan bijvoorbeeld als volgt worden opgevraagd:
 
+\begin{listing}[H]
 \begin{verbatim}
 rpm = connection.query(obd.commands.RPM)
 speed = connection.query(obd.commands.SPEED)
 engine_load = connection.query(obd.commands.ENGINE_LOAD)
 \end{verbatim}
+\caption{Uitlezen van voertuigparameters via python-OBD}
+\label{lst:obd-data-uitlezen}
+\end{listing}
 
 Hierbij wordt met \texttt{RPM} het motortoerental opgevraagd, met
 \texttt{SPEED} de voertuigsnelheid en met \texttt{ENGINE\_LOAD} de berekende
@@ -116,27 +129,26 @@ CSV-bestand geschreven. Naast de ondersteunde commando's werden ook enkele
 algemene gegevens opgeslagen, waaronder het gebruikte OBD-II-protocol en,
 indien beschikbaar, het VIN van het voertuig.
 
-Een vereenvoudigde weergave van het verzamelen van de ondersteunde commando's
-is:
-
-\begin{verbatim}
-supported = list(connection.supported_commands)
-
-for cmd in supported:
-    print(cmd.name, cmd.command, cmd.mode)
-\end{verbatim}
-
 Voor het onderzoek naar actuele voertuigparameters zijn voornamelijk de
 Mode~01-commando's relevant. Deze mode bevat actuele gegevens die tijdens de
 werking van het voertuig kunnen worden opgevraagd. Daarom werden deze
 commando's afzonderlijk uit de volledige verzameling geselecteerd:
 
+\begin{listing}[H]
 \begin{verbatim}
+supported = list(connection.supported_commands)
+
 mode1 = [
     cmd for cmd in supported
     if getattr(cmd, "mode", None) == 1
 ]
+
+for cmd in mode1:
+    print(cmd.name, cmd.command, cmd.mode)
 \end{verbatim}
+\caption{Inventariseren van ondersteunde Mode 01 OBD-II-commando's}
+\label{lst:supported-obd-commands}
+\end{listing}
 
 Een voorbeeld van de gedetecteerde en ondersteunde OBD-II-commando's bij een
 van de testvoertuigen

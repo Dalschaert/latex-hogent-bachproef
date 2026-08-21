@@ -1,5 +1,6 @@
 \chapter{\IfLanguageName{dutch}{Samenvatting}{Abstract}}%
 \label{ch:samenvatting}
+
 Via de OBD-II-interface kunnen verschillende gegevens uit een voertuig worden
 uitgelezen, zoals motortoerental, snelheid en temperatuurwaarden. Deze gegevens
 kunnen gebruikt worden om de toestand van een voertuig realtime op te volgen.
@@ -13,37 +14,50 @@ monitoringapplicatie. Daarbij wordt specifiek onderzocht welke van de
 communicatiemethoden REST API en WebSockets het meest geschikt is voor het
 doorsturen van voertuigdata tussen de backend en frontend.
 
-Voor het onderzoek werd voertuigdata verzameld van meerdere voertuigen met
-behulp van een Vgate VLinker FS OBD-II-adapter en de Pythonbibliotheek
-\texttt{python-OBD}. Hierbij werd onderzocht welke voertuigparameters
-beschikbaar zijn en welke verschillen tussen voertuigen voorkomen. Vervolgens
-werd een monitoringapplicatie ontwikkeld met een FastAPI-backend en een
-React-frontend. Daarnaast werd een simulatieomgeving ontwikkeld waarmee de
-applicatie ook zonder een fysiek voertuig kan worden ontwikkeld en getest.
+Voor het onderzoek werd voertuigdata verzameld van vier verschillende
+voertuigen met behulp van een Vgate VLinker FS OBD-II-adapter en de
+Pythonbibliotheek \texttt{python-OBD}. Hierbij werd onderzocht welke
+voertuigparameters beschikbaar zijn en welke verschillen tussen voertuigen
+voorkomen. Uit deze vergelijking bleek dat niet ieder voertuig dezelfde
+OBD-II-parameters ondersteunt, waardoor een algemene monitoringapplicatie
+rekening moet houden met ontbrekende of voertuigspecifieke gegevens.
+
+Vervolgens werd een monitoringapplicatie ontwikkeld met een FastAPI-backend en
+een React-frontend. Daarnaast werd een simulatieomgeving ontwikkeld waarmee de
+applicatie ook zonder een fysiek voertuig kan worden ontwikkeld en functioneel
+getest.
 
 REST API en WebSockets werden binnen dezelfde applicatie geïmplementeerd en
-onder vergelijkbare omstandigheden getest. Hiervoor werden update-intervallen
-van 100, 250 en 1000 milliseconden gebruikt. Iedere configuratie werd gedurende
-60 seconden getest en meerdere keren herhaald. De vergelijking richt zich
-voornamelijk op de gemiddelde latency, P95-latency en het netwerkverbruik.
+onder vergelijkbare omstandigheden getest met echte OBD-II-data. Hiervoor
+werden update-intervallen van 100, 250 en 1000 milliseconden gebruikt. Iedere
+configuratie werd gedurende ongeveer 60 seconden getest en twee keer
+uitgevoerd. De vergelijking richtte zich voornamelijk op de gemiddelde
+latency, P95-latency, werkelijk behaalde updatefrequentie en het
+netwerkverbruik.
 
-% ============================================================================
-% TODO NA METINGEN
-% Hier de belangrijkste resultaten van de vergelijking invullen.
-% ============================================================================
+Uit de resultaten bleek dat WebSockets bij alle onderzochte update-intervallen
+een lagere gemiddelde latency behaalden dan REST. De verschillen in
+P95-latency waren minder eenduidig, waarbij WebSockets bij 100 en 250 ms een
+lagere waarde behaalden, terwijl REST bij 1000 ms een lagere P95-latency
+vertoonde.
 
-Uit de resultaten bleek dat [REST/WebSockets] binnen de onderzochte
-testopstelling gemiddeld de laagste latency behaalde. Ook op het vlak van
-P95-latency bleek [RESULTAAT]. Wat het netwerkverbruik betreft, veroorzaakte
-[REST/WebSockets] [MINDER/MEER] netwerkverkeer. Een update-interval van
-[100/250/1000] milliseconden bleek uiteindelijk de meest geschikte balans te
-bieden tussen de actualiteit van de voertuigdata en de benodigde communicatie.
+Het grootste verschil werd vastgesteld bij het netwerkverbruik. Bij een
+update-interval van 100 ms bedroeg het gemiddelde netwerkverbruik 14,01 KB/s
+voor REST en 1,34 KB/s voor WebSockets. Ook bij 250 en 1000 ms veroorzaakten
+WebSockets aanzienlijk minder netwerkverkeer. De werkelijk behaalde
+updatefrequenties lagen bij beide communicatiemethoden dicht bij de theoretisch
+verwachte waarden.
 
-% EINDE TODO
+Op basis van de resultaten worden WebSockets binnen de ontwikkelde
+monitoringapplicatie beschouwd als de meest geschikte communicatiemethode voor
+het continu doorsturen van realtime OBD-II-data. Vooral bij een
+update-interval van 100 milliseconden bieden WebSockets een combinatie van
+frequente updates, een lage gemiddelde latency en een aanzienlijk lager
+netwerkverbruik dan REST.
 
-Het onderzoek toont aan dat OBD-II kan worden gebruikt als basis voor een
-webgebaseerde realtime monitoringapplicatie. Daarnaast blijkt dat de keuze van
-de communicatiemethode en de updatefrequentie invloed heeft op de manier waarop
-voertuigdata naar de frontend wordt doorgestuurd. De resultaten moeten worden
-geïnterpreteerd binnen de gebruikte testopstelling en het beperkte aantal
-onderzochte voertuigen.
+Het onderzoek toont daarmee aan dat OBD-II kan worden gebruikt als basis voor
+een webgebaseerde realtime monitoringapplicatie. De resultaten moeten wel
+worden geïnterpreteerd binnen de gebruikte testopstelling en het beperkte
+aantal onderzochte voertuigen. Verdere evaluatie met meer voertuigen en
+verschillende netwerk- en hardwareconfiguraties kan aantonen in welke mate de
+bevindingen kunnen worden veralgemeend.
